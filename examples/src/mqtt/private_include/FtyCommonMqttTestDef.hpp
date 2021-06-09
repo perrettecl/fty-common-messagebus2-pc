@@ -24,7 +24,7 @@
 
 #include <string>
 
-namespace messagebus::mqttv5::test
+namespace fty::messagebus::mqttv5::test
 {
   // Topic
   static auto constexpr SAMPLE_TOPIC{"/etn/t/metric/samplemqtt"};

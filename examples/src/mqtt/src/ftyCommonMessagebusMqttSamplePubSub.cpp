@@ -43,7 +43,7 @@ namespace
 {
   using namespace messagebus;
   using namespace messagebus::mqttv5;
-  using namespace messagebus::mqttv5::test;
+  using namespace fty::messagebus::mqttv5::test;
 
   static bool _continue = true;
 

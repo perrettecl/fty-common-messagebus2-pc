@@ -25,43 +25,44 @@
 #include <list>
 #include <string>
 
-namespace messagebus
+namespace fty::messagebus::test
 {
   using UserData = std::list<std::string>;
-}
 
-struct MathOperation
-{
-  std::string operation;
-  std::string param_1;
-  std::string param_2;
-  MathOperation() = default;
-  MathOperation(const std::string& _operation, const std::string& _param_1, const std::string& _param_2)
-    : operation(_operation)
-    , param_1(_param_1)
-    , param_2(_param_2)
+  struct MathOperation
   {
-  }
-};
+    std::string operation;
+    std::string param_1;
+    std::string param_2;
+    MathOperation() = default;
+    MathOperation(const std::string& _operation, const std::string& _param_1, const std::string& _param_2)
+      : operation(_operation)
+      , param_1(_param_1)
+      , param_2(_param_2)
+    {
+    }
+  };
 
-void operator<<(messagebus::UserData& userData, const MathOperation& object);
-void operator>>(messagebus::UserData& payload, MathOperation& object);
+  void operator<<(UserData& userData, const MathOperation& object);
+  void operator>>(UserData& payload, MathOperation& object);
 
-struct MathResult
-{
-  static auto constexpr STATUS_OK{"Ok"};
-  static auto constexpr STATUS_KO{"KO"};
-
-  std::string status;
-  std::string result;
-  MathResult(const std::string& _status = STATUS_OK, const std::string& _result = {})
-    : status(_status)
-    , result(_result)
+  struct MathResult
   {
-  }
-};
+    static auto constexpr STATUS_OK{"Ok"};
+    static auto constexpr STATUS_KO{"KO"};
 
-void operator<<(messagebus::UserData& userData, const MathResult& object);
-void operator>>(messagebus::UserData& payload, MathResult& object);
+    std::string status;
+    std::string result;
+    MathResult(const std::string& _status = STATUS_OK, const std::string& _result = {})
+      : status(_status)
+      , result(_result)
+    {
+    }
+  };
+
+  void operator<<(UserData& userData, const MathResult& object);
+  void operator>>(UserData& payload, MathResult& object);
+
+} // namespace fty::messagebus::test
 
 #endif // FTY_COMMON_MQTT_TEST_MATH_DTO_HPP

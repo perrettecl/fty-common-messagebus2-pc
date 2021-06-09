@@ -28,57 +28,59 @@
 
 #include "FtyCommonMqttTestMathDto.h"
 
-
 #include <ostream>
 
-void operator<<(messagebus::UserData& data, const MathOperation& object)
+namespace fty::messagebus::test
 {
-  data.push_back(object.operation);
-  data.push_back(object.param_1);
-  data.push_back(object.param_2);
-}
+  void operator<<(UserData& data, const MathOperation& object)
+  {
+    data.push_back(object.operation);
+    data.push_back(object.param_1);
+    data.push_back(object.param_2);
+  }
 
-void operator>>(messagebus::UserData& data, MathOperation& object)
-{
-  auto operation = data.front();
-  data.pop_front();
-  auto param_1 = data.front();
-  data.pop_front();
-  auto param_2 = data.front();
-  data.pop_front();
-  object = MathOperation(operation, param_1, param_2);
-}
+  void operator>>(UserData& data, MathOperation& object)
+  {
+    auto operation = data.front();
+    data.pop_front();
+    auto param_1 = data.front();
+    data.pop_front();
+    auto param_2 = data.front();
+    data.pop_front();
+    object = MathOperation(operation, param_1, param_2);
+  }
 
-std::ostream& operator<<(std::ostream& os, const MathOperation& mathOperation)
-{
-  os << "MathOperation(";
-  os << "operation=" << mathOperation.operation;
-  os << ", param_1=" << mathOperation.param_1;
-  os << ", param_2=" << mathOperation.param_2;
-  os << ")";
-  return os;
-}
+  std::ostream& operator<<(std::ostream& os, const MathOperation& mathOperation)
+  {
+    os << "MathOperation(";
+    os << "operation=" << mathOperation.operation;
+    os << ", param_1=" << mathOperation.param_1;
+    os << ", param_2=" << mathOperation.param_2;
+    os << ")";
+    return os;
+  }
 
-void operator<<(messagebus::UserData& data, const MathResult& object)
-{
-  data.push_back(object.status);
-  data.push_back(object.result);
-}
+  void operator<<(UserData& data, const MathResult& object)
+  {
+    data.push_back(object.status);
+    data.push_back(object.result);
+  }
 
-void operator>>(messagebus::UserData& data, MathResult& object)
-{
-  auto status = data.front();
-  data.pop_front();
-  auto result = data.front();
-  data.pop_front();
-  object = MathResult(status, result);
-}
+  void operator>>(UserData& data, MathResult& object)
+  {
+    auto status = data.front();
+    data.pop_front();
+    auto result = data.front();
+    data.pop_front();
+    object = MathResult(status, result);
+  }
 
-std::ostream& operator<<(std::ostream& os, const MathResult& mathResult)
-{
-  os << "MathResult(";
-  os << "status=" << mathResult.status;
-  os << ", result=" << mathResult.result;
-  os << ")";
-  return os;
-}
+  std::ostream& operator<<(std::ostream& os, const MathResult& mathResult)
+  {
+    os << "MathResult(";
+    os << "status=" << mathResult.status;
+    os << ", result=" << mathResult.result;
+    os << ")";
+    return os;
+  }
+} // namespace fty::messagebus::test

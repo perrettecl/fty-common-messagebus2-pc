@@ -44,7 +44,8 @@ namespace
 {
   using namespace messagebus;
   using namespace messagebus::mqttv5;
-  using namespace messagebus::mqttv5::test;
+  using namespace fty::messagebus::mqttv5::test;
+  using namespace fty::messagebus::test;
 
   static bool _continue = true;
   static auto constexpr WAIT_RESPONSE_FOR = 5;
