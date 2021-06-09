@@ -24,7 +24,6 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
         private_include
     # PUBLIC_HEADERS
     #     #fty_common_messagebus_dispatcher.h
-    #     fty_common_messagebus_dto.h
     #     fty_common_messagebus_exception.h
     #     # fty_common_messagebus.h
     #     #fty_common_messagebus_interface.h

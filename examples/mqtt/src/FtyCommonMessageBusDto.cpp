@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_common_messagebus_dto - class description
+    FtyCommonMessageBusDto - class description
 
     Copyright (C) 2014 - 2020 Eaton
 
@@ -21,12 +21,12 @@
 
 /*
 @header
-    fty_common_messagebus_dto -
+    FtyCommonMessageBusDto -
 @discuss
 @end
 */
 
-#include "fty_common_messagebus_dto.h"
+#include "FtyCommonMessageBusDto.hpp"
 
 void operator<< (messagebus::UserData &data, const FooBar &object) {
     data.push_back(object.foo);

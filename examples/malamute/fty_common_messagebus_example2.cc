@@ -26,7 +26,7 @@
 @end
 */
 
-#include "fty_common_messagebus_dto.h"
+#include "FtyCommonMessageBusDto.hpp"
 #include "fty_common_messagebus_exception.h"
 #include "fty_common_messagebus_interface.h"
 #include "fty_common_messagebus_message.h"
