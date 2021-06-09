@@ -86,7 +86,7 @@ int main(int argc, char** argv)
 
   std::string clientName = messagebus::helper::getClientId("MqttSampleMathRequester");
 
-  auto requester = MessagebusFactory::createMqttMsgBus(messagebus::mqttv5::DEFAULT_MQTT_END_POINT, clientName);
+  auto requester = MessagebusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, clientName);
   requester->connect();
 
   auto correlationId = messagebus::helper::generateUuid();

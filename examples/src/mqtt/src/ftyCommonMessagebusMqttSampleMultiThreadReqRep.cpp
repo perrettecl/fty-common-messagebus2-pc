@@ -189,7 +189,7 @@ int main(int /*argc*/, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  mqttMsgBus = MessagebusFactory::createMqttMsgBus(messagebus::mqttv5::DEFAULT_MQTT_END_POINT, getClientName());
+  mqttMsgBus = MessagebusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, getClientName());
   mqttMsgBus->connect();
 
   requesterFunc(mqttMsgBus);

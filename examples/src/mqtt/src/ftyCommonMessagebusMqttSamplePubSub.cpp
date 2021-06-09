@@ -79,10 +79,10 @@ int main(int /*argc*/, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  auto publisher = MessagebusFactory::createMqttMsgBus(messagebus::mqttv5::DEFAULT_MQTT_END_POINT, messagebus::helper::getClientId("MqttPublisher"));
+  auto publisher = MessagebusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, messagebus::helper::getClientId("MqttPublisher"));
   publisher->connect();
 
-  auto subscriber = MessagebusFactory::createMqttMsgBus(messagebus::mqttv5::DEFAULT_MQTT_END_POINT, messagebus::helper::getClientId("MqttSubscriber"));
+  auto subscriber = MessagebusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, messagebus::helper::getClientId("MqttSubscriber"));
   subscriber->connect();
   subscriber->subscribe(SAMPLE_TOPIC, messageListener);
 

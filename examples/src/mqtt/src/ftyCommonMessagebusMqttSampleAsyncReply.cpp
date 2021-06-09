@@ -93,8 +93,7 @@ namespace
 
     responseData << mathResultResult;
     response.userData() = responseData;
-    response.metaData().emplace(messagebus::
-    SUBJECT, messagebus::ANSWER_USER_PROPERTY);
+    response.metaData().emplace(messagebus::SUBJECT, messagebus::ANSWER_USER_PROPERTY);
     response.metaData().emplace(messagebus::FROM, getClientName());
     response.metaData().emplace(messagebus::CORRELATION_ID, message.metaData().find(messagebus::CORRELATION_ID)->second);
     response.metaData().emplace(messagebus::REPLY_TO, message.metaData().find(messagebus::REPLY_TO)->second);
@@ -114,7 +113,7 @@ int main(int /*argc*/, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  replyer = MessagebusFactory::createMqttMsgBus(messagebus::mqttv5::DEFAULT_MQTT_END_POINT, getClientName());
+  replyer = MessagebusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, getClientName());
   replyer->connect();
   replyer->receive(REQUEST_QUEUE, replyerMessageListener);
 
