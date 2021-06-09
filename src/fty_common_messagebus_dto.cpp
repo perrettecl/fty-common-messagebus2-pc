@@ -1,7 +1,7 @@
 /*  =========================================================================
-    FtyCommonMqttTestDef.hpp - class description
+    fty_common_messagebus_dto - class description
 
-    Copyright (C) 2014 - 2021 Eaton
+    Copyright (C) 2014 - 2020 Eaton
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,21 +19,24 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MQTT_TEST_DEF_HPP
-#define FTY_COMMON_MQTT_TEST_DEF_HPP
+/*
+@header
+    fty_common_messagebus_dto -
+@discuss
+@end
+*/
 
-#include <string>
+#include "fty_common_messagebus_dto.h"
 
-namespace messagebus::mqttv5::test
-{
-  // Topic
-  static auto constexpr SAMPLE_TOPIC{"/etn/t/metric/samplemqtt"};
+void operator<< (messagebus::UserData &data, const FooBar &object) {
+    data.push_back(object.foo);
+    data.push_back(object.bar);
+}
 
-  // Queues
-  static auto constexpr REQUEST_QUEUE{"/etn/q/request/maths"};
-  //static auto constexpr REPLY_QUEUE{"/etn/q/reply"};
-  static const std::string REPLY_QUEUE = "/etn/q/reply/maths";
-
-} // namespace messagebus
-
-#endif // FTY_COMMON_MQTT_TEST_DEF_HPP
+void operator>> (messagebus::UserData &data, FooBar &object) {
+    auto foo = data.front();
+    data.pop_front();
+    auto bar = data.front();
+    data.pop_front();
+    object = FooBar(foo, bar);
+}

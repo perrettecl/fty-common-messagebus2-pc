@@ -28,9 +28,10 @@
 
 #include "FtyCommonMqttTestDef.hpp"
 #include "FtyCommonMqttTestMathDto.h"
+#include "fty_common_messagebus_Imessage.hpp"
 #include "fty_common_messagebus_exception.h"
-#include "fty_common_messagebus_interface.h"
-#include "fty_common_messagebus_message.h"
+#include "fty_common_messagebus_factory.hpp"
+#include "fty_common_messagebus_helper.hpp"
 
 #include <chrono>
 #include <csignal>
@@ -41,12 +42,16 @@
 
 namespace
 {
-  messagebus::IMessageBus* replyer;
+  using namespace messagebus;
+  using namespace messagebus::mqttv5;
+  using namespace messagebus::mqttv5::test;
+
+  MqttMessageBus* replyer;
   static bool _continue = true;
 
   auto getClientName() -> std::string
   {
-    return messagebus::getClientId("MqttSampleMathReplyer");
+    return messagebus::helper::getClientId("MqttSampleMathReplyer");
   }
 
   static void signalHandler(int signal)
@@ -55,7 +60,7 @@ namespace
     _continue = false;
   }
 
-  void replyerMessageListener(const messagebus::Message& message)
+  void replyerMessageListener(const MqttMessage& message)
   {
     log_info("Replyer messageListener");
 
@@ -64,7 +69,7 @@ namespace
       log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
     }
 
-    messagebus::UserData reqData = message.userData();
+    auto reqData = message.userData();
     MathOperation mathQuery = MathOperation();
     reqData >> mathQuery;
     auto mathResultResult = MathResult();
@@ -83,17 +88,18 @@ namespace
       mathResultResult.result = "Unsuported operation";
     }
 
-    messagebus::Message response;
-    messagebus::UserData responseData;
+    MqttMessage response;
+    UserData responseData;
 
     responseData << mathResultResult;
     response.userData() = responseData;
-    response.metaData().emplace(messagebus::Message::SUBJECT, messagebus::ANSWER_USER_PROPERTY);
-    response.metaData().emplace(messagebus::Message::FROM, getClientName());
-    response.metaData().emplace(messagebus::Message::CORRELATION_ID, message.metaData().find(messagebus::Message::CORRELATION_ID)->second);
-    response.metaData().emplace(messagebus::Message::REPLY_TO, message.metaData().find(messagebus::Message::REPLY_TO)->second);
+    response.metaData().emplace(messagebus::
+    SUBJECT, messagebus::ANSWER_USER_PROPERTY);
+    response.metaData().emplace(messagebus::FROM, getClientName());
+    response.metaData().emplace(messagebus::CORRELATION_ID, message.metaData().find(messagebus::CORRELATION_ID)->second);
+    response.metaData().emplace(messagebus::REPLY_TO, message.metaData().find(messagebus::REPLY_TO)->second);
 
-    replyer->sendReply(message.metaData().find(messagebus::Message::REPLY_TO)->second, response);
+    replyer->sendReply(message.metaData().find(messagebus::REPLY_TO)->second, response);
 
     //_continue = false;
   }
@@ -108,9 +114,9 @@ int main(int /*argc*/, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  replyer = messagebus::MqttMsgBus(messagebus::DEFAULT_MQTT_END_POINT, getClientName());
+  replyer = MessagebusFactory::createMqttMsgBus(messagebus::mqttv5::DEFAULT_MQTT_END_POINT, getClientName());
   replyer->connect();
-  replyer->receive(messagebus::REQUEST_QUEUE, replyerMessageListener);
+  replyer->receive(REQUEST_QUEUE, replyerMessageListener);
 
   while (_continue)
   {

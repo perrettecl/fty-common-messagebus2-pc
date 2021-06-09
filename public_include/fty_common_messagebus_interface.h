@@ -27,12 +27,10 @@
 
 namespace messagebus
 {
+  template <typename MessageType>
+  using MessageListener = std::function<void(MessageType)>;
 
-  class Message;
-
-  typedef void(MessageListenerFn)(Message);
-  using MessageListener = std::function<MessageListenerFn>;
-
+  template <typename MessageType>
   class IMessageBus
   {
   public:
@@ -54,7 +52,7 @@ namespace messagebus
      *
      * @throw MessageBusException any exceptions
      */
-    virtual void publish(const std::string& topic, const Message& message) = 0;
+    virtual void publish(const std::string& topic, const MessageType& message) = 0;
 
     /**
      * @brief Subscribe to a topic
@@ -64,7 +62,7 @@ namespace messagebus
      *
      * @throw MessageBusException any exceptions
      */
-    virtual void subscribe(const std::string& topic, MessageListener messageListener) = 0;
+    virtual void subscribe(const std::string& topic, MessageListener<MessageType> messageListener) = 0;
 
     /**
      * @brief Unsubscribe to a topic
@@ -74,7 +72,7 @@ namespace messagebus
      *
      * @throw MessageBusException any exceptions
      */
-    virtual void unsubscribe(const std::string& topic, MessageListener messageListener) = 0;
+    virtual void unsubscribe(const std::string& topic, MessageListener<MessageType> messageListener) = 0;
 
     /**
      * @brief Send request to a queue
@@ -84,7 +82,7 @@ namespace messagebus
      *
      * @throw MessageBusException any exceptions
      */
-    virtual void sendRequest(const std::string& requestQueue, const Message& message) = 0;
+    virtual void sendRequest(const std::string& requestQueue, const MessageType& message) = 0;
 
     /**
      * @brief Send request to a queue and receive response to a specific listener
@@ -95,8 +93,7 @@ namespace messagebus
      *
      * @throw MessageBusException any exceptions
      */
-    virtual void sendRequest(
-      const std::string& requestQueue, const Message& message, MessageListener messageListener) = 0;
+    virtual void sendRequest(const std::string& requestQueue, const MessageType& message, MessageListener<MessageType> messageListener) = 0;
 
     /**
      * @brief Send a reply to a queue
@@ -106,7 +103,7 @@ namespace messagebus
      *
      * @throw MessageBusException any exceptions
      */
-    virtual void sendReply(const std::string& replyQueue, const Message& message) = 0;
+    virtual void sendReply(const std::string& replyQueue, const MessageType& message) = 0;
 
     /**
      * @brief Receive message from queue
@@ -116,7 +113,7 @@ namespace messagebus
      *
      * @throw MessageBusException any exceptions
      */
-    virtual void receive(const std::string& queue, MessageListener messageListener) = 0;
+    virtual void receive(const std::string& queue, MessageListener<MessageType> messageListener) = 0;
 
     /**
      * @brief Send request to a queue and wait to receive response
@@ -129,61 +126,11 @@ namespace messagebus
      *
      * @throw MessageBusException any exceptions
      */
-    virtual Message request(const std::string& requestQueue, const Message& message, int receiveTimeOut) = 0;
+    virtual MessageType request(const std::string& requestQueue, const MessageType& message, int receiveTimeOut) = 0;
 
   protected:
     IMessageBus() = default;
   };
-
-  //=================================================================
-  //
-  //                           HELPER
-  //
-  //=================================================================
-
-  /**
- * @brief Generate a random uuid
- *
- * @return uuid
- */
-  std::string generateUuid();
-
-  /**
- * @brief Build a reply queue for req/rep pattern
- *
- * @param clientName prefix queue name
- *
- * @return A reply queue name
- */
-  std::string buildReplyQueue(const std::string& queue);
-
-  /**
- * @brief Generate a random clientName
- *
- * @param clientName prefix for client Name
- *
- * @return client Name
- */
-  std::string getClientId(const std::string& prefix);
-
-  /**
- * @brief Malamute implementation
- *
- * @param clientName prefix for client Name
- *
- * @return client Name
- */
-  IMessageBus* MlmMessageBus(const std::string& endpoint, const std::string& clientName);
-
-  /**
- * @brief Mqtt implementation
- *
- * @param _endpoint Mqtt end point
- * @param _clientName prefix for client Name
- *
- * @return IMessageBus
- */
-  IMessageBus* MqttMsgBus(const std::string& _endpoint, const std::string& _clientName);
 
 } // namespace messagebus
 

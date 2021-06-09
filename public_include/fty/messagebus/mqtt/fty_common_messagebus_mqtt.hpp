@@ -22,19 +22,14 @@
 #ifndef FTY_COMMON_MESSAGEBUS_MQTT
 #define FTY_COMMON_MESSAGEBUS_MQTT
 
-
-#include "fty_common_messagebus_interface.h"
 #include "fty/messagebus/mqtt/fty_common_messagebus_mqtt_call_back.hpp"
+#include "fty/messagebus/mqtt/fty_common_messagebus_mqtt_message.hpp"
+
+#include <mqtt/async_client.h>
 #include <mqtt/client.h>
 #include <mqtt/message.h>
 
-#include <condition_variable>
-#include <functional>
-#include <map>
-#include <mutex>
-#include <string>
-
-namespace messagebus
+namespace messagebus::mqttv5
 {
   // Default mqtt end point
   static auto constexpr DEFAULT_MQTT_END_POINT{"tcp://localhost:1883"};
@@ -51,30 +46,33 @@ namespace messagebus
 
   using ClientPointer = std::shared_ptr<mqtt::async_client>;
 
-  class MqttMessageBus : public IMessageBus
+
+  class MqttMessageBus final : public IMessageBus<MqttMessage>
   {
   public:
+    MqttMessageBus() = default ;
+
     MqttMessageBus(const std::string& endpoint, const std::string& clientName)
       : m_endpoint(endpoint)
       , m_clientName(clientName){};
 
-    ~MqttMessageBus();
+    ~MqttMessageBus() override;
 
     void connect() override;
 
     // Pub/Sub pattern
-    void publish(const std::string& topic, const Message& message) override;
+    void publish(const std::string& topic, const MqttMessage& message) override;
     void subscribe(const std::string& topic, MessageListener messageListener) override;
     void unsubscribe(const std::string& topic, MessageListener messageListener = {}) override;
 
     // Req/Rep pattern
-    void sendRequest(const std::string& requestQueue, const Message& message) override;
-    void sendRequest(const std::string& requestQueue, const Message& message, MessageListener messageListener) override;
-    void sendReply(const std::string& replyQueue, const Message& message) override;
+    void sendRequest(const std::string& requestQueue, const MqttMessage& message) override;
+    void sendRequest(const std::string& requestQueue, const MqttMessage& message, MessageListener messageListener) override;
+    void sendReply(const std::string& replyQueue, const MqttMessage& message) override;
     void receive(const std::string& queue, MessageListener messageListener) override;
 
     // Sync queue
-    Message request(const std::string& requestQueue, const Message& message, int receiveTimeOut) override;
+    MqttMessage request(const std::string& requestQueue, const MqttMessage& message, int receiveTimeOut) override;
 
     auto isServiceAvailable() -> bool;
 
@@ -85,10 +83,7 @@ namespace messagebus
     std::string m_clientName{};
     // Call back
     callback cb;
-
-
-
   };
-} // namespace messagebus
+} // namespace messagebus::mqttv5
 
 #endif // ifndef FTY_COMMON_MESSAGEBUS_MQTT

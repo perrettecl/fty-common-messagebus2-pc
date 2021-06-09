@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_common_messagebus_dto - class description
+    fty_common_messagebus_interface - class description
 
     Copyright (C) 2014 - 2020 Eaton
 
@@ -19,25 +19,39 @@
     =========================================================================
 */
 
-/*
-@header
-    fty_common_messagebus_dto -
-@discuss
-@end
-*/
+#ifndef FTY_COMMON_MESSAGEBUS_HELPER_HPP
+#define FTY_COMMON_MESSAGEBUS_HELPER_HPP
 
-#include "fty_common_messagebus_dto.h"
-#include "fty_common_messagebus_message.h"
+#include <string>
 
-void operator<< (messagebus::UserData &data, const FooBar &object) {
-    data.push_back(object.foo);
-    data.push_back(object.bar);
-}
+namespace messagebus::helper
+{
 
-void operator>> (messagebus::UserData &data, FooBar &object) {
-    auto foo = data.front();
-    data.pop_front();
-    auto bar = data.front();
-    data.pop_front();
-    object = FooBar(foo, bar);
-}
+  /**
+ * @brief Generate a random uuid
+ *
+ * @return uuid
+ */
+  std::string generateUuid();
+
+  /**
+ * @brief Build a reply queue for req/rep pattern
+ *
+ * @param clientName prefix queue name
+ *
+ * @return A reply queue name
+ */
+  std::string buildReplyQueue(const std::string& queue);
+
+  /**
+ * @brief Generate a random clientName
+ *
+ * @param clientName prefix for client Name
+ *
+ * @return client Name
+ */
+  std::string getClientId(const std::string& prefix);
+
+} // namespace messagebus::helper
+
+#endif

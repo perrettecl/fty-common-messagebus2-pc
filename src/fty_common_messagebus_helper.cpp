@@ -1,7 +1,7 @@
 /*  =========================================================================
-    FtyCommonMqttTestDef.hpp - class description
+    fty_common_messagebus_helper - class description
 
-    Copyright (C) 2014 - 2021 Eaton
+    Copyright (C) 2014 - 2020 Eaton
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,21 +19,35 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MQTT_TEST_DEF_HPP
-#define FTY_COMMON_MQTT_TEST_DEF_HPP
+/*
+@header
+    fty_common_messagebus_helper -
+@discuss
+@end
+*/
 
-#include <string>
+#include "fty_common_messagebus_helper.hpp"
 
-namespace messagebus::mqttv5::test
+#include <chrono>
+#include <ctime>
+#include <czmq.h>
+
+namespace messagebus::helper
 {
-  // Topic
-  static auto constexpr SAMPLE_TOPIC{"/etn/t/metric/samplemqtt"};
+  std::string generateUuid()
+  {
+    zuuid_t* uuid = zuuid_new();
+    std::string strUuid(zuuid_str_canonical(uuid));
+    zuuid_destroy(&uuid);
+    return strUuid;
+  }
 
-  // Queues
-  static auto constexpr REQUEST_QUEUE{"/etn/q/request/maths"};
-  //static auto constexpr REPLY_QUEUE{"/etn/q/reply"};
-  static const std::string REPLY_QUEUE = "/etn/q/reply/maths";
+  std::string getClientId(const std::string& prefix)
+  {
+    std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+      std::chrono::system_clock::now().time_since_epoch());
+    std::string clientId = prefix + "-" + std::to_string(ms.count());
+    return clientId;
+  }
 
-} // namespace messagebus
-
-#endif // FTY_COMMON_MQTT_TEST_DEF_HPP
+} // namespace messagebus::helper

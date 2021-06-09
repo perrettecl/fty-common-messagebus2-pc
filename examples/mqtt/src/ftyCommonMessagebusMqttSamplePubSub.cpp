@@ -27,10 +27,11 @@
 */
 
 #include "FtyCommonMqttTestDef.hpp"
+#include "fty_common_messagebus_Imessage.hpp"
 #include "fty_common_messagebus_dto.h"
 #include "fty_common_messagebus_exception.h"
-#include "fty_common_messagebus_interface.h"
-#include "fty_common_messagebus_message.h"
+#include "fty_common_messagebus_factory.hpp"
+#include "fty_common_messagebus_helper.hpp"
 
 #include <chrono>
 #include <csignal>
@@ -40,6 +41,10 @@
 
 namespace
 {
+  using namespace messagebus;
+  using namespace messagebus::mqttv5;
+  using namespace messagebus::mqttv5::test;
+
   static bool _continue = true;
 
   static void signalHandler(int signal)
@@ -48,15 +53,15 @@ namespace
     _continue = false;
   }
 
-  void messageListener(messagebus::Message message)
+  void messageListener(MqttMessage message)
   {
     log_info("messageListener");
-    messagebus::MetaData metadata = message.metaData();
+    auto metadata = message.metaData();
     for (const auto& pair : message.metaData())
     {
       log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
     }
-    messagebus::UserData data = message.userData();
+    auto data = message.userData();
     FooBar fooBar;
     data >> fooBar;
     log_info("  * foo    : '%s'", fooBar.foo.c_str());
@@ -74,23 +79,23 @@ int main(int /*argc*/, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  auto publisher = messagebus::MqttMsgBus(messagebus::DEFAULT_MQTT_END_POINT, "MqttPublisher");
+  auto publisher = MessagebusFactory::createMqttMsgBus(messagebus::mqttv5::DEFAULT_MQTT_END_POINT, messagebus::helper::getClientId("MqttPublisher"));
   publisher->connect();
 
-  auto subscriber = messagebus::MqttMsgBus(messagebus::DEFAULT_MQTT_END_POINT, "MqttSubscriber");
+  auto subscriber = MessagebusFactory::createMqttMsgBus(messagebus::mqttv5::DEFAULT_MQTT_END_POINT, messagebus::helper::getClientId("MqttSubscriber"));
   subscriber->connect();
-  subscriber->subscribe(messagebus::SAMPLE_TOPIC, messageListener);
+  subscriber->subscribe(SAMPLE_TOPIC, messageListener);
 
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-  // // PUBLISH
-  messagebus::Message message;
+  // Publish
+  MqttMessage message;
   message.userData() << FooBar("event", "hello");
   message.metaData().clear();
   message.metaData().emplace("mykey", "myvalue");
-  message.metaData().emplace(messagebus::Message::FROM, "publisher");
-  message.metaData().emplace(messagebus::Message::SUBJECT, "discovery");
-  publisher->publish(messagebus::SAMPLE_TOPIC, message);
+  message.metaData().emplace(messagebus::FROM, "publisher");
+  message.metaData().emplace(messagebus::SUBJECT, "discovery");
+  publisher->publish(SAMPLE_TOPIC, message);
 
   while (_continue)
   {

@@ -28,9 +28,11 @@
 
 #include "FtyCommonMqttTestDef.hpp"
 #include "FtyCommonMqttTestMathDto.h"
+
 #include "fty_common_messagebus_exception.h"
-#include "fty_common_messagebus_interface.h"
-#include "fty_common_messagebus_message.h"
+#include "fty_common_messagebus_factory.hpp"
+
+#include "fty_common_messagebus_helper.hpp"
 
 #include <chrono>
 #include <csignal>
@@ -40,6 +42,10 @@
 
 namespace
 {
+  using namespace messagebus;
+  using namespace messagebus::mqttv5;
+  using namespace messagebus::mqttv5::test;
+
   static bool _continue = true;
   static auto constexpr WAIT_RESPONSE_FOR = 5;
 
@@ -49,10 +55,10 @@ namespace
     _continue = false;
   }
 
-  void responseMessageListener(messagebus::Message message)
+  void responseMessageListener(MqttMessage message)
   {
     log_info("Response arrived");
-    messagebus::UserData data = message.userData();
+    messagebus::mqttv5::UserData data = message.userData();
     MathResult result;
     data >> result;
     log_info("  * status: '%s', result: %s", result.status.c_str(), result.result.c_str());
@@ -78,27 +84,27 @@ int main(int argc, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  std::string clientName = messagebus::getClientId("MqttSampleMathRequester");
+  std::string clientName = messagebus::helper::getClientId("MqttSampleMathRequester");
 
-  auto requester = messagebus::MqttMsgBus(messagebus::DEFAULT_MQTT_END_POINT, clientName);
+  auto requester = MessagebusFactory::createMqttMsgBus(messagebus::mqttv5::DEFAULT_MQTT_END_POINT, clientName);
   requester->connect();
 
-  auto correlationId = messagebus::generateUuid();
-  auto replyTo = messagebus::REPLY_QUEUE + '/' + correlationId;
+  auto correlationId = messagebus::helper::generateUuid();
+  auto replyTo = REPLY_QUEUE + '/' + correlationId;
 
-  messagebus::Message message;
+  MqttMessage message;
   MathOperation query = MathOperation(argv[3], argv[4], argv[5]);
   message.userData() << query;
   message.metaData().clear();
-  message.metaData().emplace(messagebus::Message::SUBJECT, messagebus::QUERY_USER_PROPERTY);
-  message.metaData().emplace(messagebus::Message::FROM, clientName);
-  message.metaData().emplace(messagebus::Message::REPLY_TO, replyTo);
-  message.metaData().emplace(messagebus::Message::CORRELATION_ID, correlationId);
+  message.metaData().emplace(messagebus::SUBJECT, messagebus::QUERY_USER_PROPERTY);
+  message.metaData().emplace(messagebus::FROM, clientName);
+  message.metaData().emplace(messagebus::REPLY_TO, replyTo);
+  message.metaData().emplace(messagebus::CORRELATION_ID, correlationId);
 
   if (strcmp(argv[2], "async") == 0)
   {
-    requester->receive(replyTo, responseMessageListener);
-    requester->sendRequest(messagebus::REQUEST_QUEUE, message);
+    //requester->receive(replyTo, responseMessageListener);
+    requester->sendRequest(REQUEST_QUEUE, message);
   }
   else
   {

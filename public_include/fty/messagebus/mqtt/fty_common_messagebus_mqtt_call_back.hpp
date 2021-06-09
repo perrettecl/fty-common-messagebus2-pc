@@ -23,6 +23,7 @@
 #define FTY_COMMON_MESSAGEBUS_MQTT_CALL_BACK
 
 #include "fty_common_messagebus_interface.h"
+#include "fty/messagebus/mqtt/fty_common_messagebus_mqtt_message.hpp"
 
 #include <mqtt/async_client.h>
 #include <mqtt/message.h>
@@ -30,35 +31,33 @@
 #include <string>
 #include <thread>
 
-namespace messagebus
+namespace messagebus::mqttv5
 {
 
+  using MessageListener = messagebus::MessageListener<MqttMessage>;
   using subScriptionListener = std::map<std::string, MessageListener>;
 
   class callback : public virtual mqtt::callback
   {
   public:
-    //callback() = default;
-    callback();
+    callback() = default;
+    //callback();
     ~callback();
     void connection_lost(const std::string& cause) override;
     void onConnected(const std::string& cause);
     bool onConnectionUpdated(const mqtt::connect_data& connData);
     void onMessageArrived(mqtt::const_message_ptr msg);
 
-
-    auto getSubscriptions() -> messagebus::subScriptionListener;
+    auto getSubscriptions() -> subScriptionListener;
     void setSubscriptions(const std::string& queue, MessageListener messageListener);
 
   private:
-    messagebus::subScriptionListener m_subscriptions;
+    subScriptionListener m_subscriptions;
 
     std::condition_variable_any m_cv;
     // TODO replace by a real thread pool
     std::vector<std::thread> m_threadPool;
-
-
   };
-} // namespace messagebus
+} // namespace messagebus::mqttv5
 
 #endif // ifndef FTY_COMMON_MESSAGEBUS_MQTT_CALL_BACK

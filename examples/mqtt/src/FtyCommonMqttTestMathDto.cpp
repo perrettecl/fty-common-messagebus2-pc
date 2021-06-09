@@ -27,7 +27,7 @@
 */
 
 #include "FtyCommonMqttTestMathDto.h"
-#include "fty_common_messagebus_message.h"
+
 
 #include <ostream>
 

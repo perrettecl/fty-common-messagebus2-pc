@@ -28,9 +28,10 @@
 
 #include "FtyCommonMqttTestDef.hpp"
 #include "FtyCommonMqttTestMathDto.h"
+#include "fty_common_messagebus_Imessage.hpp"
 #include "fty_common_messagebus_exception.h"
-#include "fty_common_messagebus_interface.h"
-#include "fty_common_messagebus_message.h"
+#include "fty_common_messagebus_factory.hpp"
+#include "fty_common_messagebus_helper.hpp"
 
 #include <mqtt/async_client.h>
 
@@ -47,12 +48,16 @@
 
 namespace
 {
-  messagebus::IMessageBus* mqttMsgBus;
+  using namespace messagebus;
+  using namespace messagebus::mqttv5;
+  using namespace messagebus::mqttv5::test;
+
+  MqttMessageBus* mqttMsgBus;
   static bool _continue = true;
 
   auto getClientName() -> std::string
   {
-    return messagebus::getClientId("MqttSampleStress");
+    return messagebus::helper::getClientId("MqttSampleStress");
   }
 
   static void signalHandler(int signal)
@@ -130,14 +135,14 @@ namespace
     }
   };
 
-  void messageListener(messagebus::Message message)
+  void messageListener(const MqttMessage& message)
   {
     log_info("Msg arrived: %s", message.userData().front().c_str());
   }
 
   // The MQTT publisher function will run in its own thread.
   // It runs until the receiver thread closes the counter object.
-  void publisherFunc(messagebus::IMessageBus* messageBus, MultithrCounter::ptr_t counter)
+  void publisherFunc(MqttMessageBus* messageBus, MultithrCounter::ptr_t counter)
   {
     while (_continue)
     {
@@ -146,9 +151,9 @@ namespace
       {
         _continue = false;
       }
-      messagebus::Message message;
+      MqttMessage message;
       message.userData().emplace_front(std::to_string(n));
-      messageBus->publish(messagebus::SAMPLE_TOPIC, message);
+      messageBus->publish(SAMPLE_TOPIC, message);
     }
   }
 
@@ -165,9 +170,9 @@ int main(int /*argc*/, char** argv)
   // Make a counter object also with a shared pointer.
   auto counter = std::make_shared<MultithrCounter>();
 
-  mqttMsgBus = messagebus::MqttMsgBus(messagebus::DEFAULT_MQTT_END_POINT, getClientName());
+  mqttMsgBus = MessagebusFactory::createMqttMsgBus(messagebus::mqttv5::DEFAULT_MQTT_END_POINT, getClientName());
   mqttMsgBus->connect();
-  mqttMsgBus->subscribe(messagebus::SAMPLE_TOPIC, messageListener);
+  mqttMsgBus->subscribe(SAMPLE_TOPIC, messageListener);
 
   std::thread publisher(publisherFunc, mqttMsgBus, counter);
 

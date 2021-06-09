@@ -28,7 +28,7 @@
 
 #include "fty/messagebus/mqtt/fty_common_messagebus_mqtt.hpp"
 #include "fty_common_messagebus_exception.h"
-#include "fty_common_messagebus_message.h"
+#include "fty_common_messagebus_helper.hpp"
 #include <fty_log.h>
 
 #include <mqtt/async_client.h>
@@ -36,48 +36,20 @@
 
 namespace
 {
-
-  using namespace messagebus;
-
-  static auto getMetaDataFromMqttProperties(const mqtt::properties& props) -> const messagebus::MetaData
-  {
-    auto metaData = messagebus::MetaData{};
-
-    // User properties
-    if (props.contains(mqtt::property::USER_PROPERTY))
-    {
-      std::string key, value;
-      for (size_t i = 0; i < props.count(mqtt::property::USER_PROPERTY); i++)
-      {
-        std::tie(key, value) = mqtt::get<mqtt::string_pair>(props, mqtt::property::USER_PROPERTY, i);
-        metaData.emplace(key, value);
-      }
-    }
-    // Req/Rep pattern properties
-    if (props.contains(mqtt::property::CORRELATION_DATA))
-    {
-      metaData.emplace(messagebus::Message::CORRELATION_ID, mqtt::get<std::string>(props, mqtt::property::CORRELATION_DATA));
-    }
-
-    if (props.contains(mqtt::property::RESPONSE_TOPIC))
-    {
-      metaData.emplace(messagebus::Message::REPLY_TO, mqtt::get<std::string>(props, mqtt::property::RESPONSE_TOPIC));
-    }
-    return metaData;
-  }
+  using MqttMessage = messagebus::mqttv5::MqttMessage;
 
   static auto getMqttPropertiesFromMetaData(const messagebus::MetaData& metaData) -> const mqtt::properties
   {
     auto props = mqtt::properties{};
     for (const auto& data : metaData)
     {
-      if (data.first == Message::REPLY_TO)
+      if (data.first == messagebus::REPLY_TO)
       {
-        std::string correlationId = metaData.find(Message::CORRELATION_ID)->second;
+        std::string correlationId = metaData.find(messagebus::CORRELATION_ID)->second;
         props.add({mqtt::property::CORRELATION_DATA, correlationId});
         props.add({mqtt::property::RESPONSE_TOPIC, data.second});
       }
-      else if (data.first != Message::CORRELATION_ID)
+      else if (data.first != messagebus::CORRELATION_ID)
       {
         props.add({mqtt::property::USER_PROPERTY, data.first, data.second});
       }
@@ -85,32 +57,23 @@ namespace
     return props;
   }
 
-  static auto getCorrelationId(const Message& message) -> const std::string
+  static auto getCorrelationId(const  MqttMessage& message) -> const std::string
   {
-    auto iterator = message.metaData().find(Message::CORRELATION_ID);
+    auto iterator = message.metaData().find(messagebus::CORRELATION_ID);
     if (iterator == message.metaData().end() || iterator->second == "")
     {
-      throw MessageBusException("Request must have a correlation id.");
+      throw messagebus::MessageBusException("Request must have a correlation id.");
     }
-    return iterator->second;
-  }
-
-  static auto getReplyQueue(const Message& message) -> const std::string
-  {
-    auto iterator = message.metaData().find(Message::REPLY_TO);
-    if (iterator == message.metaData().end() || iterator->second == "")
-    {
-      throw MessageBusException("Request must have a reply queue.");
-    }
-    //return {iterator->second + messagebus::MQTT_DELIMITER + getCorrelationId(message)};
     return iterator->second;
   }
 
 } // namespace
 
-namespace messagebus
+namespace messagebus::mqttv5
 {
   /////////////////////////////////////////////////////////////////////////////
+
+
 
   using duration = int64_t;
   duration KEEP_ALIVE = 20;
@@ -134,7 +97,7 @@ namespace messagebus
   {
     mqtt::create_options opts(MQTTVERSION_5);
 
-    m_client = std::make_shared<mqtt::async_client>(m_endpoint, messagebus::getClientId("etn"), opts);
+    m_client = std::make_shared<mqtt::async_client>(m_endpoint, messagebus::helper::getClientId("etn"), opts);
 
     // Connection options
     auto connOpts = mqtt::connect_options_builder()
@@ -176,7 +139,7 @@ namespace messagebus
     return (m_client && m_client->is_connected());
   }
 
-  void MqttMessageBus::publish(const std::string& topic, const Message& message)
+  void MqttMessageBus::publish(const std::string& topic, const MqttMessage& message)
   {
     if (isServiceAvailable())
     {
@@ -242,7 +205,7 @@ namespace messagebus
     }
   }
 
-  void MqttMessageBus::sendRequest(const std::string& requestQueue, const Message& message)
+  void MqttMessageBus::sendRequest(const std::string& requestQueue, const MqttMessage& message)
   {
     if (isServiceAvailable())
     {
@@ -265,7 +228,7 @@ namespace messagebus
     }
   }
 
-  void MqttMessageBus::sendRequest(const std::string& requestQueue, const Message& message, MessageListener messageListener)
+  void MqttMessageBus::sendRequest(const std::string& requestQueue, const MqttMessage& message, MessageListener messageListener)
   {
     //auto replyTo = getReplyQueue(message);
 
@@ -273,7 +236,7 @@ namespace messagebus
     sendRequest(requestQueue, message);
   }
 
-  void MqttMessageBus::sendReply(const std::string& replyQueue, const Message& message)
+  void MqttMessageBus::sendReply(const std::string& replyQueue, const MqttMessage& message)
   {
     if (isServiceAvailable())
     {
@@ -293,27 +256,27 @@ namespace messagebus
     }
   }
 
-  Message MqttMessageBus::request(const std::string& requestQueue, const Message& message, int receiveTimeOut)
+  MqttMessage MqttMessageBus::request(const std::string& /*requestQueue*/, const MqttMessage& /*message*/, int /*receiveTimeOut*/)
   {
     if (isServiceAvailable())
     {
-      mqtt::const_message_ptr msg;
-      auto replyQueue = getReplyQueue(message);
+      // mqtt::const_message_ptr msg;
+      // auto replyQueue = getReplyQueue(message);
 
-      m_client->subscribe(replyQueue, QOS);
-      sendRequest(requestQueue, message);
-      auto messageArrived = m_client->try_consume_message_for(&msg, std::chrono::seconds(receiveTimeOut));
-      if (messageArrived)
-      {
-        return Message{getMetaDataFromMqttProperties(msg->get_properties()), msg->get_payload_str()};
-      }
-      else
-      {
-        throw MessageBusException("Request timed out of '" + std::to_string(receiveTimeOut) + "' seconds reached.");
-      }
+      // m_client->subscribe(replyQueue, QOS);
+      // sendRequest(requestQueue, message);
+      // auto messageArrived = m_client->try_consume_message_for(&msg, std::chrono::seconds(receiveTimeOut));
+      // if (messageArrived)
+      // {
+      //   return MqttMessage{getMetaDataFromMqttProperties(msg->get_properties()), msg->get_payload_str()};
+      // }
+      // else
+      // {
+      //   throw MessageBusException("Request timed out of '" + std::to_string(receiveTimeOut) + "' seconds reached.");
+      // }
       //m_client->unsubscribe(replyQueue);
     }
-    return Message{};
+     return MqttMessage{};
   }
 
-} // namespace messagebus
+} // namespace messagebus::mqttv5

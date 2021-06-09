@@ -1,7 +1,7 @@
 /*  =========================================================================
-    FtyCommonMqttTestDef.hpp - class description
+    fty_common_messagebus_factory - class description
 
-    Copyright (C) 2014 - 2021 Eaton
+    Copyright (C) 2014 - 2020 Eaton
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,21 +19,28 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MQTT_TEST_DEF_HPP
-#define FTY_COMMON_MQTT_TEST_DEF_HPP
+/*
+@header
+    fty_common_messagebus_factory -
+@discuss
+@end
+*/
 
-#include <string>
+#include "fty_common_messagebus_factory.hpp"
 
-namespace messagebus::mqttv5::test
+
+
+namespace messagebus
 {
-  // Topic
-  static auto constexpr SAMPLE_TOPIC{"/etn/t/metric/samplemqtt"};
+  // auto MessagebusFactory::createMlmMsgBus(const std::string& _endpoint, const std::string& _clientName) -> messagebus::mqttv5::MqttMessageBus*
+  // {
+  //   //return new messagebus::MessageBusMalamute(_endpoint, _clientName);
+  //   return null;
+  // }
 
-  // Queues
-  static auto constexpr REQUEST_QUEUE{"/etn/q/request/maths"};
-  //static auto constexpr REPLY_QUEUE{"/etn/q/reply"};
-  static const std::string REPLY_QUEUE = "/etn/q/reply/maths";
+  auto MessagebusFactory::createMqttMsgBus(const std::string& _endpoint, const std::string& _clientName) -> messagebus::mqttv5::MqttMessageBus*
+  {
+    return new messagebus::mqttv5::MqttMessageBus(_endpoint, _clientName);
+  }
 
 } // namespace messagebus
-
-#endif // FTY_COMMON_MQTT_TEST_DEF_HPP

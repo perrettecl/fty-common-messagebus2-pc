@@ -1,7 +1,7 @@
 /*  =========================================================================
-    FtyCommonMqttTestDef.hpp - class description
+    fty_common_messagebus_message - class description
 
-    Copyright (C) 2014 - 2021 Eaton
+    Copyright (C) 2014 - 2020 Eaton
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,21 +19,30 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MQTT_TEST_DEF_HPP
-#define FTY_COMMON_MQTT_TEST_DEF_HPP
+#ifndef FTY_COMMON_MESSAGEBUS_MQTT_MESSAGE_HPP
+#define FTY_COMMON_MESSAGEBUS_MQTT_MESSAGE_HPP
 
-#include <string>
+#include "fty_common_messagebus_Imessage.hpp"
 
-namespace messagebus::mqttv5::test
+#include <list>
+
+namespace messagebus::mqttv5
 {
-  // Topic
-  static auto constexpr SAMPLE_TOPIC{"/etn/t/metric/samplemqtt"};
+  // Json representation
+  using UserData = std::list<std::string>;
 
-  // Queues
-  static auto constexpr REQUEST_QUEUE{"/etn/q/request/maths"};
-  //static auto constexpr REPLY_QUEUE{"/etn/q/reply"};
-  static const std::string REPLY_QUEUE = "/etn/q/reply/maths";
+  class MqttMessage final : public IMessage<UserData>
+  {
+  public:
+    MqttMessage() = default;
+    MqttMessage(const MetaData& metaData, const UserData& userData = {});
+    MqttMessage(const MetaData& metaData, const std::string& input);
+    ~MqttMessage() = default;
 
-} // namespace messagebus
+    auto serialize() const -> std::string const;
+    void deSerialize(const std::string& input);
+  };
 
-#endif // FTY_COMMON_MQTT_TEST_DEF_HPP
+} // namespace messagebus::mqttv5
+
+#endif // FTY_COMMON_MESSAGEBUS_MQTT_MESSAGE_HPP

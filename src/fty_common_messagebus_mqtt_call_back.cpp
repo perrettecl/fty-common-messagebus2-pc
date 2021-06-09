@@ -28,7 +28,9 @@
 
 //#include "fty/messagebus/mqtt/fty_common_messagebus_mqtt.hpp"
 #include "fty/messagebus/mqtt/fty_common_messagebus_mqtt_call_back.hpp"
-#include "fty_common_messagebus_message.h"
+#include "fty/messagebus/mqtt/fty_common_messagebus_mqtt_message.hpp"
+
+#include "fty_common_messagebus_Imessage.hpp"
 #include <fty_log.h>
 
 #include <mqtt/async_client.h>
@@ -56,26 +58,26 @@ namespace
     // Req/Rep pattern properties
     if (props.contains(mqtt::property::CORRELATION_DATA))
     {
-      metaData.emplace(messagebus::Message::CORRELATION_ID, mqtt::get<std::string>(props, mqtt::property::CORRELATION_DATA));
+      metaData.emplace(messagebus::CORRELATION_ID, mqtt::get<std::string>(props, mqtt::property::CORRELATION_DATA));
     }
 
     if (props.contains(mqtt::property::RESPONSE_TOPIC))
     {
-      metaData.emplace(messagebus::Message::REPLY_TO, mqtt::get<std::string>(props, mqtt::property::RESPONSE_TOPIC));
+      metaData.emplace(messagebus::REPLY_TO, mqtt::get<std::string>(props, mqtt::property::RESPONSE_TOPIC));
     }
     return metaData;
   }
 
 } // namespace
 
-namespace messagebus
+namespace messagebus::mqttv5
 {
   /////////////////////////////////////////////////////////////////////////////
 
-  callback::callback()
-  {
-    //auto num_threads = std::thread::hardware_concurrency();
-  }
+  // callback::callback()
+  // {
+  //   //auto num_threads = std::thread::hardware_concurrency();
+  // }
 
   callback::~callback()
   {
@@ -113,7 +115,7 @@ namespace messagebus
     return true;
   }
 
-  auto callback::getSubscriptions() -> messagebus::subScriptionListener
+  auto callback::getSubscriptions() -> subScriptionListener
   {
     return m_subscriptions;
   }
@@ -140,7 +142,7 @@ namespace messagebus
         //(it->second)(Message{metaData, msg->get_payload_str()});
         // std::thread thread(it->second, Message{metaData, msg->get_payload_str()});
         // thread.detach();
-        m_threadPool.emplace_back(std::thread(it->second, Message{metaData, msg->get_payload_str()}));
+        //m_threadPool.emplace_back(std::thread(it->second, MqttMessage{metaData, msg->get_payload_str()}));
       }
       catch (const std::exception& e)
       {

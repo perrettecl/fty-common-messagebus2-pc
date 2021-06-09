@@ -25,13 +25,12 @@
 @discuss
 @end
 */
-
 #include "FtyCommonMqttTestDef.hpp"
 #include "FtyCommonMqttTestMathDto.h"
+#include "fty_common_messagebus_Imessage.hpp"
 #include "fty_common_messagebus_exception.h"
-#include "fty_common_messagebus_exception.h"
-#include "fty_common_messagebus_interface.h"
-#include "fty_common_messagebus_message.h"
+#include "fty_common_messagebus_factory.hpp"
+#include "fty_common_messagebus_helper.hpp"
 
 #include <mqtt/async_client.h>
 
@@ -49,17 +48,18 @@
 
 namespace
 {
+  using namespace messagebus;
+  using namespace messagebus::mqttv5;
+  using namespace messagebus::mqttv5::test;
 
-  /////////////////////////////////////////////////////////////////////////////
+  MqttMessageBus* mqttMsgBus;
 
-  messagebus::IMessageBus* mqttMsgBus;
-  messagebus::IMessageBus* mqttMsgBus2;
   static bool _continue = true;
   static auto correlationIdSniffer = std::map<std::string,std::string>();
 
-  static auto getClientName() -> const std::string
+  auto getClientName() -> std::string
   {
-    return messagebus::getClientId("MqttSampleStress");
+    return messagebus::helper::getClientId("MqttSampleStress");
   }
 
   static void signalHandler(int signal)
@@ -76,11 +76,11 @@ namespace
     return uni(rng);
   }
 
-  void mathOperationListener(const messagebus::Message& message)
+  void mathOperationListener(const MqttMessage& message)
   {
     log_info("Question arrived");
 
-    messagebus::UserData reqData = message.userData();
+    auto reqData = message.userData();
     MathOperation mathQuery = MathOperation();
     reqData >> mathQuery;
     auto mathResultResult = MathResult();
@@ -99,47 +99,47 @@ namespace
       mathResultResult.result = "Unsuported operation";
     }
 
-    messagebus::Message response;
-    messagebus::UserData responseData;
+    MqttMessage response;
+    UserData responseData;
 
     responseData << mathResultResult;
     response.userData() = responseData;
-    response.metaData().emplace(messagebus::Message::SUBJECT, messagebus::ANSWER_USER_PROPERTY);
-    response.metaData().emplace(messagebus::Message::FROM, message.metaData().find(messagebus::Message::FROM)->second);
-    response.metaData().emplace(messagebus::Message::CORRELATION_ID, message.metaData().find(messagebus::Message::CORRELATION_ID)->second);
-    response.metaData().emplace(messagebus::Message::REPLY_TO, message.metaData().find(messagebus::Message::REPLY_TO)->second);
+    response.metaData().emplace(messagebus::SUBJECT, messagebus::ANSWER_USER_PROPERTY);
+    response.metaData().emplace(messagebus::FROM, message.metaData().find(messagebus::FROM)->second);
+    response.metaData().emplace(messagebus::CORRELATION_ID, message.metaData().find(messagebus::CORRELATION_ID)->second);
+    response.metaData().emplace(messagebus::REPLY_TO, message.metaData().find(messagebus::REPLY_TO)->second);
 
-    mqttMsgBus->sendReply(message.metaData().find(messagebus::Message::REPLY_TO)->second, response);
+    mqttMsgBus->sendReply(message.metaData().find(messagebus::REPLY_TO)->second, response);
 
     //_continue = false;
   }
 
-  void responseListener(const messagebus::Message& message)
+  void responseListener(const MqttMessage& message)
   {
     log_info("Answer arrived");
-    messagebus::UserData data = message.userData();
+    UserData data = message.userData();
     MathResult result;
     data >> result;
     log_info("  * status: '%s', result: %s", result.status.c_str(), result.result.c_str());
 
-    auto iterator = message.metaData().find(messagebus::Message::CORRELATION_ID);
+    auto iterator = message.metaData().find(messagebus::CORRELATION_ID);
     if (iterator == message.metaData().end() || iterator->second == "")
     {
       throw messagebus::MessageBusException("Reply error not correlationId");
     }
     auto correlationId = iterator->second;
 
-    iterator = message.metaData().find(messagebus::Message::FROM);
+    iterator = message.metaData().find(messagebus::FROM);
     if (iterator == message.metaData().end() || iterator->second == "")
     {
-      throw messagebus::MessageBusException("Reply error not from");
+      throw MessageBusException("Reply error not from");
     }
     auto rand = iterator->second;
 
     iterator = correlationIdSniffer.find(correlationId);
     if (iterator == correlationIdSniffer.end() || iterator->second == "")
     {
-      throw messagebus::MessageBusException("Error on correlationIdSniffer");
+      throw MessageBusException("Error on correlationIdSniffer");
     }
     if (iterator->second == rand)
     {
@@ -148,50 +148,33 @@ namespace
     }
     else
     {
-      throw messagebus::MessageBusException("Reply error the answer is not correlated to the id");
+      throw MessageBusException("Reply error the answer is not correlated to the id");
     }
   }
 
-  void replyerFunc(messagebus::IMessageBus* messageBus/*, const messagebus::Message& message*/)
+  void requesterFunc(MqttMessageBus* messageBus)
   {
-    messageBus->receive(messagebus::REQUEST_QUEUE, mathOperationListener);
-
-    // auto response = messagebus::Message();
-    // auto mathResultResult = MathResult(MathResult::STATUS_KO, "not yet available");
-    // messagebus::UserData responseData;
-
-    // responseData << mathResultResult;
-    // response.userData() = responseData;
-
-    // auto randomSleep = buildRandom(1, 1000);
-    // log_info("Sleepin for %d: ", randomSleep);
-    // std::this_thread::sleep_for(std::chrono::milliseconds(randomSleep));
-    // messageBus->sendReply(message.metaData().find(messagebus::Message::REPLY_TO)->second, response);
-  }
-
-  void requesterFunc(messagebus::IMessageBus* messageBus)
-  {
-    auto correlationId = messagebus::generateUuid();
-    auto replyTo = messagebus::REPLY_QUEUE + '/' + correlationId;
+    auto correlationId = messagebus::helper::generateUuid();
+    auto replyTo = REPLY_QUEUE + '/' + correlationId;
 
     auto rand = std::to_string(buildRandom(1, 10));
 
-    messagebus::Message message;
+    MqttMessage message;
     MathOperation query = MathOperation("add", "1", rand);
     message.userData() << query;
     message.metaData().clear();
-    message.metaData().emplace(messagebus::Message::SUBJECT, messagebus::QUERY_USER_PROPERTY);
-    message.metaData().emplace(messagebus::Message::FROM, rand);
-    message.metaData().emplace(messagebus::Message::REPLY_TO, replyTo);
-    message.metaData().emplace(messagebus::Message::CORRELATION_ID, correlationId);
+    message.metaData().emplace(messagebus::SUBJECT, messagebus::QUERY_USER_PROPERTY);
+    message.metaData().emplace(messagebus::FROM, rand);
+    message.metaData().emplace(messagebus::REPLY_TO, replyTo);
+    message.metaData().emplace(messagebus::CORRELATION_ID, correlationId);
 
     correlationIdSniffer.emplace(correlationId, rand);
-    mqttMsgBus->receive(replyTo, responseListener);
+    messageBus->receive(replyTo, responseListener);
 
     //replyerFunc(mqttMsgBus);
     // mqttMsgBus->receive(messagebus::REQUEST_QUEUE, mathOperationListener);
     // mqttMsgBus->sendRequest(messagebus::REQUEST_QUEUE, message);
-    mqttMsgBus->sendRequest(messagebus::REQUEST_QUEUE, message, mathOperationListener);
+    messageBus->sendRequest(REQUEST_QUEUE, message, mathOperationListener);
   }
 
 
@@ -206,11 +189,8 @@ int main(int /*argc*/, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  mqttMsgBus = messagebus::MqttMsgBus(messagebus::DEFAULT_MQTT_END_POINT, getClientName());
+  mqttMsgBus = MessagebusFactory::createMqttMsgBus(messagebus::mqttv5::DEFAULT_MQTT_END_POINT, getClientName());
   mqttMsgBus->connect();
-
-  mqttMsgBus2 = messagebus::MqttMsgBus(messagebus::DEFAULT_MQTT_END_POINT, getClientName() + "3");
-  mqttMsgBus2->connect();
 
   requesterFunc(mqttMsgBus);
 
@@ -231,7 +211,7 @@ int main(int /*argc*/, char** argv)
   //requester.join();
   //replyer.join();
 
-  delete mqttMsgBus;
+ // delete mqttMsgBus;
 
   log_info("%s - end", argv[0]);
   return EXIT_SUCCESS;
