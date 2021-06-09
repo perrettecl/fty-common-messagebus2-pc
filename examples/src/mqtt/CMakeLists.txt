@@ -10,6 +10,8 @@ find_package(Threads REQUIRED)
 etn_target(exe ${PROJECT_NAME}-pub-sub
     SOURCES
         src/*PubSub.cpp
+        src/FtyCommonMessageBusDto.cpp
+        src/FtyCommonMqttTestMathDto.cpp
     INCLUDE_DIRS
         private_include
     USES
@@ -21,7 +23,8 @@ etn_target(exe ${PROJECT_NAME}-pub-sub
 etn_target(exe ${PROJECT_NAME}-async-reply
     SOURCES
         src/*SampleAsyncReply.cpp
-        src/*Dto.cpp
+        src/FtyCommonMessageBusDto.cpp
+        src/FtyCommonMqttTestMathDto.cpp
     INCLUDE_DIRS
         private_include
     USES
@@ -33,7 +36,8 @@ etn_target(exe ${PROJECT_NAME}-async-reply
 etn_target(exe ${PROJECT_NAME}-send-request
     SOURCES
         src/*SampleSendRequest.cpp
-        src/*Dto.cpp
+        src/FtyCommonMessageBusDto.cpp
+        src/FtyCommonMqttTestMathDto.cpp
     INCLUDE_DIRS
         private_include
     USES
@@ -57,7 +61,8 @@ etn_target(exe ${PROJECT_NAME}-stress-lib
 etn_target(exe ${PROJECT_NAME}-multi-thread-req-rep
     SOURCES
         src/*SampleMultiThreadReqRep.cpp
-        src/*Dto.cpp
+        src/FtyCommonMessageBusDto.cpp
+        src/FtyCommonMqttTestMathDto.cpp
     INCLUDE_DIRS
         private_include
     USES
