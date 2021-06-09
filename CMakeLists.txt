@@ -22,7 +22,7 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
         public_include
     INCLUDE_DIRS
         private_include
-    # PUBLIC_HEADERS
+    PUBLIC_HEADERS
     #     #fty_common_messagebus_dispatcher.h
     #     fty_common_messagebus_exception.h
     #     # fty_common_messagebus.h
@@ -36,7 +36,7 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
     #     fty_common_messagebus_factory.hpp
 
     SOURCES
-        # src/fty_common_messagebus_malamute.cc
+        src/fty_common_messagebus_malamute.cc
         # src/fty_common_messagebus_pool_worker.cc
         # src/fty-msgbus-cli.cc
         src/*.cpp
@@ -51,7 +51,7 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
         paho-mqttpp3
         jsoncpp
     FLAGS
-        "-fmax-errors=2"
+        "-fmax-errors=5"
 )
 
 # etn_target(exe fty-msgbus-cli

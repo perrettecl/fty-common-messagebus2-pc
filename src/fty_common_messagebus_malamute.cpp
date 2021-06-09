@@ -1,18 +1,14 @@
 /*  =========================================================================
     fty_common_messagebus_malamute - class description
-
     Copyright (C) 2014 - 2020 Eaton
-
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
-
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
     You should have received a copy of the GNU General Public License along
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
@@ -27,21 +23,19 @@
 */
 
 #include "fty_common_messagebus_malamute.h"
-#include "fty_common_messagebus_message.h"
 
 #include <new>
 #include <thread>
 
-namespace messagebus {
+namespace fty::messagebus::mlm {
 
-    static Message _fromZmsg(zmsg_t *msg) {
-        Message message;
+    static MlmMessage _fromZmsg(zmsg_t *msg) {
+        MlmMessage message;
         zframe_t *item;
 
         if( zmsg_size(msg) ) {
             item = zmsg_pop(msg);
-            std::string key(static_cast<const char *>zframe_data(item), zframe_size(item));
-            std::string key(static_cast<const char *>zframe_data(item), zframe_size(item));
+            std::string key((const char *)zframe_data(item), zframe_size(item));
             zframe_destroy(&item);
             if( key == "__METADATA_START" ) {
                 while ((item = zmsg_pop(msg))) {
@@ -67,7 +61,7 @@ namespace messagebus {
         return message;
     }
 
-    static zmsg_t* _toZmsg(const Message& message) {
+    static zmsg_t* _toZmsg(const MlmMessage& message) {
         zmsg_t *msg = zmsg_new();
 
         zmsg_addstr(msg, "__METADATA_START");
@@ -117,7 +111,7 @@ namespace messagebus {
         }
     }
 
-    void MessageBusMalamute::publish(const std::string& topic, const Message& message) {
+    void MessageBusMalamute::publish(const std::string& topic, const MlmMessage& message) {
         if( m_publishTopic == "" ) {
             m_publishTopic = topic;
             if (mlm_client_set_producer (m_client, m_publishTopic.c_str()) == -1) {
@@ -144,7 +138,7 @@ namespace messagebus {
         log_trace ("%s - subscribed to topic '%s'", m_clientName.c_str(), topic.c_str());
     }
 
-    void MessageBusMalamute::unsubscribe(const std::string& topic, MessageListener messageListener) {
+    void MessageBusMalamute::unsubscribe(const std::string& topic, MessageListener /*messageListener*/) {
         auto iterator = m_subscriptions.find (topic);
 
         if (iterator == m_subscriptions.end ()) {
@@ -158,19 +152,19 @@ namespace messagebus {
         log_trace ("%s - unsubscribed to topic '%s'", m_clientName.c_str(), topic.c_str());
     }
 
-    void MessageBusMalamute::sendRequest(const std::string& requestQueue, const Message& message) {
+    void MessageBusMalamute::sendRequest(const std::string& requestQueue, const MlmMessage& message) {
         std::string to = requestQueue.c_str();
         std::string subject = requestQueue.c_str();
 
-        auto iterator = message.metaData().find(Message::CORRELATION_ID);
+        auto iterator = message.metaData().find(CORRELATION_ID);
         if( iterator == message.metaData().end() || iterator->second == "" ) {
             log_warning("%s - request should have a correlation id", m_clientName.c_str());
         }
-        iterator = message.metaData().find(Message::REPLY_TO);
+        iterator = message.metaData().find(REPLY_TO);
         if( iterator == message.metaData().end() || iterator->second == "" ) {
             log_warning("%s - request should have a reply to field", m_clientName.c_str());
         }
-        iterator = message.metaData().find(Message::TO);
+        iterator = message.metaData().find(TO);
         if( iterator == message.metaData().end() || iterator->second == "" ) {
             log_warning("%s - request should have a to field", m_clientName.c_str());
         } else {
@@ -183,8 +177,8 @@ namespace messagebus {
         mlm_client_sendto (m_client, to.c_str(), subject.c_str(), nullptr, 200, &msg);
     }
 
-    void MessageBusMalamute::sendRequest(const std::string& requestQueue, const Message& message, MessageListener messageListener) {
-        auto iterator = message.metaData().find(Message::REPLY_TO);
+    void MessageBusMalamute::sendRequest(const std::string& requestQueue, const MlmMessage& message, MessageListener messageListener) {
+        auto iterator = message.metaData().find(REPLY_TO);
         if( iterator == message.metaData().end() || iterator->second == "" ) {
             throw MessageBusException("Request must have a reply to queue.");
         }
@@ -193,12 +187,12 @@ namespace messagebus {
         sendRequest(requestQueue, message);
     }
 
-    void MessageBusMalamute::sendReply(const std::string& replyQueue, const Message& message) {
-        auto iterator = message.metaData().find(Message::CORRELATION_ID);
+    void MessageBusMalamute::sendReply(const std::string& replyQueue, const MlmMessage& message) {
+        auto iterator = message.metaData().find(CORRELATION_ID);
         if( iterator == message.metaData().end() || iterator->second == "" ) {
             throw MessageBusException("Reply must have a correlation id.");
         }
-        iterator = message.metaData().find(Message::TO);
+        iterator = message.metaData().find(TO);
         if( iterator == message.metaData().end() || iterator->second == "" ) {
             log_warning("%s - request should have a to field", m_clientName.c_str());
         }
@@ -217,25 +211,25 @@ namespace messagebus {
         log_trace ("%s - receive from queue '%s'", m_clientName.c_str(), queue.c_str());
     }
 
-    Message MessageBusMalamute::request(const std::string& requestQueue, const Message & message, int receiveTimeOut) {
+    MlmMessage MessageBusMalamute::request(const std::string& requestQueue, const MlmMessage & message, int receiveTimeOut) {
 
-        auto iterator = message.metaData().find(Message::CORRELATION_ID);
+        auto iterator = message.metaData().find(CORRELATION_ID);
 
         if( iterator == message.metaData().end() || iterator->second == "" ) {
             throw MessageBusException("Request must have a correlation id.");
         }
         m_syncUuid = iterator->second;
-        iterator = message.metaData().find(Message::TO);
+        iterator = message.metaData().find(TO);
         if( iterator == message.metaData().end() || iterator->second == "" ) {
             throw MessageBusException("Request must have a to field.");
         }
 
-        Message msg(message);
+        MlmMessage msg(message);
         // Adding metadata timeout.
-        msg.metaData().emplace(Message::TIMEOUT, std::to_string(receiveTimeOut));
+        msg.metaData().emplace(TIMEOUT, std::to_string(receiveTimeOut));
 
         std::unique_lock<std::mutex> lock(m_cv_mtx);
-        msg.metaData().emplace(Message::REPLY_TO, m_clientName);
+        msg.metaData().emplace(REPLY_TO, m_clientName);
         zmsg_t *msgMlm = _toZmsg (msg);
 
         //Todo: Check error code after sendto
@@ -310,11 +304,11 @@ namespace messagebus {
     {
         log_debug ("%s - received mailbox message from '%s' subject '%s'", m_clientName.c_str(), from, subject);
 
-        Message msg = _fromZmsg(message);
+        auto msg = _fromZmsg(message);
 
         bool syncResponse = false;
         if( m_syncUuid != "" ) {
-            auto it = msg.metaData().find(Message::CORRELATION_ID);
+            auto it = msg.metaData().find(CORRELATION_ID);
             if( it != msg.metaData().end() ) {
                 if( m_syncUuid == it->second ) {
                     std::unique_lock<std::mutex> lock(m_cv_mtx);
@@ -347,7 +341,7 @@ namespace messagebus {
     void MessageBusMalamute::listenerHandleStream (const char *subject, const char *from, zmsg_t *message)
     {
         log_trace ("%s - received stream message from '%s' subject '%s'", m_clientName.c_str(), from, subject);
-        Message msg = _fromZmsg(message);
+        auto msg = _fromZmsg(message);
 
         auto iterator = m_subscriptions.find (subject);
         if (iterator != m_subscriptions.end ()) {
