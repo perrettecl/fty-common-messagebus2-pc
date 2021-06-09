@@ -23,9 +23,7 @@
 #define FTY_COMMON_MESSAGEBUS_FACTORY_HPP
 
 #include "fty/messagebus/mqtt/fty_common_messagebus_mqtt.hpp"
-#include "fty/messagebus/mqtt/fty_common_messagebus_mqtt_message.hpp"
-#include "fty_common_messagebus_interface.h"
-//#include "fty_common_messagebus_malamute.h"
+#include "fty_common_messagebus_malamute.h"
 
 #include <string>
 
@@ -46,7 +44,7 @@ namespace fty::messagebus
    *
    * @return client Name
    */
-    //auto createMlmMsgBus(const std::string& _endpoint, const std::string& _clientName) -> messagebus::mqttv5::MqttMessageBus*;
+    auto static createMlmMsgBus(const std::string& _endpoint, const std::string& _clientName) -> mlm::MessageBusMalamute*;
 
     /**
    * @brief Mqtt implementation
@@ -56,7 +54,7 @@ namespace fty::messagebus
    *
    * @return IMessageBus
    */
-    auto static createMqttMsgBus(const std::string& _endpoint, const std::string& _clientName) -> messagebus::mqttv5::MqttMessageBus*;
+    auto static createMqttMsgBus(const std::string& _endpoint, const std::string& _clientName) -> mqttv5::MqttMessageBus*;
   };
 
 } // namespace messagebus

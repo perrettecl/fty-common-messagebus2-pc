@@ -36,7 +36,7 @@
 
 namespace fty::messagebus::mlm
 {
- using MessageListener = fty::messagebus::MessageListener<MlmMessage>;
+  using MessageListener = fty::messagebus::MessageListener<MlmMessage>;
 
   typedef void(MalamuteMessageListenerFn)(const char*, const char*, zmsg_t**);
   using MalamuteMessageListener = std::function<MalamuteMessageListenerFn>;
