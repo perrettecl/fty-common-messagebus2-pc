@@ -23,7 +23,7 @@
 #define FTY_COMMON_MESSAGEBUS_MQTT
 
 #include "fty/messagebus/mqtt/fty_common_messagebus_mqtt_call_back.hpp"
-#include "fty/messagebus/mqtt/fty_common_messagebus_mqtt_message.hpp"
+#include "fty_common_messagebus_interface.h"
 
 #include <mqtt/async_client.h>
 #include <mqtt/client.h>
@@ -50,7 +50,7 @@ namespace fty::messagebus::mqttv5
   class MqttMessageBus final : public IMessageBus<MqttMessage>
   {
   public:
-    MqttMessageBus() = default ;
+    MqttMessageBus() = default;
 
     MqttMessageBus(const std::string& endpoint, const std::string& clientName)
       : m_endpoint(endpoint)
@@ -84,6 +84,6 @@ namespace fty::messagebus::mqttv5
     // Call back
     callback cb;
   };
-} // namespace messagebus::mqttv5
+} // namespace fty::messagebus::mqttv5
 
 #endif // ifndef FTY_COMMON_MESSAGEBUS_MQTT

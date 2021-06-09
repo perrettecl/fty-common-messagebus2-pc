@@ -26,8 +26,7 @@
 #include "fty/messagebus/mqtt/fty_common_messagebus_mqtt_message.hpp"
 
 #include <mqtt/async_client.h>
-#include <mqtt/message.h>
-
+#include <map>
 #include <string>
 #include <thread>
 
