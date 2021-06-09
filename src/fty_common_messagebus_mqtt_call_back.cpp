@@ -39,11 +39,11 @@
 namespace
 {
 
-  using namespace messagebus;
+  using namespace fty::messagebus;
 
-  static auto getMetaDataFromMqttProperties(const mqtt::properties& props) -> const messagebus::MetaData
+  static auto getMetaDataFromMqttProperties(const mqtt::properties& props) -> const MetaData
   {
-    auto metaData = messagebus::MetaData{};
+    auto metaData = MetaData{};
 
     // User properties
     if (props.contains(mqtt::property::USER_PROPERTY))
@@ -58,19 +58,19 @@ namespace
     // Req/Rep pattern properties
     if (props.contains(mqtt::property::CORRELATION_DATA))
     {
-      metaData.emplace(messagebus::CORRELATION_ID, mqtt::get<std::string>(props, mqtt::property::CORRELATION_DATA));
+      metaData.emplace(CORRELATION_ID, mqtt::get<std::string>(props, mqtt::property::CORRELATION_DATA));
     }
 
     if (props.contains(mqtt::property::RESPONSE_TOPIC))
     {
-      metaData.emplace(messagebus::REPLY_TO, mqtt::get<std::string>(props, mqtt::property::RESPONSE_TOPIC));
+      metaData.emplace(REPLY_TO, mqtt::get<std::string>(props, mqtt::property::RESPONSE_TOPIC));
     }
     return metaData;
   }
 
 } // namespace
 
-namespace messagebus::mqttv5
+namespace fty::messagebus::mqttv5
 {
   /////////////////////////////////////////////////////////////////////////////
 

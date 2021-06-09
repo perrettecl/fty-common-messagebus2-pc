@@ -31,10 +31,10 @@
 #include <string>
 #include <thread>
 
-namespace messagebus::mqttv5
+namespace fty::messagebus::mqttv5
 {
 
-  using MessageListener = messagebus::MessageListener<MqttMessage>;
+  using MessageListener = fty::messagebus::MessageListener<MqttMessage>;
   using subScriptionListener = std::map<std::string, MessageListener>;
 
   class callback : public virtual mqtt::callback

@@ -30,7 +30,7 @@
 
 
 
-namespace messagebus
+namespace fty::messagebus
 {
   // auto MessagebusFactory::createMlmMsgBus(const std::string& _endpoint, const std::string& _clientName) -> messagebus::mqttv5::MqttMessageBus*
   // {

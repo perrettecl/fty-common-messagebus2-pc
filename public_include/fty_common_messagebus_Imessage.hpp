@@ -26,7 +26,7 @@
 #include <map>
 #include <string>
 
-namespace messagebus
+namespace fty::messagebus
 {
 
   using MetaData = std::map<std::string, std::string>;

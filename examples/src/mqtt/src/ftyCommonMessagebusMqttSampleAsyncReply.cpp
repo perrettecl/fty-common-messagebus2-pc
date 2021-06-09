@@ -42,8 +42,8 @@
 
 namespace
 {
-  using namespace messagebus;
-  using namespace messagebus::mqttv5;
+  using namespace fty::messagebus;
+  using namespace fty::messagebus::mqttv5;
   using namespace fty::messagebus::mqttv5::test;
   using namespace fty::messagebus::test;
 
@@ -52,7 +52,7 @@ namespace
 
   auto getClientName() -> std::string
   {
-    return messagebus::helper::getClientId("MqttSampleMathReplyer");
+    return helper::getClientId("MqttSampleMathReplyer");
   }
 
   static void signalHandler(int signal)
@@ -94,12 +94,12 @@ namespace
 
     responseData << mathResultResult;
     response.userData() = responseData;
-    response.metaData().emplace(messagebus::SUBJECT, messagebus::ANSWER_USER_PROPERTY);
-    response.metaData().emplace(messagebus::FROM, getClientName());
-    response.metaData().emplace(messagebus::CORRELATION_ID, message.metaData().find(messagebus::CORRELATION_ID)->second);
-    response.metaData().emplace(messagebus::REPLY_TO, message.metaData().find(messagebus::REPLY_TO)->second);
+    response.metaData().emplace(SUBJECT, ANSWER_USER_PROPERTY);
+    response.metaData().emplace(FROM, getClientName());
+    response.metaData().emplace(CORRELATION_ID, message.metaData().find(CORRELATION_ID)->second);
+    response.metaData().emplace(REPLY_TO, message.metaData().find(REPLY_TO)->second);
 
-    replyer->sendReply(message.metaData().find(messagebus::REPLY_TO)->second, response);
+    replyer->sendReply(message.metaData().find(REPLY_TO)->second, response);
 
     //_continue = false;
   }

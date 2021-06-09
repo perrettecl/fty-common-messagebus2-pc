@@ -34,22 +34,25 @@
 #include <mqtt/async_client.h>
 #include <mqtt/properties.h>
 
+using namespace fty::messagebus;
+
 namespace
 {
-  using MqttMessage = messagebus::mqttv5::MqttMessage;
 
-  static auto getMqttPropertiesFromMetaData(const messagebus::MetaData& metaData) -> const mqtt::properties
+  using MqttMessage = fty::messagebus::mqttv5::MqttMessage;
+
+  static auto getMqttPropertiesFromMetaData(const MetaData& metaData) -> const mqtt::properties
   {
     auto props = mqtt::properties{};
     for (const auto& data : metaData)
     {
-      if (data.first == messagebus::REPLY_TO)
+      if (data.first == REPLY_TO)
       {
-        std::string correlationId = metaData.find(messagebus::CORRELATION_ID)->second;
+        std::string correlationId = metaData.find(CORRELATION_ID)->second;
         props.add({mqtt::property::CORRELATION_DATA, correlationId});
         props.add({mqtt::property::RESPONSE_TOPIC, data.second});
       }
-      else if (data.first != messagebus::CORRELATION_ID)
+      else if (data.first != CORRELATION_ID)
       {
         props.add({mqtt::property::USER_PROPERTY, data.first, data.second});
       }
@@ -57,23 +60,20 @@ namespace
     return props;
   }
 
-  static auto getCorrelationId(const  MqttMessage& message) -> const std::string
+  static auto getCorrelationId(const MqttMessage& message) -> const std::string
   {
-    auto iterator = message.metaData().find(messagebus::CORRELATION_ID);
+    auto iterator = message.metaData().find(CORRELATION_ID);
     if (iterator == message.metaData().end() || iterator->second == "")
     {
-      throw messagebus::MessageBusException("Request must have a correlation id.");
+      throw MessageBusException("Request must have a correlation id.");
     }
     return iterator->second;
   }
 
 } // namespace
 
-namespace messagebus::mqttv5
+namespace fty::messagebus::mqttv5
 {
-  /////////////////////////////////////////////////////////////////////////////
-
-
 
   using duration = int64_t;
   duration KEEP_ALIVE = 20;
@@ -97,7 +97,7 @@ namespace messagebus::mqttv5
   {
     mqtt::create_options opts(MQTTVERSION_5);
 
-    m_client = std::make_shared<mqtt::async_client>(m_endpoint, messagebus::helper::getClientId("etn"), opts);
+    m_client = std::make_shared<mqtt::async_client>(m_endpoint, helper::getClientId("etn"), opts);
 
     // Connection options
     auto connOpts = mqtt::connect_options_builder()

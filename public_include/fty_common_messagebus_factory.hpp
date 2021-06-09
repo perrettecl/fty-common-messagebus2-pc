@@ -29,7 +29,7 @@
 
 #include <string>
 
-namespace messagebus
+namespace fty::messagebus
 {
   class MessagebusFactory
   {

@@ -42,8 +42,8 @@
 
 namespace
 {
-  using namespace messagebus;
-  using namespace messagebus::mqttv5;
+  using namespace fty::messagebus;
+  using namespace fty::messagebus::mqttv5;
   using namespace fty::messagebus::mqttv5::test;
   using namespace fty::messagebus::test;
 
@@ -59,7 +59,7 @@ namespace
   void responseMessageListener(MqttMessage message)
   {
     log_info("Response arrived");
-    messagebus::mqttv5::UserData data = message.userData();
+    auto data = message.userData();
     MathResult result;
     data >> result;
     log_info("  * status: '%s', result: %s", result.status.c_str(), result.result.c_str());
@@ -85,22 +85,22 @@ int main(int argc, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  std::string clientName = messagebus::helper::getClientId("MqttSampleMathRequester");
+  std::string clientName = helper::getClientId("MqttSampleMathRequester");
 
   auto requester = MessagebusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, clientName);
   requester->connect();
 
-  auto correlationId = messagebus::helper::generateUuid();
+  auto correlationId = helper::generateUuid();
   auto replyTo = REPLY_QUEUE + '/' + correlationId;
 
   MqttMessage message;
   MathOperation query = MathOperation(argv[3], argv[4], argv[5]);
   message.userData() << query;
   message.metaData().clear();
-  message.metaData().emplace(messagebus::SUBJECT, messagebus::QUERY_USER_PROPERTY);
-  message.metaData().emplace(messagebus::FROM, clientName);
-  message.metaData().emplace(messagebus::REPLY_TO, replyTo);
-  message.metaData().emplace(messagebus::CORRELATION_ID, correlationId);
+  message.metaData().emplace(SUBJECT, QUERY_USER_PROPERTY);
+  message.metaData().emplace(FROM, clientName);
+  message.metaData().emplace(REPLY_TO, replyTo);
+  message.metaData().emplace(CORRELATION_ID, correlationId);
 
   if (strcmp(argv[2], "async") == 0)
   {
@@ -115,7 +115,7 @@ int main(int argc, char** argv)
       auto replyMsg = requester->request(requestQueue, message, WAIT_RESPONSE_FOR);
       responseMessageListener(replyMsg);
     }
-    catch (messagebus::MessageBusException& ex)
+    catch (MessageBusException& ex)
     {
       log_error("Message bus error: %s", ex.what());
     }

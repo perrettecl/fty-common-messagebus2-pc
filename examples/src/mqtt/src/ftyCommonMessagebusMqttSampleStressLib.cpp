@@ -48,8 +48,8 @@
 
 namespace
 {
-  using namespace messagebus;
-  using namespace messagebus::mqttv5;
+  using namespace fty::messagebus;
+  using namespace fty::messagebus::mqttv5;
   using namespace fty::messagebus::mqttv5::test;
   using namespace fty::messagebus::test;
 
@@ -58,7 +58,7 @@ namespace
 
   auto getClientName() -> std::string
   {
-    return messagebus::helper::getClientId("MqttSampleStress");
+    return helper::getClientId("MqttSampleStress");
   }
 
   static void signalHandler(int signal)

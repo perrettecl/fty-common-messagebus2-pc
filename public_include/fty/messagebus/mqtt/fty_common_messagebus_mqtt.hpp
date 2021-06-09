@@ -29,7 +29,7 @@
 #include <mqtt/client.h>
 #include <mqtt/message.h>
 
-namespace messagebus::mqttv5
+namespace fty::messagebus::mqttv5
 {
   // Default mqtt end point
   static auto constexpr DEFAULT_MQTT_END_POINT{"tcp://localhost:1883"};

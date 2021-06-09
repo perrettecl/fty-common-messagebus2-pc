@@ -26,7 +26,7 @@
 
 #include <list>
 
-namespace messagebus::mqttv5
+namespace fty::messagebus::mqttv5
 {
   // Json representation
   using UserData = std::list<std::string>;

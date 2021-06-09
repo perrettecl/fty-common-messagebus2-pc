@@ -41,8 +41,8 @@
 
 namespace
 {
-  using namespace messagebus;
-  using namespace messagebus::mqttv5;
+  using namespace fty::messagebus;
+  using namespace fty::messagebus::mqttv5;
   using namespace fty::messagebus::mqttv5::test;
 
   static bool _continue = true;
@@ -79,10 +79,10 @@ int main(int /*argc*/, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  auto publisher = MessagebusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, messagebus::helper::getClientId("MqttPublisher"));
+  auto publisher = MessagebusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, helper::getClientId("MqttPublisher"));
   publisher->connect();
 
-  auto subscriber = MessagebusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, messagebus::helper::getClientId("MqttSubscriber"));
+  auto subscriber = MessagebusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, helper::getClientId("MqttSubscriber"));
   subscriber->connect();
   subscriber->subscribe(SAMPLE_TOPIC, messageListener);
 
@@ -93,8 +93,8 @@ int main(int /*argc*/, char** argv)
   message.userData() << FooBar("event", "hello");
   message.metaData().clear();
   message.metaData().emplace("mykey", "myvalue");
-  message.metaData().emplace(messagebus::FROM, "publisher");
-  message.metaData().emplace(messagebus::SUBJECT, "discovery");
+  message.metaData().emplace(FROM, "publisher");
+  message.metaData().emplace(SUBJECT, "discovery");
   publisher->publish(SAMPLE_TOPIC, message);
 
   while (_continue)

@@ -32,7 +32,7 @@
 #include <ctime>
 #include <czmq.h>
 
-namespace messagebus::helper
+namespace fty::messagebus::helper
 {
   std::string generateUuid()
   {

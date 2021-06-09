@@ -48,8 +48,8 @@
 
 namespace
 {
-  using namespace messagebus;
-  using namespace messagebus::mqttv5;
+  using namespace fty::messagebus;
+  using namespace fty::messagebus::mqttv5;
   using namespace fty::messagebus::mqttv5::test;
   using namespace fty::messagebus::test;
 
@@ -60,7 +60,7 @@ namespace
 
   auto getClientName() -> std::string
   {
-    return messagebus::helper::getClientId("MqttSampleStress");
+    return helper::getClientId("MqttSampleStress");
   }
 
   static void signalHandler(int signal)
@@ -105,12 +105,12 @@ namespace
 
     responseData << mathResultResult;
     response.userData() = responseData;
-    response.metaData().emplace(messagebus::SUBJECT, messagebus::ANSWER_USER_PROPERTY);
-    response.metaData().emplace(messagebus::FROM, message.metaData().find(messagebus::FROM)->second);
-    response.metaData().emplace(messagebus::CORRELATION_ID, message.metaData().find(messagebus::CORRELATION_ID)->second);
-    response.metaData().emplace(messagebus::REPLY_TO, message.metaData().find(messagebus::REPLY_TO)->second);
+    response.metaData().emplace(SUBJECT, ANSWER_USER_PROPERTY);
+    response.metaData().emplace(FROM, message.metaData().find(FROM)->second);
+    response.metaData().emplace(CORRELATION_ID, message.metaData().find(CORRELATION_ID)->second);
+    response.metaData().emplace(REPLY_TO, message.metaData().find(REPLY_TO)->second);
 
-    mqttMsgBus->sendReply(message.metaData().find(messagebus::REPLY_TO)->second, response);
+    mqttMsgBus->sendReply(message.metaData().find(REPLY_TO)->second, response);
 
     //_continue = false;
   }
@@ -123,14 +123,14 @@ namespace
     data >> result;
     log_info("  * status: '%s', result: %s", result.status.c_str(), result.result.c_str());
 
-    auto iterator = message.metaData().find(messagebus::CORRELATION_ID);
+    auto iterator = message.metaData().find(CORRELATION_ID);
     if (iterator == message.metaData().end() || iterator->second == "")
     {
-      throw messagebus::MessageBusException("Reply error not correlationId");
+      throw MessageBusException("Reply error not correlationId");
     }
     auto correlationId = iterator->second;
 
-    iterator = message.metaData().find(messagebus::FROM);
+    iterator = message.metaData().find(FROM);
     if (iterator == message.metaData().end() || iterator->second == "")
     {
       throw MessageBusException("Reply error not from");
@@ -155,7 +155,7 @@ namespace
 
   void requesterFunc(MqttMessageBus* messageBus)
   {
-    auto correlationId = messagebus::helper::generateUuid();
+    auto correlationId = helper::generateUuid();
     auto replyTo = REPLY_QUEUE + '/' + correlationId;
 
     auto rand = std::to_string(buildRandom(1, 10));
@@ -164,10 +164,10 @@ namespace
     MathOperation query = MathOperation("add", "1", rand);
     message.userData() << query;
     message.metaData().clear();
-    message.metaData().emplace(messagebus::SUBJECT, messagebus::QUERY_USER_PROPERTY);
-    message.metaData().emplace(messagebus::FROM, rand);
-    message.metaData().emplace(messagebus::REPLY_TO, replyTo);
-    message.metaData().emplace(messagebus::CORRELATION_ID, correlationId);
+    message.metaData().emplace(SUBJECT, QUERY_USER_PROPERTY);
+    message.metaData().emplace(FROM, rand);
+    message.metaData().emplace(REPLY_TO, replyTo);
+    message.metaData().emplace(CORRELATION_ID, correlationId);
 
     correlationIdSniffer.emplace(correlationId, rand);
     messageBus->receive(replyTo, responseListener);

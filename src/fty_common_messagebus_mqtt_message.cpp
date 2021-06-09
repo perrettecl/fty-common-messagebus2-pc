@@ -31,7 +31,7 @@
 #include <fty_log.h>
 #include <jsoncpp/json/json.h>
 
-namespace messagebus::mqttv5
+namespace fty::messagebus::mqttv5
 {
   MqttMessage::MqttMessage(const MetaData& metaData, const UserData& userData)
   {

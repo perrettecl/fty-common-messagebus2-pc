@@ -25,7 +25,7 @@
 #include <functional>
 #include <string>
 
-namespace messagebus
+namespace fty::messagebus
 {
   template <typename MessageType>
   using MessageListener = std::function<void(MessageType)>;
