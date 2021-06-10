@@ -25,7 +25,7 @@
 @discuss
 @end
 */
-#include "fty_common_messagebus_pool_worker.hpp"
+#include "MsgBusPoolWorker.hpp"
 
 namespace fty::messagebus::poolworker
 {

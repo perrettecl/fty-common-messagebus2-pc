@@ -27,10 +27,10 @@
 */
 
 #include "FtyCommonMqttTestDef.hpp"
-#include "fty_common_messagebus_Imessage.hpp"
+#include "MsgBusIMessage.hpp"
 #include "FtyCommonMessageBusDto.hpp"
-#include "fty_common_messagebus_exception.h"
-#include "fty_common_messagebus_factory.hpp"
+#include "MsgBusException.hpp"
+#include "MsgBusFactory.hpp"
 #include "MsgBusHelper.hpp"
 
 #include <chrono>

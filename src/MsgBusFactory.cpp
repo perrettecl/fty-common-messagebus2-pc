@@ -26,7 +26,7 @@
 @end
 */
 
-#include "fty_common_messagebus_factory.hpp"
+#include "MsgBusFactory.hpp"
 
 
 

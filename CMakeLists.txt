@@ -23,31 +23,19 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
   INCLUDE_DIRS
     private_include
   PUBLIC_HEADERS
-  #     #fty_common_messagebus_dispatcher.h
-  #     fty_common_messagebus_exception.h
-  #     # fty_common_messagebus.h
-  #     #fty_common_messagebus_interface.h
-  #     fty_common_messagebus_library.h
-  #     # fty_common_messagebus_message.h
-  #     # fty_common_messagebus_pool_worker.h
-  #     # Added but must be uniformize
-  #     MsgBusHelper.hpp
-  #     fty_common_messagebus_Imessage.hpp
-  #     fty_common_messagebus_factory.hpp
-    *.h
     *.hpp
   SOURCES
-      src/*.cpp
+    src/*.cpp
   USES_PUBLIC
-      fty_common_logging
+    fty_common_logging
   USES
-      cxxtools
-      czmq
-      fty_common_mlm
-      mlm
-      pthread
-      paho-mqttpp3
-      jsoncpp
+    cxxtools
+    czmq
+    fty_common_mlm
+    mlm
+    pthread
+    paho-mqttpp3
+    jsoncpp
   FLAGS
       "-fmax-errors=5"
 )
@@ -56,7 +44,7 @@ etn_target(exe fty-msgbus-mlm-cli
   INCLUDE_DIRS
     private_include
   SOURCES
-    src/fty-msgbus-cli.cpp
+    src/MsgBusCli.cpp
   USES
     ${PROJECT_NAME_UNDERSCORE}
     cxxtools

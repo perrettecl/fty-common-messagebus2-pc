@@ -22,7 +22,7 @@
 @end
 */
 
-#include "fty_common_messagebus_malamute.h"
+#include "MsgBusMalamute.hpp"
 
 #include <new>
 #include <thread>

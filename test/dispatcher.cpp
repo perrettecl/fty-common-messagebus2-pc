@@ -1,4 +1,4 @@
-#include "fty_common_messagebus_dispatcher.h"
+#include "MsgBusDispatcher.hpp"
 #include <catch2/catch.hpp>
 
 #include <iostream>
@@ -8,7 +8,7 @@ TEST_CASE("Dispatcher")
 {
     std::cerr << " * fty_common_messagebus_dispatcher: " << std::endl;
 
-    using namespace messagebus;
+    using namespace fty::messagebus::utils;
     {
         // Four-function calculator test.
         std::cerr << "  - calculator: ";

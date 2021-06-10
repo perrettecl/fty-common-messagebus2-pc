@@ -30,7 +30,7 @@
 #include "fty/messagebus/mqtt/MsgBusMqttCallBack.hpp"
 #include "fty/messagebus/mqtt/MsgBusMqttMessage.hpp"
 
-#include "fty_common_messagebus_Imessage.hpp"
+#include "MsgBusIMessage.hpp"
 #include <fty_log.h>
 
 #include <mqtt/async_client.h>

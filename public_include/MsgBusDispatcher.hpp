@@ -25,14 +25,16 @@
 #include <functional>
 #include <map>
 
-namespace messagebus {
+namespace fty::messagebus::utils
+{
 
-/**
+  /**
  * \brief Callable dispatcher based on std::map.
  */
-template <class KeyType, typename WorkFunctionType, typename MissingFunctionType>
-class Dispatcher {
-public:
+  template <class KeyType, typename WorkFunctionType, typename MissingFunctionType>
+  class Dispatcher
+  {
+  public:
     /// \brief Map of (key -> callable).
     using Map = std::map<KeyType, WorkFunctionType>;
 
@@ -40,14 +42,21 @@ public:
      * \brief Constructor without default handler.
      * \param map Function map.
      */
-    Dispatcher(Map map) : Dispatcher(map, MissingFunctionType()) { }
+    Dispatcher(Map map)
+      : Dispatcher(map, MissingFunctionType())
+    {
+    }
 
     /**
      * \brief Constructor with default handler.
      * \param map Function map.
      * \param defaultHandler Default handler callable.
      */
-    Dispatcher(Map map, MissingFunctionType defaultHandler) : m_map(map), m_defaultHandler(defaultHandler) { }
+    Dispatcher(Map map, MissingFunctionType defaultHandler)
+      : m_map(map)
+      , m_defaultHandler(defaultHandler)
+    {
+    }
 
     /**
      * \brief Dispatch a callable based on a key.
@@ -57,19 +66,21 @@ public:
      * \warning Dispatching an unknown key without a default handler will throw an std::bad_function_call.
      */
     template <typename... ArgsType>
-    typename WorkFunctionType::result_type operator()(const KeyType& key, ArgsType&&... args) {
-        auto it = m_map.find(key);
-        if (it != m_map.end()) {
-            return it->second(std::forward<ArgsType>(args)...);
-        }
-        return m_defaultHandler(key, std::forward<ArgsType>(args)...);
+    typename WorkFunctionType::result_type operator()(const KeyType& key, ArgsType&&... args)
+    {
+      auto it = m_map.find(key);
+      if (it != m_map.end())
+      {
+        return it->second(std::forward<ArgsType>(args)...);
+      }
+      return m_defaultHandler(key, std::forward<ArgsType>(args)...);
     }
 
-private:
+  private:
     Map m_map;
     MissingFunctionType m_defaultHandler;
-} ;
+  };
 
-}
+} // namespace fty::messagebus::utils
 
 #endif

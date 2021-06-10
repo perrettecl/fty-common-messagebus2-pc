@@ -27,7 +27,7 @@
 */
 
 #include "fty/messagebus/mqtt/MsgBusMqtt.hpp"
-#include "fty_common_messagebus_exception.h"
+#include "MsgBusException.hpp"
 #include "MsgBusHelper.hpp"
 #include <fty_log.h>
 

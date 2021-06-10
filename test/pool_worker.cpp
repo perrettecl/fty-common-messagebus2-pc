@@ -1,4 +1,4 @@
-#include "fty_common_messagebus_pool_worker.hpp"
+#include "MsgBusPoolWorker.hpp"
 #include <catch2/catch.hpp>
 
 #include <iostream>

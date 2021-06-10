@@ -26,7 +26,7 @@
 @end
 */
 
-#include "fty_common_messagebus_factory.hpp"
+#include "MsgBusFactory.hpp"
 
 #include <csignal>
 #include <iostream>
@@ -39,8 +39,6 @@
 
 using namespace fty::messagebus;
 using namespace fty::messagebus::mqttv5;
-//using namespace fty::messagebus::mqttv5::test;
-//using namespace fty::messagebus::test;
 
 volatile bool g_exit = false;
 std::condition_variable g_cv;

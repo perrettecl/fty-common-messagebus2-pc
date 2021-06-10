@@ -28,9 +28,9 @@
 
 #include "FtyCommonMqttTestDef.hpp"
 #include "FtyCommonMqttTestMathDto.h"
-#include "fty_common_messagebus_Imessage.hpp"
-#include "fty_common_messagebus_exception.h"
-#include "fty_common_messagebus_factory.hpp"
+#include "MsgBusIMessage.hpp"
+#include "MsgBusException.hpp"
+#include "MsgBusFactory.hpp"
 #include "MsgBusHelper.hpp"
 
 #include <mqtt/async_client.h>
