@@ -74,12 +74,12 @@ namespace fty::messagebus::mqttv5
 {
   /////////////////////////////////////////////////////////////////////////////
 
-  // callback::callback()
+  // CallBack::CallBack()
   // {
   //   //auto num_threads = std::thread::hardware_concurrency();
   // }
 
-  callback::~callback()
+  CallBack::~CallBack()
   {
     m_cv.notify_all();
     for (auto& thread: m_threadPool)
@@ -89,7 +89,7 @@ namespace fty::messagebus::mqttv5
   }
 
   // Callback called when connection lost.
-  void callback::connection_lost(const std::string& cause)
+  void CallBack::connection_lost(const std::string& cause)
   {
     log_error("Connection lost");
     if (!cause.empty())
@@ -99,7 +99,7 @@ namespace fty::messagebus::mqttv5
   }
 
   // Callback called for connection done.
-  void callback::onConnected(const std::string& cause)
+  void CallBack::onConnected(const std::string& cause)
   {
     log_debug("Connected");
     if (!cause.empty())
@@ -109,18 +109,18 @@ namespace fty::messagebus::mqttv5
   }
 
   // Callback called for connection updated.
-  bool callback::onConnectionUpdated(const mqtt::connect_data& /*connData*/)
+  bool CallBack::onConnectionUpdated(const mqtt::connect_data& /*connData*/)
   {
     log_info("Connection updated");
     return true;
   }
 
-  auto callback::getSubscriptions() -> subScriptionListener
+  auto CallBack::getSubscriptions() -> subScriptionListener
   {
     return m_subscriptions;
   }
 
-  void callback::setSubscriptions(const std::string& queue, MessageListener messageListener)
+  void CallBack::setSubscriptions(const std::string& queue, MessageListener messageListener)
   {
     if (auto it{m_subscriptions.find(queue)}; it == m_subscriptions.end())
     {
@@ -130,7 +130,7 @@ namespace fty::messagebus::mqttv5
   }
 
   // Callback called when a request or a reply message arrives.
-  void callback::onMessageArrived(mqtt::const_message_ptr msg)
+  void CallBack::onMessageArrived(mqtt::const_message_ptr msg)
   {
     log_trace("Message received from topic: '%s'", msg->get_topic().c_str());
     // build metaData message from mqtt properties

@@ -30,7 +30,7 @@
 #include "fty_common_messagebus_Imessage.hpp"
 #include "fty_common_messagebus_exception.h"
 #include "fty_common_messagebus_factory.hpp"
-#include "fty_common_messagebus_helper.hpp"
+#include "MsgBusHelper.hpp"
 
 #include <mqtt/async_client.h>
 

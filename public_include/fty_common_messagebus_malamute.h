@@ -23,7 +23,7 @@
 #define FTY_COMMON_MESSAGEBUS_MALAMUTE_H_INCLUDED
 
 #include "fty_common_messagebus_exception.h"
-#include "fty_common_messagebus_helper.hpp"
+#include "MsgBusHelper.hpp"
 #include "fty_common_messagebus_interface.h"
 #include "fty_common_messagebus_mlm_message.hpp"
 

@@ -26,7 +26,7 @@
 @end
 */
 
-#include "fty_common_messagebus_helper.hpp"
+#include "MsgBusHelper.hpp"
 
 #include <chrono>
 #include <ctime>

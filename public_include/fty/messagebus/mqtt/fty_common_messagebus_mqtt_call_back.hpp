@@ -36,12 +36,12 @@ namespace fty::messagebus::mqttv5
   using MessageListener = fty::messagebus::MessageListener<MqttMessage>;
   using subScriptionListener = std::map<std::string, MessageListener>;
 
-  class callback : public virtual mqtt::callback
+  class CallBack : public virtual mqtt::callback
   {
   public:
-    callback() = default;
-    //callback();
-    ~callback();
+    CallBack() = default;
+    //CallBack();
+    ~CallBack();
     void connection_lost(const std::string& cause) override;
     void onConnected(const std::string& cause);
     bool onConnectionUpdated(const mqtt::connect_data& connData);

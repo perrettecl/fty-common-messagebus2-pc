@@ -31,7 +31,7 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
   #     # fty_common_messagebus_message.h
   #     # fty_common_messagebus_pool_worker.h
   #     # Added but must be uniformize
-  #     fty_common_messagebus_helper.hpp
+  #     MsgBusHelper.hpp
   #     fty_common_messagebus_Imessage.hpp
   #     fty_common_messagebus_factory.hpp
     *.h
