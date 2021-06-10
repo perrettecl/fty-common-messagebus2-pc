@@ -27,7 +27,7 @@
 */
 
 #include "FtyCommonMessageBusDto.hpp"
-#include "fty/messagebus/MsgBusIMessage.hpp"
+#include "fty/messagebus/IMessage.hpp"
 #include "fty/messagebus/MsgBusException.hpp"
 #include "fty/messagebus/MsgBusFactory.hpp"
 #include "fty/messagebus/utils/MsgBusHelper.hpp"

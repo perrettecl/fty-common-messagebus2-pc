@@ -22,7 +22,7 @@
 #ifndef FTY_COMMON_MESSAGEBUS_MQTT_MESSAGE_HPP
 #define FTY_COMMON_MESSAGEBUS_MQTT_MESSAGE_HPP
 
-#include "fty/messagebus/MsgBusIMessage.hpp"
+#include "fty/messagebus/IMessage.hpp"
 
 #include <list>
 
