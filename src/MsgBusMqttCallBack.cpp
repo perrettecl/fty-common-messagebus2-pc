@@ -26,9 +26,9 @@
 @end
 */
 
-//#include "fty/messagebus/mqtt/fty_common_messagebus_mqtt.hpp"
-#include "fty/messagebus/mqtt/fty_common_messagebus_mqtt_call_back.hpp"
-#include "fty/messagebus/mqtt/fty_common_messagebus_mqtt_message.hpp"
+//#include "fty/messagebus/mqtt/MsgBusMqtt.hpp"
+#include "fty/messagebus/mqtt/MsgBusMqttCallBack.hpp"
+#include "fty/messagebus/mqtt/MsgBusMqttMessage.hpp"
 
 #include "fty_common_messagebus_Imessage.hpp"
 #include <fty_log.h>

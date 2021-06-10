@@ -22,7 +22,7 @@
 #ifndef FTY_COMMON_MESSAGEBUS_FACTORY_HPP
 #define FTY_COMMON_MESSAGEBUS_FACTORY_HPP
 
-#include "fty/messagebus/mqtt/fty_common_messagebus_mqtt.hpp"
+#include "fty/messagebus/mqtt/MsgBusMqtt.hpp"
 #include "fty_common_messagebus_malamute.h"
 
 #include <string>

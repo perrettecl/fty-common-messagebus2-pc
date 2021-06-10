@@ -26,9 +26,9 @@
 @end
 */
 
-#include "fty/messagebus/mqtt/fty_common_messagebus_mqtt.hpp"
+#include "fty/messagebus/mqtt/MsgBusMqtt.hpp"
 #include "fty_common_messagebus_exception.h"
-#include "fty_common_messagebus_helper.hpp"
+#include "MsgBusHelper.hpp"
 #include <fty_log.h>
 
 #include <mqtt/async_client.h>

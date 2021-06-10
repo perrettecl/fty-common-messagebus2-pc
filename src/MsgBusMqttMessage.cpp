@@ -26,7 +26,7 @@
 @end
 */
 
-#include "fty/messagebus/mqtt/fty_common_messagebus_mqtt_message.hpp"
+#include "fty/messagebus/mqtt/MsgBusMqttMessage.hpp"
 
 #include <fty_log.h>
 #include <jsoncpp/json/json.h>
