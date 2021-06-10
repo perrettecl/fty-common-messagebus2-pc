@@ -1,9 +1,11 @@
-#include "fty_common_messagebus_pool_worker.h"
+#include "fty_common_messagebus_pool_worker.hpp"
 #include <catch2/catch.hpp>
 
 #include <iostream>
 #include <set>
 #include <numeric>
+
+using namespace fty::messagebus::poolworker;
 
 uint64_t collatz(uint64_t i) {
     uint64_t n;
@@ -28,7 +30,6 @@ TEST_CASE("Pool worker")
     bool verbose = true;
 
     std::cerr << " * fty_common_messagebus_pool_worker: " << std::endl;
-    using namespace messagebus;
     constexpr size_t NB_WORKERS = 16;
     constexpr size_t NB_JOBS    = 8 * 1024;
 
