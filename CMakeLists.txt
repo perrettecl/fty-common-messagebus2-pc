@@ -36,7 +36,6 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
     #     fty_common_messagebus_factory.hpp
 
     SOURCES
-        # src/fty_common_messagebus_pool_worker.cc
         src/*.cpp
     USES_PUBLIC
         fty_common_logging
