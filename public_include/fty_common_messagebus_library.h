@@ -95,10 +95,15 @@ typedef struct _fty_common_messagebus_pool_worker_t fty_common_messagebus_pool_w
 #include "fty_common_messagebus_exception.h"
 #include "fty_common_messagebus_message.h"
 #ifdef FTY_COMMON_MESSAGEBUS_BUILD_DRAFT_API
-#include "FtyCommonMessageBusDto.hpp"
+// #include "FtyCommonMessageBusDto.hpp"
 #include "fty_common_messagebus_interface.h"
 #include "fty_common_messagebus_dispatcher.h"
 #include "fty_common_messagebus_pool_worker.h"
+#include "fty_common_messagebus_helper.hpp"
+#include "fty_common_messagebus_factory.hpp"
+#include "fty_common_messagebus_Imessage.hpp"
+#include "fty_common_messagebus_mlm_message.hpp"
+
 #endif // FTY_COMMON_MESSAGEBUS_BUILD_DRAFT_API
 
 #ifdef FTY_COMMON_MESSAGEBUS_BUILD_DRAFT_API
