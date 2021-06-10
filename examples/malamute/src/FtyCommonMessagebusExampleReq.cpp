@@ -27,10 +27,10 @@
 */
 
 #include "FtyCommonMessageBusDto.hpp"
-#include "MsgBusIMessage.hpp"
-#include "MsgBusException.hpp"
-#include "MsgBusFactory.hpp"
-#include "MsgBusHelper.hpp"
+#include "fty/messagebus/MsgBusIMessage.hpp"
+#include "fty/messagebus/MsgBusException.hpp"
+#include "fty/messagebus/MsgBusFactory.hpp"
+#include "fty/messagebus/utils/MsgBusHelper.hpp"
 
 #include <fty_log.h>
 
@@ -66,7 +66,7 @@ int main(int argc, char** argv)
   sigIntHandler.sa_flags = 0;
   sigaction(SIGINT, &sigIntHandler, NULL);
 
-  std::string clientName = helper::getClientId("requester");
+  std::string clientName = utils::getClientId("requester");
 
   requester = MessagebusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, clientName);
   requester->connect();
@@ -94,7 +94,7 @@ int main(int argc, char** argv)
     message.metaData().emplace(SUBJECT, "query");
     message.metaData().emplace(FROM, clientName);
     message.metaData().emplace(TO, "receiver");
-    message.metaData().emplace(CORRELATION_ID, helper::generateUuid());
+    message.metaData().emplace(CORRELATION_ID, utils::generateUuid());
     try
     {
       auto resp = requester->request("doAction.queue.query", message, 5);

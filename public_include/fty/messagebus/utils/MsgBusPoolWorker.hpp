@@ -32,7 +32,7 @@
 #include <type_traits>
 #include <vector>
 
-namespace fty::messagebus::poolworker
+namespace fty::messagebus::utils
 {
 
   /**
@@ -112,6 +112,6 @@ namespace fty::messagebus::poolworker
     std::condition_variable m_cv;
   };
 
-} // namespace fty::messagebus::poolworker
+} // namespace fty::messagebus::utils
 
 #endif

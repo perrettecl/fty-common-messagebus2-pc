@@ -22,9 +22,9 @@
 #ifndef FTY_COMMON_MESSAGEBUS_MALAMUTE_H_INCLUDED
 #define FTY_COMMON_MESSAGEBUS_MALAMUTE_H_INCLUDED
 
-#include "MsgBusException.hpp"
-#include "MsgBusHelper.hpp"
-#include "IMessageBus.hpp"
+#include "fty/messagebus/MsgBusException.hpp"
+#include "fty/messagebus/utils/MsgBusHelper.hpp"
+#include "fty/messagebus/IMessageBus.hpp"
 #include "fty/messagebus/mlm/MsgBusMlmMessage.hpp"
 
 #include <condition_variable>

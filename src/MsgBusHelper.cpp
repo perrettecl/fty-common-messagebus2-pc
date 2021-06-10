@@ -26,13 +26,13 @@
 @end
 */
 
-#include "MsgBusHelper.hpp"
+#include "fty/messagebus/utils/MsgBusHelper.hpp"
 
 #include <chrono>
 #include <ctime>
 #include <czmq.h>
 
-namespace fty::messagebus::helper
+namespace fty::messagebus::utils
 {
   std::string generateUuid()
   {

@@ -27,10 +27,10 @@
 */
 
 #include "FtyCommonMessageBusDto.hpp"
-#include "MsgBusIMessage.hpp"
-#include "MsgBusException.hpp"
-#include "MsgBusFactory.hpp"
-#include "MsgBusHelper.hpp"
+#include "fty/messagebus/MsgBusIMessage.hpp"
+#include "fty/messagebus/MsgBusException.hpp"
+#include "fty/messagebus/MsgBusFactory.hpp"
+#include "fty/messagebus/utils/MsgBusHelper.hpp"
 
 #include <fty_log.h>
 

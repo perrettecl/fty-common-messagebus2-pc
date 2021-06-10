@@ -27,11 +27,11 @@
 */
 
 #include "FtyCommonMqttTestDef.hpp"
-#include "MsgBusIMessage.hpp"
+#include "fty/messagebus/MsgBusIMessage.hpp"
 #include "FtyCommonMessageBusDto.hpp"
-#include "MsgBusException.hpp"
-#include "MsgBusFactory.hpp"
-#include "MsgBusHelper.hpp"
+#include "fty/messagebus/MsgBusException.hpp"
+#include "fty/messagebus/MsgBusFactory.hpp"
+#include "fty/messagebus/utils/MsgBusHelper.hpp"
 
 #include <chrono>
 #include <csignal>
@@ -79,10 +79,10 @@ int main(int /*argc*/, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  auto publisher = MessagebusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, helper::getClientId("MqttPublisher"));
+  auto publisher = MessagebusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, utils::getClientId("MqttPublisher"));
   publisher->connect();
 
-  auto subscriber = MessagebusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, helper::getClientId("MqttSubscriber"));
+  auto subscriber = MessagebusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, utils::getClientId("MqttSubscriber"));
   subscriber->connect();
   subscriber->subscribe(SAMPLE_TOPIC, messageListener);
 

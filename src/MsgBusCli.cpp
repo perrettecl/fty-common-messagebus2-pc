@@ -26,7 +26,7 @@
 @end
 */
 
-#include "MsgBusFactory.hpp"
+#include "fty/messagebus/MsgBusFactory.hpp"
 
 #include <csignal>
 #include <iostream>
@@ -139,7 +139,7 @@ void sendRequest(fty::messagebus::mlm::MessageBusMalamute* msgbus, int /*argc*/,
         {FROM, clientName},
         {REPLY_TO, clientName},
         {SUBJECT, subject},
-        {CORRELATION_ID, helper::generateUuid()},
+        {CORRELATION_ID, utils::generateUuid()},
         {TO, destination},
         {TIMEOUT, timeout},
       };
@@ -167,7 +167,7 @@ void request(fty::messagebus::mlm::MessageBusMalamute* msgbus, int /*argc*/, cha
         {FROM, clientName},
         {REPLY_TO, clientName},
         {SUBJECT, subject},
-        {CORRELATION_ID, helper::generateUuid()},
+        {CORRELATION_ID, utils::generateUuid()},
         {TO, destination},
         {TIMEOUT, timeout},
       };
@@ -250,7 +250,7 @@ void publish(fty::messagebus::mlm::MessageBusMalamute* msgbus, int /*argc*/, cha
 int main(int argc, char** argv)
 {
   endpoint = MLM_DEFAULT_ENDPOINT;
-  clientName = helper::getClientId("fty-msgbus-cli");
+  clientName = utils::getClientId("fty-msgbus-cli");
   type = "malamute";
 
   int c;

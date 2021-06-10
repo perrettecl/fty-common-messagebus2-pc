@@ -28,10 +28,10 @@
 
 #include "FtyCommonMqttTestDef.hpp"
 #include "FtyCommonMqttTestMathDto.h"
-#include "MsgBusIMessage.hpp"
-#include "MsgBusException.hpp"
-#include "MsgBusFactory.hpp"
-#include "MsgBusHelper.hpp"
+#include "fty/messagebus/MsgBusIMessage.hpp"
+#include "fty/messagebus/MsgBusException.hpp"
+#include "fty/messagebus/MsgBusFactory.hpp"
+#include "fty/messagebus/utils/MsgBusHelper.hpp"
 
 #include <mqtt/async_client.h>
 
@@ -58,7 +58,7 @@ namespace
 
   auto getClientName() -> std::string
   {
-    return helper::getClientId("MqttSampleStress");
+    return utils::getClientId("MqttSampleStress");
   }
 
   static void signalHandler(int signal)

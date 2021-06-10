@@ -27,8 +27,8 @@
 */
 
 #include "fty/messagebus/mqtt/MsgBusMqtt.hpp"
-#include "MsgBusException.hpp"
-#include "MsgBusHelper.hpp"
+#include "fty/messagebus/MsgBusException.hpp"
+#include "fty/messagebus/utils/MsgBusHelper.hpp"
 #include <fty_log.h>
 
 #include <mqtt/async_client.h>
@@ -97,7 +97,7 @@ namespace fty::messagebus::mqttv5
   {
     mqtt::create_options opts(MQTTVERSION_5);
 
-    m_client = std::make_shared<mqtt::async_client>(m_endpoint, helper::getClientId("etn"), opts);
+    m_client = std::make_shared<mqtt::async_client>(m_endpoint, utils::getClientId("etn"), opts);
 
     // Connection options
     auto connOpts = mqtt::connect_options_builder()

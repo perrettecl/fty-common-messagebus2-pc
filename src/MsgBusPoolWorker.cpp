@@ -25,9 +25,9 @@
 @discuss
 @end
 */
-#include "MsgBusPoolWorker.hpp"
+#include "fty/messagebus/utils/MsgBusPoolWorker.hpp"
 
-namespace fty::messagebus::poolworker
+namespace fty::messagebus::utils
 {
 
   PoolWorker::PoolWorker(size_t workers)

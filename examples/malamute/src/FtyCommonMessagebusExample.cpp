@@ -27,10 +27,10 @@
 */
 
 #include "FtyCommonMessageBusDto.hpp"
-#include "MsgBusIMessage.hpp"
-#include "MsgBusException.hpp"
-#include "MsgBusFactory.hpp"
-#include "MsgBusHelper.hpp"
+#include "fty/messagebus/MsgBusIMessage.hpp"
+#include "fty/messagebus/MsgBusException.hpp"
+#include "fty/messagebus/MsgBusFactory.hpp"
+#include "fty/messagebus/utils/MsgBusHelper.hpp"
 
 #include <fty_log.h>
 
@@ -164,7 +164,7 @@ int main(int /*argc*/, char** argv)
   auto query1 = FooBar("doAction", "actionNothing");
   message2.userData() << query1;
   message2.metaData().clear();
-  message2.metaData().emplace(CORRELATION_ID, helper::generateUuid());
+  message2.metaData().emplace(CORRELATION_ID, utils::generateUuid());
   message2.metaData().emplace(SUBJECT, "doAction");
   message2.metaData().emplace(FROM, "publisher");
   message2.metaData().emplace(TO, "receiver");
@@ -177,7 +177,7 @@ int main(int /*argc*/, char** argv)
   FooBar query4 = FooBar("doAction", "actionNothing2");
   message6.userData() << query4;
   message6.metaData().clear();
-  message6.metaData().emplace(CORRELATION_ID, helper::generateUuid());
+  message6.metaData().emplace(CORRELATION_ID, utils::generateUuid());
   message6.metaData().emplace(SUBJECT, "doAction");
   message6.metaData().emplace(FROM, "publisher");
   message6.metaData().emplace(TO, "receiver");
@@ -209,7 +209,7 @@ int main(int /*argc*/, char** argv)
   {
     log_error("%s", ex.what());
   }
-  message5.metaData().emplace(CORRELATION_ID, helper::generateUuid());
+  message5.metaData().emplace(CORRELATION_ID, utils::generateUuid());
   auto resp = publisher->request("doAction.queue.query", message5, 15);
   log_info("Response sync:");
   for (const auto& pair : resp.metaData())

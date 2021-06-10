@@ -29,10 +29,10 @@
 #include "FtyCommonMqttTestDef.hpp"
 #include "FtyCommonMqttTestMathDto.h"
 
-#include "MsgBusException.hpp"
-#include "MsgBusFactory.hpp"
+#include "fty/messagebus/MsgBusException.hpp"
+#include "fty/messagebus/MsgBusFactory.hpp"
 
-#include "MsgBusHelper.hpp"
+#include "fty/messagebus/utils/MsgBusHelper.hpp"
 
 #include <chrono>
 #include <csignal>
@@ -85,12 +85,12 @@ int main(int argc, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  std::string clientName = helper::getClientId("MqttSampleMathRequester");
+  std::string clientName = utils::getClientId("MqttSampleMathRequester");
 
   auto requester = MessagebusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, clientName);
   requester->connect();
 
-  auto correlationId = helper::generateUuid();
+  auto correlationId = utils::generateUuid();
   auto replyTo = REPLY_QUEUE + '/' + correlationId;
 
   MqttMessage message;

@@ -24,7 +24,7 @@
 
 #include <string>
 
-namespace fty::messagebus::helper
+namespace fty::messagebus::utils
 {
 
   /**

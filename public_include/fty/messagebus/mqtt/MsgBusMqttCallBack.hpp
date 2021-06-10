@@ -22,7 +22,7 @@
 #ifndef FTY_COMMON_MESSAGEBUS_MQTT_CALL_BACK
 #define FTY_COMMON_MESSAGEBUS_MQTT_CALL_BACK
 
-#include "IMessageBus.hpp"
+#include "fty/messagebus/IMessageBus.hpp"
 #include "fty/messagebus/mqtt/MsgBusMqttMessage.hpp"
 
 #include <mqtt/async_client.h>

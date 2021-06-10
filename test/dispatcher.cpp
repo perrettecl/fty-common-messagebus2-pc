@@ -1,4 +1,4 @@
-#include "MsgBusDispatcher.hpp"
+#include "fty/messagebus/utils/MsgBusDispatcher.hpp"
 #include <catch2/catch.hpp>
 
 #include <iostream>

@@ -1,11 +1,11 @@
-#include "MsgBusPoolWorker.hpp"
+#include "fty/messagebus/utils/MsgBusPoolWorker.hpp"
 #include <catch2/catch.hpp>
 
 #include <iostream>
 #include <set>
 #include <numeric>
 
-using namespace fty::messagebus::poolworker;
+using namespace fty::messagebus::utils;
 
 uint64_t collatz(uint64_t i) {
     uint64_t n;
