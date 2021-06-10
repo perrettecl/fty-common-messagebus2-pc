@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.13)
 cmake_policy(VERSION 3.13)
 
-project(fty-common-messagebus
+project(fty-common-messagebus-evol
     VERSION 1.0.0
     DESCRIPTION "Common messagebus interface"
 )
 
-set(PROJECT_NAME_UNDERSCORE fty_common_messagebus)
+set(PROJECT_NAME_UNDERSCORE fty_common_messagebus_evol)
 
 option(ENABLE_EXAMPLES "Build samples" TRUE)
 
@@ -22,7 +22,7 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
       public_include
   INCLUDE_DIRS
       private_include
-  PUBLIC_HEADERS
+  # PUBLIC_HEADERS
   #     #fty_common_messagebus_dispatcher.h
   #     fty_common_messagebus_exception.h
   #     # fty_common_messagebus.h

@@ -1,7 +1,8 @@
 project(${PROJECT_NAME}-mqtt
         VERSION ${PROJECT_VERSION}
         DESCRIPTION "Fty common message bus sample linked with mqtt library"
-        LANGUAGES CXX)
+        LANGUAGES CXX
+)
 
 set (THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
@@ -14,7 +15,7 @@ etn_target(exe ${PROJECT_NAME}-pub-sub
       private_include
   USES
       ${PROJECT_NAME_UNDERSCORE}
-      fty-common-messagebus-sample-dto
+      ${SAMPLE_DTO_LIB_NAME}
       cxxtools
 )
 
@@ -26,7 +27,7 @@ etn_target(exe ${PROJECT_NAME}-async-reply
       private_include
   USES
       ${PROJECT_NAME_UNDERSCORE}
-      fty-common-messagebus-sample-dto
+      ${SAMPLE_DTO_LIB_NAME}
       cxxtools
 )
 
@@ -38,7 +39,7 @@ etn_target(exe ${PROJECT_NAME}-send-request
       private_include
   USES
       ${PROJECT_NAME_UNDERSCORE}
-      fty-common-messagebus-sample-dto
+      ${SAMPLE_DTO_LIB_NAME}
       cxxtools
 )
 
@@ -50,7 +51,7 @@ etn_target(exe ${PROJECT_NAME}-stress-lib
       private_include
   USES
       ${PROJECT_NAME_UNDERSCORE}
-      fty-common-messagebus-sample-dto
+      ${SAMPLE_DTO_LIB_NAME}
       cxxtools
       Threads::Threads
 )
@@ -63,7 +64,7 @@ etn_target(exe ${PROJECT_NAME}-multi-thread-req-rep
       private_include
   USES
       ${PROJECT_NAME_UNDERSCORE}
-      fty-common-messagebus-sample-dto
+      ${SAMPLE_DTO_LIB_NAME}
       cxxtools
       Threads::Threads
 )

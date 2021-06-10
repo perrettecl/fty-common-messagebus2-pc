@@ -1,9 +1,10 @@
-project(fty-common-messagebus-sample
+project(${PROJECT_NAME}-sample
         VERSION ${PROJECT_VERSION}
         DESCRIPTION "Fty common message bus sample"
         LANGUAGES CXX)
 
 
+set (SAMPLE_DTO_LIB_NAME ${PROJECT_NAME}-dto)
 # Dto(s)
 add_subdirectory(dto)
 # Malamute samples

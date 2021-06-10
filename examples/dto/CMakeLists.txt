@@ -1,4 +1,4 @@
-project(fty-common-messagebus-sample-dto
+project(${SAMPLE_DTO_LIB_NAME}
         VERSION ${PROJECT_VERSION}
         DESCRIPTION "Fty common message bus sample dto shared with mlm, mqtt samples"
         LANGUAGES CXX)

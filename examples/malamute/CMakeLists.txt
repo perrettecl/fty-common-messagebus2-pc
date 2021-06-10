@@ -1,15 +1,15 @@
 project(${PROJECT_NAME}-mlm
         VERSION ${PROJECT_VERSION}
         DESCRIPTION "Fty common message bus sample linked with malamute library"
-        LANGUAGES CXX)
-
+        LANGUAGES CXX
+)
 
 etn_target(exe ${PROJECT_NAME}-example
   SOURCES
     src/FtyCommonMessagebusExample.cpp
   USES
     ${PROJECT_NAME_UNDERSCORE}
-    fty-common-messagebus-sample-dto
+    ${SAMPLE_DTO_LIB_NAME}
     cxxtools
 )
 
@@ -18,7 +18,7 @@ etn_target(exe ${PROJECT_NAME}-example2
     src/FtyCommonMessagebusExample2.cpp
   USES
     ${PROJECT_NAME_UNDERSCORE}
-    fty-common-messagebus-sample-dto
+    ${SAMPLE_DTO_LIB_NAME}
     cxxtools
 )
 
@@ -27,7 +27,7 @@ etn_target(exe ${PROJECT_NAME}-req
     src/FtyCommonMessagebusExampleReq.cpp
   USES
     ${PROJECT_NAME_UNDERSCORE}
-    fty-common-messagebus-sample-dto
+    ${SAMPLE_DTO_LIB_NAME}
     cxxtools
 )
 
@@ -36,7 +36,7 @@ etn_target(exe ${PROJECT_NAME}-rep
     src/FtyCommonMessagebusExampleRep.cpp
   USES
     ${PROJECT_NAME_UNDERSCORE}
-    fty-common-messagebus-sample-dto
+    ${SAMPLE_DTO_LIB_NAME}
     cxxtools
 )
 
@@ -45,6 +45,6 @@ etn_target(exe ${PROJECT_NAME}-rep2
     src/FtyCommonMessagebusExampleRep2.cpp
   USES
     ${PROJECT_NAME_UNDERSCORE}
-    fty-common-messagebus-sample-dto
+    ${SAMPLE_DTO_LIB_NAME}
     cxxtools
 )
