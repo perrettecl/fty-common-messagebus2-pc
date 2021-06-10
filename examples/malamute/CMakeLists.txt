@@ -6,41 +6,45 @@ project(${PROJECT_NAME}-mlm
 
 etn_target(exe ${PROJECT_NAME}-example
   SOURCES
-      fty_common_messagebus_example.cpp
+    src/FtyCommonMessagebusExample.cpp
   USES
-      ${PROJECT_NAME_UNDERSCORE}
-      fty-common-messagebus-sample-dto
-      cxxtools
+    ${PROJECT_NAME_UNDERSCORE}
+    fty-common-messagebus-sample-dto
+    cxxtools
 )
 
-# etn_target(exe fty_common_messagebus_example2
-#     SOURCES
-#         fty_common_messagebus_example2.cc
-#     USES
-#         ${PROJECT_NAME_UNDERSCORE}
-#         cxxtools
-# )
+etn_target(exe ${PROJECT_NAME}-example2
+  SOURCES
+    src/FtyCommonMessagebusExample2.cpp
+  USES
+    ${PROJECT_NAME_UNDERSCORE}
+    fty-common-messagebus-sample-dto
+    cxxtools
+)
 
-# etn_target(exe fty_common_messagebus_example_req
-#     SOURCES
-#         fty_common_messagebus_example_req.cc
-#     USES
-#         ${PROJECT_NAME_UNDERSCORE}
-#         cxxtools
-# )
+etn_target(exe ${PROJECT_NAME}-req
+  SOURCES
+    src/FtyCommonMessagebusExampleReq.cpp
+  USES
+    ${PROJECT_NAME_UNDERSCORE}
+    fty-common-messagebus-sample-dto
+    cxxtools
+)
 
-# etn_target(exe fty_common_messagebus_example_rep
-#     SOURCES
-#         fty_common_messagebus_example_rep.cc
-#     USES
-#         ${PROJECT_NAME_UNDERSCORE}
-#         cxxtools
-# )
+etn_target(exe ${PROJECT_NAME}-rep
+  SOURCES
+    src/FtyCommonMessagebusExampleRep.cpp
+  USES
+    ${PROJECT_NAME_UNDERSCORE}
+    fty-common-messagebus-sample-dto
+    cxxtools
+)
 
-# etn_target(exe fty_common_messagebus_example_rep2
-#     SOURCES
-#         fty_common_messagebus_example_rep2.cc
-#     USES
-#         ${PROJECT_NAME_UNDERSCORE}
-#         cxxtools
-# )
+etn_target(exe ${PROJECT_NAME}-rep2
+  SOURCES
+    src/FtyCommonMessagebusExampleRep2.cpp
+  USES
+    ${PROJECT_NAME_UNDERSCORE}
+    fty-common-messagebus-sample-dto
+    cxxtools
+)
