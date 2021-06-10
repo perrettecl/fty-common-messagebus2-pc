@@ -19,10 +19,10 @@ find_package(PahoMqttCpp REQUIRED)
 ##############################################################################################################
 etn_target(shared ${PROJECT_NAME_UNDERSCORE}
   PUBLIC_INCLUDE_DIR
-      public_include
+    public_include
   INCLUDE_DIRS
-      private_include
-  # PUBLIC_HEADERS
+    private_include
+  PUBLIC_HEADERS
   #     #fty_common_messagebus_dispatcher.h
   #     fty_common_messagebus_exception.h
   #     # fty_common_messagebus.h
@@ -34,7 +34,8 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
   #     fty_common_messagebus_helper.hpp
   #     fty_common_messagebus_Imessage.hpp
   #     fty_common_messagebus_factory.hpp
-
+    *.h
+    *.hpp
   SOURCES
       src/*.cpp
   USES_PUBLIC
