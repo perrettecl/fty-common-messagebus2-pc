@@ -25,7 +25,7 @@
 #include "MsgBusException.hpp"
 #include "MsgBusHelper.hpp"
 #include "IMessageBus.hpp"
-#include "MsgBusMlmMessage.hpp"
+#include "fty/messagebus/mlm/MsgBusMlmMessage.hpp"
 
 #include <condition_variable>
 #include <fty_common_mlm.h>
