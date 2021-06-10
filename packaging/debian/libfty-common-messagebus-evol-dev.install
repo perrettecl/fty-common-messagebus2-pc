@@ -1,0 +1,4 @@
+usr/include/*
+usr/lib/*/pkgconfig/libfty_common_messagebus_evol.pc
+usr/share/cmake/*
+usr/lib/*/libfty_common_messagebus_evol.so
