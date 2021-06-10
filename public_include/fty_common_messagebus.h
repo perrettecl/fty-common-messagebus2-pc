@@ -22,9 +22,6 @@
 #ifndef FTY_COMMON_MESSAGEBUS_H_H_INCLUDED
 #define FTY_COMMON_MESSAGEBUS_H_H_INCLUDED
 
-//  Include the project library file
-#include "fty_common_messagebus_library.h"
 
-//  Add your own public definitions here, if you need them
 
 #endif

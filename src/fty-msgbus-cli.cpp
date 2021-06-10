@@ -26,7 +26,6 @@
 @end
 */
 
-#include "fty_common_messagebus_classes.h"
 #include "fty_common_messagebus_factory.hpp"
 
 #include <csignal>

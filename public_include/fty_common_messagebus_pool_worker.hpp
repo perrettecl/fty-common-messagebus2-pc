@@ -27,18 +27,20 @@
 #include <functional>
 #include <future>
 #include <mutex>
+#include <queue>
 #include <thread>
 #include <type_traits>
 #include <vector>
-#include <queue>
 
-namespace messagebus {
+namespace fty::messagebus::poolworker
+{
 
-/**
+  /**
  * \brief Pool of worker threads.
  */
-class PoolWorker {
-public:
+  class PoolWorker
+  {
+  public:
     /**
      * \brief Create a pool of worker threads.
      * \param workers Number of workers (work will be processed synchronously if 0).
@@ -66,19 +68,19 @@ public:
      * \param args Arguments to pass to the callable.
      * \return A future of the return value of the callable.
      */
-    template<
-        typename Function,
-        typename... Args,
-        typename ReturnType = decltype(std::declval<Function&&>()(std::declval<Args&&>()...))
-    >
-    auto schedule(Function&& fn, Args&&... args) -> std::future<ReturnType> {
-        using PackagedTask = std::packaged_task<ReturnType()>;
+    template <
+      typename Function,
+      typename... Args,
+      typename ReturnType = decltype(std::declval<Function&&>()(std::declval<Args&&>()...))>
+    auto schedule(Function&& fn, Args&&... args) -> std::future<ReturnType>
+    {
+      using PackagedTask = std::packaged_task<ReturnType()>;
 
-        // Package the work into a storable form.
-        auto packagedTask = std::make_shared<PackagedTask>(std::bind(std::forward<Function&&>(fn), std::forward<Args&&>(args)...));
+      // Package the work into a storable form.
+      auto packagedTask = std::make_shared<PackagedTask>(std::bind(std::forward<Function&&>(fn), std::forward<Args&&>(args)...));
 
-        this->scheduleWork(std::move([packagedTask]() { (*packagedTask)(); }));
-        return packagedTask->get_future();
+      this->scheduleWork(std::move([packagedTask]() { (*packagedTask)(); }));
+      return packagedTask->get_future();
     }
 
     /**
@@ -86,18 +88,18 @@ public:
      * \param work Callable of the work to do.
      * \param args Arguments to pass to the callable.
      */
-    template<
-        typename Function,
-        typename... Args
-    >
-    auto offload(Function&& fn, Args&&... args) -> void {
-        // Package the work into a storable form.
-        WorkUnit packagedTask = std::bind(std::forward<Function&&>(fn), std::forward<Args&&>(args)...);
+    template <
+      typename Function,
+      typename... Args>
+    auto offload(Function&& fn, Args&&... args) -> void
+    {
+      // Package the work into a storable form.
+      WorkUnit packagedTask = std::bind(std::forward<Function&&>(fn), std::forward<Args&&>(args)...);
 
-        this->scheduleWork(std::move(packagedTask));
+      this->scheduleWork(std::move(packagedTask));
     }
 
-private:
+  private:
     /// \brief Unit of work for pool worker.
     using WorkUnit = std::function<void()>;
     void scheduleWork(WorkUnit&& work);
@@ -108,8 +110,8 @@ private:
     std::mutex m_mutex;
     std::queue<WorkUnit> m_jobs;
     std::condition_variable m_cv;
-} ;
+  };
 
-}
+} // namespace fty::messagebus::poolworker
 
 #endif

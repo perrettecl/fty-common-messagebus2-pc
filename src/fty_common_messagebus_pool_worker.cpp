@@ -25,67 +25,80 @@
 @discuss
 @end
 */
+#include "fty_common_messagebus_pool_worker.hpp"
 
-#include "fty_common_messagebus_classes.h"
+namespace fty::messagebus::poolworker
+{
 
-namespace messagebus {
-
-PoolWorker::PoolWorker(size_t workers) : m_terminated(false) {
+  PoolWorker::PoolWorker(size_t workers)
+    : m_terminated(false)
+  {
     auto workerMainloop = [this]() {
-        while (true) {
-            std::unique_lock<std::mutex> lk(m_mutex);
-            m_cv.wait(lk, [this]() -> bool { return m_terminated.load() || m_jobs.size(); });
+      while (true)
+      {
+        std::unique_lock<std::mutex> lk(m_mutex);
+        m_cv.wait(lk, [this]() -> bool { return m_terminated.load() || m_jobs.size(); });
 
-            while (!m_jobs.empty()) {
-                auto work = std::move(m_jobs.front());
-                m_jobs.pop();
-                lk.unlock();
-
-                work();
-
-                lk.lock();
-            }
-
-            if (m_terminated.load()) {
-                break;
-            }
-        }
-    } ;
-
-    for (size_t cpt = 0; cpt < workers; cpt++) {
-        m_workers.emplace_back(std::thread(workerMainloop));
-    }
-}
-
-PoolWorker::~PoolWorker() {
-    if (!m_workers.empty()) {
+        while (!m_jobs.empty())
         {
-            std::unique_lock<std::mutex> lk(m_mutex);
-            m_terminated.store(true);
-            m_cv.notify_all();
+          auto work = std::move(m_jobs.front());
+          m_jobs.pop();
+          lk.unlock();
+
+          work();
+
+          lk.lock();
         }
 
-        for (auto& th : m_workers) {
-            th.join();
+        if (m_terminated.load())
+        {
+          break;
         }
+      }
+    };
+
+    for (size_t cpt = 0; cpt < workers; cpt++)
+    {
+      m_workers.emplace_back(std::thread(workerMainloop));
     }
-}
+  }
 
-void PoolWorker::scheduleWork(WorkUnit&& work) {
+  PoolWorker::~PoolWorker()
+  {
+    if (!m_workers.empty())
+    {
+      {
+        std::unique_lock<std::mutex> lk(m_mutex);
+        m_terminated.store(true);
+        m_cv.notify_all();
+      }
+
+      for (auto& th : m_workers)
+      {
+        th.join();
+      }
+    }
+  }
+
+  void PoolWorker::scheduleWork(WorkUnit&& work)
+  {
     std::unique_lock<std::mutex> lk(m_mutex);
-    if (m_terminated.load()) {
-        throw std::runtime_error("PoolThread is terminated");
+    if (m_terminated.load())
+    {
+      throw std::runtime_error("PoolThread is terminated");
     }
 
-    if (m_workers.empty()) {
-        // No workers, run job synchronously.
-        work();
+    if (m_workers.empty())
+    {
+      // No workers, run job synchronously.
+      work();
     }
-    else {
-        // Got workers, schedule.
-        m_jobs.emplace(work);
-        m_cv.notify_one();
+    else
+    {
+      // Got workers, schedule.
+      m_jobs.emplace(work);
+      m_cv.notify_one();
     }
-}
+  }
 
-}
+} // namespace messagebus
