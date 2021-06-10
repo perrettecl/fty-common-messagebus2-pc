@@ -53,7 +53,7 @@ namespace
   using namespace fty::messagebus::mqttv5::test;
   using namespace fty::messagebus::test;
 
-  MqttMessageBus* mqttMsgBus;
+  MessageBusMqtt* mqttMsgBus;
   static bool _continue = true;
 
   auto getClientName() -> std::string
@@ -143,7 +143,7 @@ namespace
 
   // The MQTT publisher function will run in its own thread.
   // It runs until the receiver thread closes the counter object.
-  void publisherFunc(MqttMessageBus* messageBus, MultithrCounter::ptr_t counter)
+  void publisherFunc(MessageBusMqtt* messageBus, MultithrCounter::ptr_t counter)
   {
     while (_continue)
     {

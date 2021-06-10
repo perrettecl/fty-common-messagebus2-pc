@@ -47,16 +47,16 @@ namespace fty::messagebus::mqttv5
   using ClientPointer = std::shared_ptr<mqtt::async_client>;
 
 
-  class MqttMessageBus final : public IMessageBus<MqttMessage>
+  class MessageBusMqtt final : public IMessageBus<MqttMessage>
   {
   public:
-    MqttMessageBus() = default;
+    MessageBusMqtt() = default;
 
-    MqttMessageBus(const std::string& endpoint, const std::string& clientName)
+    MessageBusMqtt(const std::string& endpoint, const std::string& clientName)
       : m_endpoint(endpoint)
       , m_clientName(clientName){};
 
-    ~MqttMessageBus() override;
+    ~MessageBusMqtt() override;
 
     void connect() override;
 

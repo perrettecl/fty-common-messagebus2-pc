@@ -53,7 +53,7 @@ namespace
   using namespace fty::messagebus::mqttv5::test;
   using namespace fty::messagebus::test;
 
-  MqttMessageBus* mqttMsgBus;
+  MessageBusMqtt* mqttMsgBus;
 
   static bool _continue = true;
   static auto correlationIdSniffer = std::map<std::string,std::string>();
@@ -153,7 +153,7 @@ namespace
     }
   }
 
-  void requesterFunc(MqttMessageBus* messageBus)
+  void requesterFunc(MessageBusMqtt* messageBus)
   {
     auto correlationId = helper::generateUuid();
     auto replyTo = REPLY_QUEUE + '/' + correlationId;

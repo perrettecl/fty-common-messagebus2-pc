@@ -54,7 +54,7 @@ namespace fty::messagebus
    *
    * @return IMessageBus
    */
-    auto static createMqttMsgBus(const std::string& _endpoint, const std::string& _clientName) -> mqttv5::MqttMessageBus*;
+    auto static createMqttMsgBus(const std::string& _endpoint, const std::string& _clientName) -> mqttv5::MessageBusMqtt*;
   };
 
 } // namespace messagebus

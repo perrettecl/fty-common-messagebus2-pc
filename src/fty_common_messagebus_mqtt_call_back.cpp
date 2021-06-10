@@ -163,7 +163,7 @@ namespace fty::messagebus::mqttv5
     //   log_error("no response topic");
     // }
     // TODO do it but core dump in terminate?
-    //MqttMessageBus::unsubscribe(msg->get_topic());
+    //MessageBusMqtt::unsubscribe(msg->get_topic());
   }
 
 } // namespace messagebus

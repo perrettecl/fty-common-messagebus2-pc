@@ -47,7 +47,7 @@ namespace
   using namespace fty::messagebus::mqttv5::test;
   using namespace fty::messagebus::test;
 
-  MqttMessageBus* replyer;
+  MessageBusMqtt* replyer;
   static bool _continue = true;
 
   auto getClientName() -> std::string

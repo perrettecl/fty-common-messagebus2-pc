@@ -38,9 +38,9 @@ namespace fty::messagebus
     return new mlm::MessageBusMalamute(_endpoint, _clientName);
   }
 
-  auto MessagebusFactory::createMqttMsgBus(const std::string& _endpoint, const std::string& _clientName) -> mqttv5::MqttMessageBus*
+  auto MessagebusFactory::createMqttMsgBus(const std::string& _endpoint, const std::string& _clientName) -> mqttv5::MessageBusMqtt*
   {
-    return new mqttv5::MqttMessageBus(_endpoint, _clientName);
+    return new mqttv5::MessageBusMqtt(_endpoint, _clientName);
   }
 
 } // namespace messagebus

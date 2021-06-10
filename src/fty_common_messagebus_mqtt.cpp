@@ -81,7 +81,7 @@ namespace fty::messagebus::mqttv5
   static auto constexpr RETAINED = false; //true;
   auto constexpr TIMEOUT = std::chrono::seconds(10);
 
-  MqttMessageBus::~MqttMessageBus()
+  MessageBusMqtt::~MessageBusMqtt()
   {
     // Cleaning all async clients
     if (isServiceAvailable())
@@ -93,7 +93,7 @@ namespace fty::messagebus::mqttv5
     }
   }
 
-  void MqttMessageBus::connect()
+  void MessageBusMqtt::connect()
   {
     mqtt::create_options opts(MQTTVERSION_5);
 
@@ -134,12 +134,12 @@ namespace fty::messagebus::mqttv5
     }
   }
 
-  auto MqttMessageBus::isServiceAvailable() -> bool
+  auto MessageBusMqtt::isServiceAvailable() -> bool
   {
     return (m_client && m_client->is_connected());
   }
 
-  void MqttMessageBus::publish(const std::string& topic, const MqttMessage& message)
+  void MessageBusMqtt::publish(const std::string& topic, const MqttMessage& message)
   {
     if (isServiceAvailable())
     {
@@ -159,7 +159,7 @@ namespace fty::messagebus::mqttv5
     }
   }
 
-  void MqttMessageBus::subscribe(const std::string& topic, MessageListener messageListener)
+  void MessageBusMqtt::subscribe(const std::string& topic, MessageListener messageListener)
   {
     if (isServiceAvailable())
     {
@@ -173,7 +173,7 @@ namespace fty::messagebus::mqttv5
     }
   }
 
-  void MqttMessageBus::unsubscribe(const std::string& topic, MessageListener /*messageListener*/)
+  void MessageBusMqtt::unsubscribe(const std::string& topic, MessageListener /*messageListener*/)
   {
     if (isServiceAvailable())
     {
@@ -182,7 +182,7 @@ namespace fty::messagebus::mqttv5
     }
   }
 
-  void MqttMessageBus::receive(const std::string& queue, MessageListener messageListener)
+  void MessageBusMqtt::receive(const std::string& queue, MessageListener messageListener)
   {
     if (isServiceAvailable())
     {
@@ -205,7 +205,7 @@ namespace fty::messagebus::mqttv5
     }
   }
 
-  void MqttMessageBus::sendRequest(const std::string& requestQueue, const MqttMessage& message)
+  void MessageBusMqtt::sendRequest(const std::string& requestQueue, const MqttMessage& message)
   {
     if (isServiceAvailable())
     {
@@ -228,7 +228,7 @@ namespace fty::messagebus::mqttv5
     }
   }
 
-  void MqttMessageBus::sendRequest(const std::string& requestQueue, const MqttMessage& message, MessageListener messageListener)
+  void MessageBusMqtt::sendRequest(const std::string& requestQueue, const MqttMessage& message, MessageListener messageListener)
   {
     //auto replyTo = getReplyQueue(message);
 
@@ -236,7 +236,7 @@ namespace fty::messagebus::mqttv5
     sendRequest(requestQueue, message);
   }
 
-  void MqttMessageBus::sendReply(const std::string& replyQueue, const MqttMessage& message)
+  void MessageBusMqtt::sendReply(const std::string& replyQueue, const MqttMessage& message)
   {
     if (isServiceAvailable())
     {
@@ -256,7 +256,7 @@ namespace fty::messagebus::mqttv5
     }
   }
 
-  MqttMessage MqttMessageBus::request(const std::string& /*requestQueue*/, const MqttMessage& /*message*/, int /*receiveTimeOut*/)
+  MqttMessage MessageBusMqtt::request(const std::string& /*requestQueue*/, const MqttMessage& /*message*/, int /*receiveTimeOut*/)
   {
     if (isServiceAvailable())
     {
