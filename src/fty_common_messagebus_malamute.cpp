@@ -37,20 +37,20 @@ namespace fty::messagebus::mlm
     if (zmsg_size(msg))
     {
       item = zmsg_pop(msg);
-      std::string key((const char*)zframe_data(item), zframe_size(item));
+      std::string key(reinterpret_cast<const char*>(zframe_data(item)), zframe_size(item));
       zframe_destroy(&item);
       if (key == "__METADATA_START")
       {
         while ((item = zmsg_pop(msg)))
         {
-          key = std::string((const char*)zframe_data(item), zframe_size(item));
+          key = std::string(reinterpret_cast<const char*>(zframe_data(item)), zframe_size(item));
           zframe_destroy(&item);
           if (key == "__METADATA_END")
           {
             break;
           }
           zframe_t* zvalue = zmsg_pop(msg);
-          std::string value((const char*)zframe_data(zvalue), zframe_size(zvalue));
+          std::string value(reinterpret_cast<const char*>(zframe_data(zvalue)), zframe_size(zvalue));
           zframe_destroy(&item);
           message.metaData().emplace(key, value);
         }
@@ -61,7 +61,7 @@ namespace fty::messagebus::mlm
       }
       while ((item = zmsg_pop(msg)))
       {
-        message.userData().emplace_back((const char*)zframe_data(item), zframe_size(item));
+        message.userData().emplace_back(reinterpret_cast<const char*>(zframe_data(item)), zframe_size(item));
         zframe_destroy(&item);
       }
     }
