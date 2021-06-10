@@ -29,12 +29,12 @@
 
 namespace fty::messagebus
 {
-  class MessagebusFactory
+  class MessageBusFactory
   {
 
   public:
-    MessagebusFactory() = default;
-    virtual ~MessagebusFactory(){};
+    MessageBusFactory() = default;
+    virtual ~MessageBusFactory(){};
 
     /**
    * @brief Malamute implementation

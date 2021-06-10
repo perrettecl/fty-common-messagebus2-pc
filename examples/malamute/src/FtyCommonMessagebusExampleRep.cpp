@@ -92,7 +92,7 @@ int main(int /*argc*/, char** argv)
   sigIntHandler.sa_flags = 0;
   sigaction(SIGINT, &sigIntHandler, NULL);
 
-  receiver = MessagebusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, "receiver");
+  receiver = MessageBusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, "receiver");
   receiver->connect();
   receiver->receive("doAction.queue.query", queryListener);
 

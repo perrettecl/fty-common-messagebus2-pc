@@ -82,7 +82,7 @@ namespace srr
     try
     {
       // Message bus init
-      m_msgBus = MessagebusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, "receiver");
+      m_msgBus = MessageBusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, "receiver");
       m_msgBus->connect();
 
       log_info("messagebus::connect");

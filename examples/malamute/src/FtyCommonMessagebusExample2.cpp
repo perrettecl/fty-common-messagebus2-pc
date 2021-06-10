@@ -96,10 +96,10 @@ int main(int /*argc*/, char** argv)
 {
   log_info(argv[0]);
 
-  receiver = MessagebusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, "receiver");
+  receiver = MessageBusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, "receiver");
   receiver->connect();
 
-  publisher = MessagebusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, "publisher");
+  publisher = MessageBusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, "publisher");
   publisher->connect();
 
   receiver->receive("doAction.queue.query", queryListener);

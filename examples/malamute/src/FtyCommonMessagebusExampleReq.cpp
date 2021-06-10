@@ -68,7 +68,7 @@ int main(int argc, char** argv)
 
   std::string clientName = utils::getClientId("requester");
 
-  requester = MessagebusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, clientName);
+  requester = MessageBusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, clientName);
   requester->connect();
 
   int count = 0;

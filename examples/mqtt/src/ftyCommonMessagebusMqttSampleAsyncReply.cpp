@@ -114,7 +114,7 @@ int main(int /*argc*/, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  replyer = MessagebusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, getClientName());
+  replyer = MessageBusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, getClientName());
   replyer->connect();
   replyer->receive(REQUEST_QUEUE, replyerMessageListener);
 

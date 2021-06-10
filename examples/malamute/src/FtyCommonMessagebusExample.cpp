@@ -126,14 +126,14 @@ int main(int /*argc*/, char** argv)
 {
   log_info(argv[0]);
 
-  receiver = MessagebusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, "receiver");
+  receiver = MessageBusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, "receiver");
   receiver->connect();
   receiver->subscribe("discovery", messageListener);
   receiver->receive("doAction.queue.query", queryListener);
   // old mailbox mecanism
   receiver->receive("receiver", queryListener);
 
-  publisher = MessagebusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, "publisher");
+  publisher = MessageBusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, "publisher");
   publisher->connect();
   publisher->receive("doAction.queue.response", responseListener);
   std::this_thread::sleep_for(std::chrono::seconds(2));

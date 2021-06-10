@@ -171,7 +171,7 @@ int main(int /*argc*/, char** argv)
   // Make a counter object also with a shared pointer.
   auto counter = std::make_shared<MultithrCounter>();
 
-  mqttMsgBus = MessagebusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, getClientName());
+  mqttMsgBus = MessageBusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, getClientName());
   mqttMsgBus->connect();
   mqttMsgBus->subscribe(SAMPLE_TOPIC, messageListener);
 
