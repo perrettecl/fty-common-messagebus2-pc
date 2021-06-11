@@ -28,10 +28,8 @@
 
 #include "FtyCommonMqttTestDef.hpp"
 #include "FtyCommonMqttTestMathDto.h"
-
 #include "fty/messagebus/MsgBusException.hpp"
 #include "fty/messagebus/MsgBusFactory.hpp"
-
 #include "fty/messagebus/utils/MsgBusHelper.hpp"
 
 #include <chrono>
@@ -46,6 +44,7 @@ namespace
   using namespace fty::messagebus::mqttv5;
   using namespace fty::messagebus::mqttv5::test;
   using namespace fty::messagebus::test;
+  using Message = fty::messagebus::mqttv5::MqttMessage;
 
   static bool _continue = true;
   static auto constexpr WAIT_RESPONSE_FOR = 5;
@@ -56,7 +55,7 @@ namespace
     _continue = false;
   }
 
-  void responseMessageListener(MqttMessage message)
+  void responseMessageListener(const Message& message)
   {
     log_info("Response arrived");
     auto data = message.userData();
@@ -93,7 +92,7 @@ int main(int argc, char** argv)
   auto correlationId = utils::generateUuid();
   auto replyTo = REPLY_QUEUE + '/' + correlationId;
 
-  MqttMessage message;
+  Message message;
   MathOperation query = MathOperation(argv[3], argv[4], argv[5]);
   message.userData() << query;
   message.metaData().clear();

@@ -52,6 +52,7 @@ namespace
   using namespace fty::messagebus::mqttv5;
   using namespace fty::messagebus::mqttv5::test;
   using namespace fty::messagebus::test;
+  using Message = fty::messagebus::mqttv5::MqttMessage;
 
   MessageBusMqtt* mqttMsgBus;
   static bool _continue = true;
@@ -136,7 +137,7 @@ namespace
     }
   };
 
-  void messageListener(const MqttMessage& message)
+  void messageListener(const Message& message)
   {
     log_info("Msg arrived: %s", message.userData().front().c_str());
   }
@@ -152,7 +153,7 @@ namespace
       {
         _continue = false;
       }
-      MqttMessage message;
+      Message message;
       message.userData().emplace_front(std::to_string(n));
       messageBus->publish(SAMPLE_TOPIC, message);
     }

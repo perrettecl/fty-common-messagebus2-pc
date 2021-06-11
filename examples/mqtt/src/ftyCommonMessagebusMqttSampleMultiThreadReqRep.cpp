@@ -52,6 +52,7 @@ namespace
   using namespace fty::messagebus::mqttv5;
   using namespace fty::messagebus::mqttv5::test;
   using namespace fty::messagebus::test;
+  using Message = fty::messagebus::mqttv5::MqttMessage;
 
   MessageBusMqtt* mqttMsgBus;
 
@@ -77,7 +78,7 @@ namespace
     return uni(rng);
   }
 
-  void mathOperationListener(const MqttMessage& message)
+  void mathOperationListener(const Message& message)
   {
     log_info("Question arrived");
 
@@ -100,7 +101,7 @@ namespace
       mathResultResult.result = "Unsuported operation";
     }
 
-    MqttMessage response;
+    Message response;
     UserData responseData;
 
     responseData << mathResultResult;
@@ -115,7 +116,7 @@ namespace
     //_continue = false;
   }
 
-  void responseListener(const MqttMessage& message)
+  void responseListener(const Message& message)
   {
     log_info("Answer arrived");
     UserData data = message.userData();
@@ -160,7 +161,7 @@ namespace
 
     auto rand = std::to_string(buildRandom(1, 10));
 
-    MqttMessage message;
+    Message message;
     MathOperation query = MathOperation("add", "1", rand);
     message.userData() << query;
     message.metaData().clear();

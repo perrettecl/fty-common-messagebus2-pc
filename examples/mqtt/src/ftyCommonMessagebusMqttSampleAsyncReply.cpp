@@ -46,6 +46,7 @@ namespace
   using namespace fty::messagebus::mqttv5;
   using namespace fty::messagebus::mqttv5::test;
   using namespace fty::messagebus::test;
+  using Message = fty::messagebus::mqttv5::MqttMessage;
 
   MessageBusMqtt* replyer;
   static bool _continue = true;
@@ -61,7 +62,7 @@ namespace
     _continue = false;
   }
 
-  void replyerMessageListener(const MqttMessage& message)
+  void replyerMessageListener(const Message& message)
   {
     log_info("Replyer messageListener");
 
@@ -89,7 +90,7 @@ namespace
       mathResultResult.result = "Unsuported operation";
     }
 
-    MqttMessage response;
+    Message response;
     UserData responseData;
 
     responseData << mathResultResult;

@@ -44,6 +44,7 @@ namespace
   using namespace fty::messagebus;
   using namespace fty::messagebus::mqttv5;
   using namespace fty::messagebus::mqttv5::test;
+  using Message = fty::messagebus::mqttv5::MqttMessage;
 
   static bool _continue = true;
 
@@ -53,7 +54,7 @@ namespace
     _continue = false;
   }
 
-  void messageListener(MqttMessage message)
+  void messageListener(Message message)
   {
     log_info("messageListener");
     auto metadata = message.metaData();
@@ -89,7 +90,7 @@ int main(int /*argc*/, char** argv)
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
   // Publish
-  MqttMessage message;
+  Message message;
   message.userData() << FooBar("event", "hello");
   message.metaData().clear();
   message.metaData().emplace("mykey", "myvalue");
