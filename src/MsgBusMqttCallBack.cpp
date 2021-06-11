@@ -26,11 +26,9 @@
 @end
 */
 
-//#include "fty/messagebus/mqtt/MsgBusMqtt.hpp"
 #include "fty/messagebus/mqtt/MsgBusMqttCallBack.hpp"
 #include "fty/messagebus/mqtt/MsgBusMqttMessage.hpp"
 
-#include "fty/messagebus/IMessage.hpp"
 #include <fty_log.h>
 
 #include <mqtt/async_client.h>
@@ -78,6 +76,8 @@ namespace fty::messagebus::mqttv5
   // {
   //   //auto num_threads = std::thread::hardware_concurrency();
   // }
+
+
 
   CallBack::~CallBack()
   {
@@ -139,7 +139,7 @@ namespace fty::messagebus::mqttv5
     {
       try
       {
-        //(it->second)(Message{metaData, msg->get_payload_str()});
+        (it->second)(MqttMessage{metaData, msg->get_payload_str()});
         // std::thread thread(it->second, Message{metaData, msg->get_payload_str()});
         // thread.detach();
         //m_threadPool.emplace_back(std::thread(it->second, MqttMessage{metaData, msg->get_payload_str()}));
