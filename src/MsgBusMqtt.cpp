@@ -28,49 +28,15 @@
 
 #include "fty/messagebus/mqtt/MsgBusMqtt.hpp"
 #include "fty/messagebus/MsgBusException.hpp"
+#include "fty/messagebus/mqtt/MsgBusMqttUtils.hpp"
 #include "fty/messagebus/utils/MsgBusHelper.hpp"
+
 #include <fty_log.h>
 
 #include <mqtt/async_client.h>
 #include <mqtt/properties.h>
 
 using namespace fty::messagebus;
-
-namespace
-{
-
-  using Message = fty::messagebus::mqttv5::MqttMessage;
-
-  static auto getMqttPropertiesFromMetaData(const MetaData& metaData) -> const mqtt::properties
-  {
-    auto props = mqtt::properties{};
-    for (const auto& data : metaData)
-    {
-      if (data.first == REPLY_TO)
-      {
-        std::string correlationId = metaData.find(CORRELATION_ID)->second;
-        props.add({mqtt::property::CORRELATION_DATA, correlationId});
-        props.add({mqtt::property::RESPONSE_TOPIC, data.second});
-      }
-      else if (data.first != CORRELATION_ID)
-      {
-        props.add({mqtt::property::USER_PROPERTY, data.first, data.second});
-      }
-    }
-    return props;
-  }
-
-  static auto getCorrelationId(const Message& message) -> const std::string
-  {
-    auto iterator = message.metaData().find(CORRELATION_ID);
-    if (iterator == message.metaData().end() || iterator->second == "")
-    {
-      throw MessageBusException("Request must have a correlation id.");
-    }
-    return iterator->second;
-  }
-
-} // namespace
 
 namespace fty::messagebus::mqttv5
 {
@@ -79,7 +45,7 @@ namespace fty::messagebus::mqttv5
 
   duration KEEP_ALIVE = 20;
   static auto constexpr QOS = mqtt::ReasonCode::GRANTED_QOS_2;
-  static auto constexpr RETAINED = false; //true;
+  static auto constexpr RETAINED = false; //true;s
   auto constexpr TIMEOUT = std::chrono::seconds(10);
 
   MessageBusMqtt::~MessageBusMqtt()
@@ -257,27 +223,27 @@ namespace fty::messagebus::mqttv5
     }
   }
 
-  Message MessageBusMqtt::request(const std::string& requestQueue, const Message& /*message*/, int /*receiveTimeOut*/)
+  Message MessageBusMqtt::request(const std::string& requestQueue, const Message& message, int receiveTimeOut)
   {
     if (isServiceAvailable())
     {
-      // mqtt::const_message_ptr msg;
-      // auto replyQueue = getReplyQueue(message);
+      mqtt::const_message_ptr msg;
+      auto replyQueue = getReplyQueue(message);
 
-      //m_client->subscribe(replyQueue, QOS);
-      // sendRequest(requestQueue, message);
-      // auto messageArrived = m_client->try_consume_message_for(&msg, std::chrono::seconds(receiveTimeOut));
-      // if (messageArrived)
-      // {
-      //   return Message{getMetaDataFromMqttProperties(msg->get_properties()), msg->get_payload_str()};
-      // }
-      // else
-      // {
-      //   throw MessageBusException("Request timed out of '" + std::to_string(receiveTimeOut) + "' seconds reached.");
-      // }
-      //m_client->unsubscribe(replyQueue);
+      m_client->subscribe(replyQueue, QOS);
+      sendRequest(requestQueue, message);
+      auto messageArrived = m_client->try_consume_message_for(&msg, std::chrono::seconds(receiveTimeOut));
+      if (messageArrived)
+      {
+        return Message{getMetaDataFromMqttProperties(msg->get_properties()), msg->get_payload_str()};
+      }
+      else
+      {
+        throw MessageBusException("Request timed out of '" + std::to_string(receiveTimeOut) + "' seconds reached.");
+      }
+      m_client->unsubscribe(replyQueue);
     }
-     return Message{};
+    return Message{};
   }
 
-} // namespace messagebus::mqttv5
+} // namespace fty::messagebus::mqttv5
