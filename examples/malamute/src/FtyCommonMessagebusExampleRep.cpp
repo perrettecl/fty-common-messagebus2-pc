@@ -27,7 +27,6 @@
 */
 
 #include "FtyCommonMessageBusDto.hpp"
-#include "fty/messagebus/IMessage.hpp"
 #include "fty/messagebus/MsgBusException.hpp"
 #include "fty/messagebus/MsgBusFactory.hpp"
 #include "fty/messagebus/utils/MsgBusHelper.hpp"
@@ -38,10 +37,11 @@ namespace
 {
   using namespace fty::messagebus;
   using namespace fty::messagebus::mlm;
+  using Message = fty::messagebus::mlm::MlmMessage;
 
   MessageBusMalamute* receiver;
 
-  void queryListener(MlmMessage message)
+  void queryListener(const Message& message)
   {
     log_info("queryListener:");
     for (const auto& pair : message.metaData())
@@ -56,7 +56,7 @@ namespace
 
     if (message.metaData().size() != 0)
     {
-      MlmMessage response;
+      Message response;
       MetaData metadata;
       FooBar fooBarr = FooBar("status::ok", fooBar.bar.c_str());
       UserData data2;

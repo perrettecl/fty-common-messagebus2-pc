@@ -27,7 +27,6 @@
 */
 
 #include "FtyCommonMessageBusDto.hpp"
-#include "fty/messagebus/IMessage.hpp"
 #include "fty/messagebus/MsgBusException.hpp"
 #include "fty/messagebus/MsgBusFactory.hpp"
 #include "fty/messagebus/utils/MsgBusHelper.hpp"
@@ -37,6 +36,7 @@
 using namespace std::placeholders;
 using namespace fty::messagebus;
 using namespace fty::messagebus::mlm;
+using Message = fty::messagebus::mlm::MlmMessage;
 
 namespace srr
 {
@@ -46,7 +46,7 @@ namespace srr
     SrrManager();
     ~SrrManager();
     void init();
-    void handleRequest(const MlmMessage& msg);
+    void handleRequest(const Message& msg);
     MessageBusMalamute* m_msgBus;
   };
 
@@ -108,7 +108,7 @@ namespace srr
  * @param payloadea
  * @return
  */
-  void SrrManager::handleRequest(const MlmMessage& message)
+  void SrrManager::handleRequest(const Message& message)
   {
     log_info("queryListener:");
     for (const auto& pair : message.metaData())
@@ -123,7 +123,7 @@ namespace srr
 
     if (message.metaData().size() != 0)
     {
-      MlmMessage response;
+      Message response;
       MetaData metadata;
       auto fooBarr = FooBar("status::ok", fooBar.bar.c_str());
       UserData data2;

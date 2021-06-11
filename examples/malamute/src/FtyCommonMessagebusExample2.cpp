@@ -26,7 +26,6 @@
 @end
 */
 #include "FtyCommonMessageBusDto.hpp"
-#include "fty/messagebus/IMessage.hpp"
 #include "fty/messagebus/MsgBusException.hpp"
 #include "fty/messagebus/MsgBusFactory.hpp"
 #include "fty/messagebus/utils/MsgBusHelper.hpp"
@@ -37,11 +36,12 @@ namespace
 {
   using namespace fty::messagebus;
   using namespace fty::messagebus::mlm;
+  using Message = fty::messagebus::mlm::MlmMessage;
 
   MessageBusMalamute* receiver;
   MessageBusMalamute* publisher;
 
-  void queryListener(MlmMessage message)
+  void queryListener(const Message& message)
   {
     log_info("queryListener:");
     for (const auto& pair : message.metaData())
@@ -56,7 +56,7 @@ namespace
 
     if (message.metaData().size() != 0)
     {
-      MlmMessage response;
+      Message response;
       MetaData metadata;
       auto fooBarr = FooBar("status", "ok");
       UserData data2;
@@ -77,7 +77,7 @@ namespace
     }
   }
 
-  void responseListener(const MlmMessage& message)
+  void responseListener(const Message& message)
   {
     log_info("responseListener:");
     for (const auto& pair : message.metaData())
@@ -107,7 +107,7 @@ int main(int /*argc*/, char** argv)
   std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // REQUEST
-  MlmMessage message;
+  Message message;
   auto query1 = FooBar("doAction", "wait");
   message.userData() << query1;
   message.metaData().clear();
@@ -120,7 +120,7 @@ int main(int /*argc*/, char** argv)
   std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // REQUEST 2
-  MlmMessage message2;
+  Message message2;
   auto query2 = FooBar("doAction", "wait");
   message2.userData() << query2;
   message2.metaData().clear();

@@ -26,7 +26,7 @@
 
 #include <list>
 
-namespace fty::messagebus
+namespace fty::messagebus::mlm
 {
   // Json representation
   using UserData = std::list<std::string>;

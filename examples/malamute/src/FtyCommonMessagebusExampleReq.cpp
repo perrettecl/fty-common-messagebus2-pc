@@ -27,7 +27,6 @@
 */
 
 #include "FtyCommonMessageBusDto.hpp"
-#include "fty/messagebus/IMessage.hpp"
 #include "fty/messagebus/MsgBusException.hpp"
 #include "fty/messagebus/MsgBusFactory.hpp"
 #include "fty/messagebus/utils/MsgBusHelper.hpp"
@@ -38,6 +37,7 @@ namespace
 {
   using namespace fty::messagebus;
   using namespace fty::messagebus::mlm;
+  using Message = fty::messagebus::mlm::MlmMessage;
 
   MessageBusMalamute* requester;
 
@@ -87,7 +87,7 @@ int main(int argc, char** argv)
     std::string str(buffer);
 
     // SYNC REQUEST
-    MlmMessage message;
+    Message message;
     auto query = FooBar("doAction", std::to_string(count));
     message.userData() << query;
     message.metaData().clear();
