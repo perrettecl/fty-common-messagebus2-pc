@@ -27,7 +27,6 @@
 */
 
 #include "FtyCommonMqttTestDef.hpp"
-#include "fty/messagebus/IMessage.hpp"
 #include "FtyCommonMessageBusDto.hpp"
 #include "fty/messagebus/MsgBusException.hpp"
 #include "fty/messagebus/MsgBusFactory.hpp"
