@@ -39,7 +39,7 @@ using namespace fty::messagebus;
 namespace
 {
 
-  using MqttMessage = fty::messagebus::mqttv5::MqttMessage;
+  using Message = fty::messagebus::mqttv5::MqttMessage;
 
   static auto getMqttPropertiesFromMetaData(const MetaData& metaData) -> const mqtt::properties
   {
@@ -60,7 +60,7 @@ namespace
     return props;
   }
 
-  static auto getCorrelationId(const MqttMessage& message) -> const std::string
+  static auto getCorrelationId(const Message& message) -> const std::string
   {
     auto iterator = message.metaData().find(CORRELATION_ID);
     if (iterator == message.metaData().end() || iterator->second == "")
@@ -74,8 +74,9 @@ namespace
 
 namespace fty::messagebus::mqttv5
 {
-
   using duration = int64_t;
+  using Message = fty::messagebus::mqttv5::MqttMessage;
+
   duration KEEP_ALIVE = 20;
   static auto constexpr QOS = mqtt::ReasonCode::GRANTED_QOS_2;
   static auto constexpr RETAINED = false; //true;
@@ -139,7 +140,7 @@ namespace fty::messagebus::mqttv5
     return (m_client && m_client->is_connected());
   }
 
-  void MessageBusMqtt::publish(const std::string& topic, const MqttMessage& message)
+  void MessageBusMqtt::publish(const std::string& topic, const Message& message)
   {
     if (isServiceAvailable())
     {
@@ -205,7 +206,7 @@ namespace fty::messagebus::mqttv5
     }
   }
 
-  void MessageBusMqtt::sendRequest(const std::string& requestQueue, const MqttMessage& message)
+  void MessageBusMqtt::sendRequest(const std::string& requestQueue, const Message& message)
   {
     if (isServiceAvailable())
     {
@@ -228,7 +229,7 @@ namespace fty::messagebus::mqttv5
     }
   }
 
-  void MessageBusMqtt::sendRequest(const std::string& requestQueue, const MqttMessage& message, MessageListener messageListener)
+  void MessageBusMqtt::sendRequest(const std::string& requestQueue, const Message& message, MessageListener messageListener)
   {
     //auto replyTo = getReplyQueue(message);
 
@@ -236,7 +237,7 @@ namespace fty::messagebus::mqttv5
     sendRequest(requestQueue, message);
   }
 
-  void MessageBusMqtt::sendReply(const std::string& replyQueue, const MqttMessage& message)
+  void MessageBusMqtt::sendReply(const std::string& replyQueue, const Message& message)
   {
     if (isServiceAvailable())
     {
@@ -256,19 +257,19 @@ namespace fty::messagebus::mqttv5
     }
   }
 
-  MqttMessage MessageBusMqtt::request(const std::string& /*requestQueue*/, const MqttMessage& /*message*/, int /*receiveTimeOut*/)
+  Message MessageBusMqtt::request(const std::string& requestQueue, const Message& /*message*/, int /*receiveTimeOut*/)
   {
     if (isServiceAvailable())
     {
       // mqtt::const_message_ptr msg;
       // auto replyQueue = getReplyQueue(message);
 
-      // m_client->subscribe(replyQueue, QOS);
+      //m_client->subscribe(replyQueue, QOS);
       // sendRequest(requestQueue, message);
       // auto messageArrived = m_client->try_consume_message_for(&msg, std::chrono::seconds(receiveTimeOut));
       // if (messageArrived)
       // {
-      //   return MqttMessage{getMetaDataFromMqttProperties(msg->get_properties()), msg->get_payload_str()};
+      //   return Message{getMetaDataFromMqttProperties(msg->get_properties()), msg->get_payload_str()};
       // }
       // else
       // {
@@ -276,7 +277,7 @@ namespace fty::messagebus::mqttv5
       // }
       //m_client->unsubscribe(replyQueue);
     }
-     return MqttMessage{};
+     return Message{};
   }
 
 } // namespace messagebus::mqttv5
