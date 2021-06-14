@@ -5,7 +5,7 @@ project(fty-messagebus-common
 
 etn_target(interface ${PROJECT_NAME}
   PUBLIC_INCLUDE_DIR
-    include
+    public_include
   PUBLIC_HEADERS
     *.hpp
 )

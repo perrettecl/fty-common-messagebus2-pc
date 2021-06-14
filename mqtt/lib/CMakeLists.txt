@@ -7,11 +7,7 @@ project(fty-messagebus-mqtt
 ##############################################################################################################
 find_package(PahoMqttCpp REQUIRED)
 find_package(jsoncpp REQUIRED)
-# find_package(PkgConfig REQUIRED)
-# pkg_check_modules(JSONCPP jsoncpp)
-# message("FOUND CONFIG: ${jsoncpp_CONFIG}")
-# message("INCLUDE DIRS: ${jsoncpp_INCLUDE_DIRS}")
-message("LIBRARIES: ${jsoncpp_prefix}")
+find_package(nlohmann_json 3.2.0 REQUIRED)
 ##############################################################################################################
 
 
@@ -27,9 +23,6 @@ etn_target(shared ${PROJECT_NAME}
     *.hpp
   SOURCES
     src/*.cpp
-  # USES_PRIVATE
-    # fty-messagebus-utils
-    # fty-messagebus-common
   USES_PUBLIC
     fty-messagebus-utils
     fty-messagebus-common
@@ -38,9 +31,7 @@ etn_target(shared ${PROJECT_NAME}
     paho-mqttpp3
     paho-mqtt3as
     paho-mqtt3c
-    jsoncpp
-  USES
-     jsoncpp
+    nlohmann_json::nlohmann_json
   FLAGS
       "-fmax-errors=5"
 )

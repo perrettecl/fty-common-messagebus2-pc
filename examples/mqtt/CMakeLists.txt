@@ -16,66 +16,69 @@ etn_target(exe ${PROJECT_NAME}-pub-sub
   USES_PRIVATE
     fty-messagebus-common
     fty-messagebus-utils
-    # fty-messagebus-mlm
+    fty-messagebus-mlm
     fty-messagebus-mqtt
     ${PROJECT_NAME_UNDERSCORE}
     ${SAMPLE_DTO_LIB_NAME}
-    # cxxtools
-    # czmq
-    # fty_common_mlm
-    # mlm
-    # pthread
-    # paho-mqttpp3
-  USES_PUBLIC
-    jsoncpp
 )
 
-# # Math sample replyer
-# etn_target(exe ${PROJECT_NAME}-async-reply
-#   SOURCES
-#       src/*SampleAsyncReply.cpp
-#   INCLUDE_DIRS
-#       private_include
-#   USES
-#       ${PROJECT_NAME_UNDERSCORE}
-#       ${SAMPLE_DTO_LIB_NAME}
-#       cxxtools
-# )
+# Math sample replyer
+etn_target(exe ${PROJECT_NAME}-async-reply
+  SOURCES
+    src/*SampleAsyncReply.cpp
+  INCLUDE_DIRS
+    private_include
+  USES_PUBLIC
+    fty-messagebus-common
+    fty-messagebus-utils
+    fty-messagebus-mlm
+    fty-messagebus-mqtt
+    ${PROJECT_NAME_UNDERSCORE}
+    ${SAMPLE_DTO_LIB_NAME}
+)
 
-# # Math sample asynchrone and synchrone requester
-# etn_target(exe ${PROJECT_NAME}-send-request
-#   SOURCES
-#       src/*SampleSendRequest.cpp
-#   INCLUDE_DIRS
-#       private_include
-#   USES
-#       ${PROJECT_NAME_UNDERSCORE}
-#       ${SAMPLE_DTO_LIB_NAME}
-#       cxxtools
-# )
+# Math sample asynchrone and synchrone requester
+etn_target(exe ${PROJECT_NAME}-send-request
+  SOURCES
+    src/*SampleSendRequest.cpp
+  INCLUDE_DIRS
+     private_include
+  USES_PUBLIC
+    fty-messagebus-common
+    fty-messagebus-utils
+    fty-messagebus-mlm
+    fty-messagebus-mqtt
+    ${PROJECT_NAME_UNDERSCORE}
+    ${SAMPLE_DTO_LIB_NAME}
+)
 
-# # Stress lib sample
-# etn_target(exe ${PROJECT_NAME}-stress-lib
-#   SOURCES
-#       src/*SampleStressLib.cpp
-#   INCLUDE_DIRS
-#       private_include
-#   USES
-#       ${PROJECT_NAME_UNDERSCORE}
-#       ${SAMPLE_DTO_LIB_NAME}
-#       cxxtools
-#       Threads::Threads
-# )
+# Stress lib sample
+etn_target(exe ${PROJECT_NAME}-stress-lib
+  SOURCES
+    src/*SampleStressLib.cpp
+  INCLUDE_DIRS
+    private_include
+  USES_PUBLIC
+    fty-messagebus-common
+    fty-messagebus-utils
+    fty-messagebus-mlm
+    fty-messagebus-mqtt
+    ${PROJECT_NAME_UNDERSCORE}
+    ${SAMPLE_DTO_LIB_NAME}
+)
 
-# # Req/Rep multi threaded
-# etn_target(exe ${PROJECT_NAME}-multi-thread-req-rep
-#   SOURCES
-#       src/*SampleMultiThreadReqRep.cpp
-#   INCLUDE_DIRS
-#       private_include
-#   USES
-#       ${PROJECT_NAME_UNDERSCORE}
-#       ${SAMPLE_DTO_LIB_NAME}
-#       cxxtools
-#       Threads::Threads
-# )
+# Req/Rep multi threaded
+etn_target(exe ${PROJECT_NAME}-multi-thread-req-rep
+  SOURCES
+    src/*SampleMultiThreadReqRep.cpp
+  INCLUDE_DIRS
+    private_include
+  USES_PUBLIC
+    fty-messagebus-common
+    fty-messagebus-utils
+    fty-messagebus-mlm
+    fty-messagebus-mqtt
+    ${PROJECT_NAME_UNDERSCORE}
+    ${SAMPLE_DTO_LIB_NAME}
+    Threads::Threads
+)

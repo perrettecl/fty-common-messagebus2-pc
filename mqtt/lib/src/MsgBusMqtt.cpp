@@ -97,7 +97,11 @@ namespace fty::messagebus::mqttv5
     }
     catch (const mqtt::exception& exc)
     {
-      log_error("Error to connect with the Mqtt server, raison: %s", exc.get_message().c_str());
+      throw MessageBusException("Error to connect with the Mqtt server, reason: " + exc.get_message());
+    }
+    catch (const std::exception& exc)
+    {
+      throw MessageBusException("Unexpected error: " + std::string{exc.what()});
     }
   }
 

@@ -22,13 +22,12 @@ etn_target(static ${PROJECT_NAME}
     fty-messagebus-common
   USES_PUBLIC
     fty_common_logging
-    fty_common_mlm
-    czmq
+    mlm
   USES
     cxxtools
-    # czmq
-    # fty_common_mlm
-    # mlm
+    czmq
+    fty_common_mlm
+    mlm
     # pthread
   FLAGS
       "-fmax-errors=5"

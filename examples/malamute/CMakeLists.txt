@@ -14,13 +14,6 @@ etn_target(exe ${PROJECT_NAME}-example
     fty-messagebus-mqtt
     ${PROJECT_NAME_UNDERSCORE}
     ${SAMPLE_DTO_LIB_NAME}
-    cxxtools
-    czmq
-    fty_common_mlm
-    mlm
-    pthread
-    paho-mqttpp3
-    jsoncpp
 )
 
 etn_target(exe ${PROJECT_NAME}-example2
@@ -33,13 +26,6 @@ etn_target(exe ${PROJECT_NAME}-example2
     fty-messagebus-mqtt
     ${PROJECT_NAME_UNDERSCORE}
     ${SAMPLE_DTO_LIB_NAME}
-    cxxtools
-    czmq
-    fty_common_mlm
-    mlm
-    pthread
-    paho-mqttpp3
-    jsoncpp
 )
 
 etn_target(exe ${PROJECT_NAME}-rep
@@ -52,13 +38,6 @@ etn_target(exe ${PROJECT_NAME}-rep
     fty-messagebus-mqtt
     ${PROJECT_NAME_UNDERSCORE}
     ${SAMPLE_DTO_LIB_NAME}
-    cxxtools
-    czmq
-    fty_common_mlm
-    mlm
-    pthread
-    paho-mqttpp3
-    jsoncpp
 )
 
 etn_target(exe ${PROJECT_NAME}-rep2
@@ -71,13 +50,6 @@ etn_target(exe ${PROJECT_NAME}-rep2
     fty-messagebus-mqtt
     ${PROJECT_NAME_UNDERSCORE}
     ${SAMPLE_DTO_LIB_NAME}
-    cxxtools
-    czmq
-    fty_common_mlm
-    mlm
-    pthread
-    paho-mqttpp3
-    jsoncpp
 )
 
 etn_target(exe ${PROJECT_NAME}-req
@@ -90,11 +62,4 @@ etn_target(exe ${PROJECT_NAME}-req
     fty-messagebus-mqtt
     ${PROJECT_NAME_UNDERSCORE}
     ${SAMPLE_DTO_LIB_NAME}
-    cxxtools
-    czmq
-    fty_common_mlm
-    mlm
-    pthread
-    paho-mqttpp3
-    jsoncpp
 )
