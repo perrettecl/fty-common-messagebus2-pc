@@ -8,6 +8,6 @@ set (SAMPLE_DTO_LIB_NAME ${PROJECT_NAME}-dto)
 # Dto(s)
 add_subdirectory(dto)
 # Malamute samples
-add_subdirectory(malamute)
+# add_subdirectory(malamute)
 # Mqtt samples
-add_subdirectory(mqtt)
+# add_subdirectory(mqtt)

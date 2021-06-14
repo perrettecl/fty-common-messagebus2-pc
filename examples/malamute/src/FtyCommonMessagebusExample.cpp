@@ -26,10 +26,10 @@
 @end
 */
 
-#include "FtyCommonMessageBusDto.hpp"
-#include "fty/messagebus/MsgBusException.hpp"
-#include "fty/messagebus/MsgBusFactory.hpp"
-#include "fty/messagebus/utils/MsgBusHelper.hpp"
+#include <FtyCommonMessageBusDto.hpp>
+#include <fty/messagebus/MsgBusException.hpp>
+#include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 #include <fty_log.h>
 

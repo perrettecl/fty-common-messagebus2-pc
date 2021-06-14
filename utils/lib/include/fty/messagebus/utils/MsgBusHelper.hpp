@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_common_messagebus_helper - class description
+    fty_common_messagebus_interface - class description
 
     Copyright (C) 2014 - 2020 Eaton
 
@@ -19,22 +19,17 @@
     =========================================================================
 */
 
-/*
-@header
-    fty_common_messagebus_helper -
-@discuss
-@end
-*/
-
-#include "fty/messagebus/utils/MsgBusHelper.hpp"
+#ifndef FTY_COMMON_MESSAGEBUS_UTILS_HELPER_HPP
+#define FTY_COMMON_MESSAGEBUS_UTILS_HELPER_HPP
 
 #include <chrono>
 #include <ctime>
 #include <czmq.h>
+#include <string>
 
 namespace fty::messagebus::utils
 {
-  std::string generateUuid()
+  static auto generateUuid() -> const std::string
   {
     zuuid_t* uuid = zuuid_new();
     std::string strUuid(zuuid_str_canonical(uuid));
@@ -42,12 +37,14 @@ namespace fty::messagebus::utils
     return strUuid;
   }
 
-  std::string getClientId(const std::string& prefix)
+  static auto getClientId(const std::string& prefix) -> const std::string
   {
     std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-      std::chrono::system_clock::now().time_since_epoch());
+    std::chrono::system_clock::now().time_since_epoch());
     std::string clientId = prefix + "-" + std::to_string(ms.count());
     return clientId;
   }
 
-} // namespace messagebus::helper
+} // namespace fty::messagebus::utils
+
+#endif // FTY_COMMON_MESSAGEBUS_UTILS_HELPER_HPP
