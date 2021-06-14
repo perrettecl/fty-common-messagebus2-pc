@@ -29,7 +29,7 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
     pthread
     paho-mqttpp3
     paho-mqtt3as
-    jsoncpp::jsoncpp
+    jsoncpp
   FLAGS
       "-fmax-errors=5"
 )
