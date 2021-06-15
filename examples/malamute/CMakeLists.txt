@@ -1,6 +1,6 @@
 project(${PROJECT_NAME}-mlm
         VERSION ${PROJECT_VERSION}
-        DESCRIPTION "Fty common message bus sample linked with malamute library"
+        DESCRIPTION "fty messagebus sample for malamute"
         LANGUAGES CXX
 )
 

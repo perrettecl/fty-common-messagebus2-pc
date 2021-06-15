@@ -1,6 +1,6 @@
-project(fty-messagebus-project-common
+project(fty-messagebus-common-project
   VERSION ${PROJECT_VERSION}
-  DESCRIPTION "Common messagebus project"
+  DESCRIPTION "fty messagebus common project"
 )
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib)

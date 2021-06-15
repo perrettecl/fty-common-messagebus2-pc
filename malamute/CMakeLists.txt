@@ -1,6 +1,6 @@
-project(fty-messagebus-project-malamute
+project(fty-messagebus-malamute-project
   VERSION ${PROJECT_VERSION}
-  DESCRIPTION "Common messagebus malamute project"
+  DESCRIPTION "fty messagebus malamute project"
 )
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib)

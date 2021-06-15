@@ -1,7 +1,7 @@
 
 project(fty-messagebus-mlm
   VERSION ${PROJECT_VERSION}
-  DESCRIPTION "Common messagebus malamute implementation"
+  DESCRIPTION "fty messagebus malamute library"
 )
 
 ##############################################################################################################

@@ -1,6 +1,6 @@
 project(${PROJECT_NAME}-mqtt
         VERSION ${PROJECT_VERSION}
-        DESCRIPTION "Fty common message bus sample linked with mqtt library"
+        DESCRIPTION "fty messagebus sample for mqtt"
         LANGUAGES CXX
 )
 

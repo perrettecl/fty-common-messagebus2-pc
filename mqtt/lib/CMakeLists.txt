@@ -1,7 +1,7 @@
 
 project(fty-messagebus-mqtt
   VERSION ${PROJECT_VERSION}
-  DESCRIPTION "Common messagebus mqtt implementation"
+  DESCRIPTION "fty messagebus mqtt library"
 )
 
 ##############################################################################################################

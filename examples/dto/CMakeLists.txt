@@ -1,6 +1,6 @@
 project(${SAMPLE_DTO_LIB_NAME}
         VERSION ${PROJECT_VERSION}
-        DESCRIPTION "Fty common message bus sample dto shared with mlm, mqtt samples"
+        DESCRIPTION "fty common message bus sample dto shared with mlm and mqtt samples"
         LANGUAGES CXX)
 
 ##############################################################################################################
