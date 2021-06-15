@@ -103,7 +103,7 @@ int main(int argc, char** argv)
   if (strcmp(argv[2], "async") == 0)
   {
     requester->receive(replyTo, responseMessageListener);
-    requester->sendRequest(REQUEST_QUEUE, message);
+    requester->sendRequest(requestQueue, message);
   }
   else
   {
