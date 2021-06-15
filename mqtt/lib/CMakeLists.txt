@@ -6,11 +6,6 @@ project(fty-messagebus-mqtt
 
 ##############################################################################################################
 find_package(PahoMqttCpp REQUIRED)
-# find_package(jsoncpp REQUIRED)
-find_package(nlohmann_json 3.2.0 REQUIRED)
-##############################################################################################################
-
-
 ##############################################################################################################
 
 etn_target(shared ${PROJECT_NAME}
@@ -31,5 +26,5 @@ etn_target(shared ${PROJECT_NAME}
     paho-mqtt3as
     paho-mqtt3c
   FLAGS
-      "-fmax-errors=5"
+    "-fmax-errors=1"
 )

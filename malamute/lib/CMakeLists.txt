@@ -1,7 +1,7 @@
 
 project(fty-messagebus-mlm
   VERSION ${PROJECT_VERSION}
-  DESCRIPTION "Common messagebus mqtt implementation"
+  DESCRIPTION "Common messagebus malamute implementation"
 )
 
 ##############################################################################################################
@@ -28,7 +28,6 @@ etn_target(static ${PROJECT_NAME}
     czmq
     fty_common_mlm
     mlm
-    # pthread
   FLAGS
-      "-fmax-errors=5"
+    "-fmax-errors=1"
 )

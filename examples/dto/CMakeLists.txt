@@ -3,6 +3,10 @@ project(${SAMPLE_DTO_LIB_NAME}
         DESCRIPTION "Fty common message bus sample dto shared with mlm, mqtt samples"
         LANGUAGES CXX)
 
+##############################################################################################################
+find_package(nlohmann_json 3.2.0 REQUIRED)
+##############################################################################################################
+
 etn_target(shared ${PROJECT_NAME}
   SOURCES
     src/*.cpp

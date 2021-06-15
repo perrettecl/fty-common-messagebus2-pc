@@ -1,6 +1,6 @@
 project(fty-messagebus-utils
         VERSION ${PROJECT_VERSION}
-        DESCRIPTION "Common interface for messagebus"
+        DESCRIPTION "Common messagebus utils library"
 )
 
 etn_target(interface ${PROJECT_NAME}

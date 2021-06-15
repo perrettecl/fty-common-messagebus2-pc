@@ -95,13 +95,13 @@ namespace fty::messagebus::mqttv5
       });
       log_info("%s => connect status: %s", m_clientName.c_str(), m_client->is_connected() ? "true" : "false");
     }
-    catch (const mqtt::exception& exc)
+    catch (const mqtt::exception& e)
     {
-      throw MessageBusException("Error to connect with the Mqtt server, reason: " + exc.get_message());
+      throw MessageBusException("Error to connect with the Mqtt server, reason: " + e.get_message());
     }
-    catch (const std::exception& exc)
+    catch (const std::exception& e)
     {
-      throw MessageBusException("Unexpected error: " + std::string{exc.what()});
+      throw MessageBusException("Unexpected error: " + std::string{e.what()});
     }
   }
 
