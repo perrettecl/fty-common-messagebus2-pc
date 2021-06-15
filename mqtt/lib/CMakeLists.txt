@@ -30,7 +30,6 @@ etn_target(shared ${PROJECT_NAME}
     paho-mqttpp3
     paho-mqtt3as
     paho-mqtt3c
-    nlohmann_json::nlohmann_json
   FLAGS
       "-fmax-errors=5"
 )

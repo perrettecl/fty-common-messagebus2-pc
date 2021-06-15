@@ -58,10 +58,8 @@ namespace
   void responseMessageListener(const Message& message)
   {
     log_info("Response arrived");
-    auto data = message.userData();
-    MathResult result;
-    data >> result;
-    log_info("  * status: '%s', result: %s", result.status.c_str(), result.result.c_str());
+    auto mathresult = MathResult(message.userData());
+    log_info("  * status: '%s', result: %d, error: '%s'", mathresult.status.c_str(), mathresult.result, mathresult.error.c_str());
 
     _continue = false;
   }
@@ -93,8 +91,8 @@ int main(int argc, char** argv)
   auto replyTo = REPLY_QUEUE + '/' + correlationId;
 
   Message message;
-  MathOperation query = MathOperation(argv[3], argv[4], argv[5]);
-  message.userData() << query;
+  auto query = MathOperation(argv[3], std::stoi(argv[4]), std::stoi(argv[5]));
+  message.userData() = query.serialize();
   message.metaData().clear();
   message.metaData().emplace(SUBJECT, QUERY_USER_PROPERTY);
   message.metaData().emplace(FROM, clientName);

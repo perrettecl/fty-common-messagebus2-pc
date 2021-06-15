@@ -28,9 +28,6 @@
 
 #include "fty/messagebus/mqtt/MsgBusMqttMessage.hpp"
 
-#include <fty_log.h>
-#include <jsoncpp/json/json.h>
-
 namespace fty::messagebus::mqttv5
 {
   MqttMessage::MqttMessage(const MetaData& metaData, const UserData& userData)
@@ -39,42 +36,4 @@ namespace fty::messagebus::mqttv5
     m_data = userData;
   }
 
-  MqttMessage::MqttMessage(const MetaData& metaData, const std::string& input)
-  {
-    m_metadata = metaData;
-    deSerialize(input);
-  }
-
-  auto MqttMessage::serialize() const -> std::string const
-  {
-    // user values
-    Json::Value userValues(Json::arrayValue);
-    // Iterate over all user values.
-    for (const auto& value : m_data)
-    {
-      userValues.append(value);
-    }
-    return Json::writeString(Json::StreamWriterBuilder{}, userValues);
-  }
-
-  void MqttMessage::deSerialize(const std::string& input)
-  {
-    Json::Value root;
-    Json::Reader reader;
-    bool parsingStatus = reader.parse(input.c_str(), root);
-    if (!parsingStatus)
-    {
-      log_error("Failed on parsing: %s", reader.getFormattedErrorMessages().c_str());
-    }
-    else
-    {
-      // User data
-      const Json::Value& userDataArray = root;
-      for (unsigned int i = 0; i < userDataArray.size(); i++)
-      {
-        m_data.push_back(userDataArray[i].asString());
-      }
-    }
-  }
-
-} // namespace messagebus::mqttv5
+} // namespace fty::messagebus::mqttv5

@@ -61,9 +61,8 @@ namespace
     {
       log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
     }
-    auto data = message.userData();
-    FooBar fooBar;
-    data >> fooBar;
+
+    auto fooBar = FooBar(message.userData());
     log_info("  * foo    : '%s'", fooBar.foo.c_str());
     log_info("  * bar    : '%s'", fooBar.bar.c_str());
 
@@ -90,7 +89,7 @@ int main(int /*argc*/, char** argv)
 
   // Publish
   Message message;
-  message.userData() << FooBar("event", "hello");
+  message.userData() = FooBar("event", "hello").serialize();
   message.metaData().clear();
   message.metaData().emplace("mykey", "myvalue");
   message.metaData().emplace(FROM, "publisher");

@@ -28,15 +28,38 @@
 
 #include "FtyCommonMessageBusDto.hpp"
 
-void operator<< (messagebus::UserData &data, const FooBar &object) {
-    data.push_back(object.foo);
-    data.push_back(object.bar);
+#include <nlohmann/json.hpp>
+#include <ostream>
+
+using json = nlohmann::json;
+
+auto FooBar::serialize() -> const std::string
+{
+  json op;
+  op["foo"] = foo;
+  op["bar"] = bar;
+
+  return op.dump();
 }
 
-void operator>> (messagebus::UserData &data, FooBar &object) {
-    auto foo = data.front();
-    data.pop_front();
-    auto bar = data.front();
-    data.pop_front();
-    object = FooBar(foo, bar);
+void FooBar::deserialize(const std::string& input)
+{
+  auto jsonInput = json::parse(input);
+  foo = jsonInput["foo"];
+  bar = jsonInput["bar"];
+}
+
+void operator<<(messagebus::UserData& data, const FooBar& object)
+{
+  data.push_back(object.foo);
+  data.push_back(object.bar);
+}
+
+void operator>>(messagebus::UserData& data, FooBar& object)
+{
+  auto foo = data.front();
+  data.pop_front();
+  auto bar = data.front();
+  data.pop_front();
+  object = FooBar(foo, bar);
 }

@@ -32,36 +32,48 @@ namespace fty::messagebus::test
   struct MathOperation
   {
     std::string operation;
-    std::string param_1;
-    std::string param_2;
+    int param_1;
+    int param_2;
     MathOperation() = default;
-    MathOperation(const std::string& _operation, const std::string& _param_1, const std::string& _param_2)
+    MathOperation(const std::string& _operation, int _param_1, int _param_2)
       : operation(_operation)
       , param_1(_param_1)
       , param_2(_param_2)
     {
     }
-  };
+    MathOperation(const std::string& input)
+    {
+      deserialize(input);
+    }
 
-  void operator<<(UserData& userData, const MathOperation& object);
-  void operator>>(UserData& payload, MathOperation& object);
+    auto serialize() -> const std::string;
+    void deserialize(const std::string& input);
+  };
 
   struct MathResult
   {
     static auto constexpr STATUS_OK{"Ok"};
     static auto constexpr STATUS_KO{"KO"};
 
-    std::string status;
-    std::string result;
-    MathResult(const std::string& _status = STATUS_OK, const std::string& _result = {})
+    std::string status = STATUS_OK;
+    int result = 0;
+    std::string error = "";
+
+    MathResult() = default;
+    MathResult(const std::string& _status, int _result, const std::string& _error)
       : status(_status)
       , result(_result)
+      , error(_error)
     {
     }
-  };
+    MathResult(const std::string& input)
+    {
+      deserialize(input);
+    }
 
-  void operator<<(UserData& userData, const MathResult& object);
-  void operator>>(UserData& payload, MathResult& object);
+    auto serialize() -> const std::string;
+    void deserialize(const std::string& input);
+  };
 
 } // namespace fty::messagebus::test
 

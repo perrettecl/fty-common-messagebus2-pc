@@ -29,20 +29,16 @@
 namespace fty::messagebus::mqttv5
 {
   // Json representation
-  using UserData = std::list<std::string>;
+  using UserData = std::string;
 
   class MqttMessage final : public IMessage<UserData>
   {
   public:
     MqttMessage() = default;
     MqttMessage(const MetaData& metaData, const UserData& userData = {});
-    MqttMessage(const MetaData& metaData, const std::string& input);
     ~MqttMessage() = default;
-
-    auto serialize() const -> std::string const;
-    void deSerialize(const std::string& input);
   };
 
-} // namespace messagebus::mqttv5
+} // namespace fty::messagebus::mqttv5
 
 #endif // FTY_COMMON_MESSAGEBUS_MQTT_MESSAGE_HPP

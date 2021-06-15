@@ -56,7 +56,7 @@ namespace
   MessageBusMqtt* mqttMsgBus;
 
   static bool _continue = true;
-  static auto correlationIdSniffer = std::map<std::string,std::string>();
+  static auto correlationIdSniffer = std::map<std::string, std::string>();
 
   auto getClientName() -> std::string
   {
@@ -81,30 +81,25 @@ namespace
   {
     log_info("Question arrived");
 
-    auto reqData = message.userData();
-    MathOperation mathQuery = MathOperation();
-    reqData >> mathQuery;
-    auto mathResultResult = MathResult();
+    auto mathQuery = MathOperation(message.userData());
+    auto mathResult = MathResult();
 
     if (mathQuery.operation == "add")
     {
-      mathResultResult.result = std::to_string(std::stoi(mathQuery.param_1) + std::stoi(mathQuery.param_2));
+      mathResult.result = mathQuery.param_1 + mathQuery.param_2;
     }
     else if (mathQuery.operation == "mult")
     {
-      mathResultResult.result = std::to_string(std::stoi(mathQuery.param_1) * std::stoi(mathQuery.param_2));
+      mathResult.result = mathQuery.param_1 * mathQuery.param_2;
     }
     else
     {
-      mathResultResult.status = MathResult::STATUS_KO;
-      mathResultResult.result = "Unsuported operation";
+      mathResult.status = MathResult::STATUS_KO;
+      mathResult.error = "Unsuported operation";
     }
 
     Message response;
-    UserData responseData;
-
-    responseData << mathResultResult;
-    response.userData() = responseData;
+    response.userData() = mathResult.serialize();
     response.metaData().emplace(SUBJECT, ANSWER_USER_PROPERTY);
     response.metaData().emplace(FROM, message.metaData().find(FROM)->second);
     response.metaData().emplace(CORRELATION_ID, message.metaData().find(CORRELATION_ID)->second);
@@ -118,10 +113,8 @@ namespace
   void responseListener(const Message& message)
   {
     log_info("Answer arrived");
-    UserData data = message.userData();
-    MathResult result;
-    data >> result;
-    log_info("  * status: '%s', result: %s", result.status.c_str(), result.result.c_str());
+    auto mathresult = MathResult(message.userData());
+    log_info("  * status: '%s', result: %d, error: '%s'", mathresult.status.c_str(), mathresult.result, mathresult.error.c_str());
 
     auto iterator = message.metaData().find(CORRELATION_ID);
     if (iterator == message.metaData().end() || iterator->second == "")
@@ -158,11 +151,10 @@ namespace
     auto correlationId = utils::generateUuid();
     auto replyTo = REPLY_QUEUE + '/' + correlationId;
 
-    auto rand = std::to_string(buildRandom(1, 10));
+    auto rand = buildRandom(1, 10);
 
     Message message;
-    MathOperation query = MathOperation("add", "1", rand);
-    message.userData() << query;
+    message.userData() = MathOperation("add", 1, rand).serialize();
     message.metaData().clear();
     message.metaData().emplace(SUBJECT, QUERY_USER_PROPERTY);
     message.metaData().emplace(FROM, rand);
@@ -177,8 +169,6 @@ namespace
     // mqttMsgBus->sendRequest(messagebus::REQUEST_QUEUE, message);
     messageBus->sendRequest(REQUEST_QUEUE, message, mathOperationListener);
   }
-
-
 
 } // namespace
 
@@ -197,7 +187,6 @@ int main(int /*argc*/, char** argv)
 
   //replyerFunc(mqttMsgBus2);
 
-
   //std::thread replyer(replyerFunc, mqttMsgBus);
   //std::thread requester(requesterFunc, mqttMsgBus);
 
@@ -212,7 +201,7 @@ int main(int /*argc*/, char** argv)
   //requester.join();
   //replyer.join();
 
- // delete mqttMsgBus;
+  // delete mqttMsgBus;
 
   log_info("%s - end", argv[0]);
   return EXIT_SUCCESS;

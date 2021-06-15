@@ -5,11 +5,12 @@ project(${SAMPLE_DTO_LIB_NAME}
 
 etn_target(shared ${PROJECT_NAME}
   SOURCES
-      src/*.cpp
+    src/*.cpp
   PUBLIC_INCLUDE_DIR
-      public_include
+    public_include
   USES_PUBLIC
-      fty_common_logging
-      fty-messagebus-common
-      fty-messagebus-mqtt
+    fty_common_logging
+    fty-messagebus-common
+    fty-messagebus-mqtt
+    nlohmann_json::nlohmann_json
 )

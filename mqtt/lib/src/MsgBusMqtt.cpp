@@ -120,7 +120,7 @@ namespace fty::messagebus::mqttv5
       // Build the message
       auto pubMsg = mqtt::message_ptr_builder()
                       .topic(topic)
-                      .payload(message.serialize())
+                      .payload(message.userData())
                       .qos(QOS)
                       .properties(props)
                       .retained(false)
@@ -188,7 +188,7 @@ namespace fty::messagebus::mqttv5
 
       auto reqMsg = mqtt::message_ptr_builder()
                       .topic(requestQueue)
-                      .payload(message.serialize())
+                      .payload(message.userData())
                       .qos(QOS)
                       .properties(props)
                       .retained(RETAINED)
@@ -217,7 +217,7 @@ namespace fty::messagebus::mqttv5
       log_debug("Send reply to: %s", (mqtt::get<std::string>(props, mqtt::property::RESPONSE_TOPIC)).c_str());
       auto replyMsg = mqtt::message_ptr_builder()
                         .topic(replyQueue)
-                        .payload(message.serialize())
+                        .payload(message.userData())
                         .qos(QOS)
                         .properties(props)
                         .retained(RETAINED)
