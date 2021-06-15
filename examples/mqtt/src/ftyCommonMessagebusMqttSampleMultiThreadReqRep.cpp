@@ -26,10 +26,11 @@
 @end
 */
 #include "FtyCommonMqttTestDef.hpp"
-#include "FtyCommonMqttTestMathDto.h"
-#include "fty/messagebus/MsgBusException.hpp"
-#include "fty/messagebus/MsgBusFactory.hpp"
-#include "fty/messagebus/utils/MsgBusHelper.hpp"
+#include <FtyCommonMqttTestMathDto.h>
+#include <fty/messagebus/MsgBusException.hpp>
+#include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqtt.hpp>
+#include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 #include <mqtt/async_client.h>
 
@@ -52,8 +53,9 @@ namespace
   using namespace fty::messagebus::mqttv5::test;
   using namespace fty::messagebus::test;
   using Message = fty::messagebus::mqttv5::MqttMessage;
+  using MessageBus = fty::messagebus::IMessageBus<Message>;
 
-  MessageBusMqtt* mqttMsgBus;
+  MessageBus* mqttMsgBus;
 
   static bool _continue = true;
   static auto correlationIdSniffer = std::map<std::string, std::string>();
@@ -122,6 +124,7 @@ namespace
       throw MessageBusException("Reply error not correlationId");
     }
     auto correlationId = iterator->second;
+    log_info("correlationId responseListener %s size: %d", correlationId.c_str(), correlationIdSniffer.size());
 
     iterator = message.metaData().find(FROM);
     if (iterator == message.metaData().end() || iterator->second == "")
@@ -146,7 +149,7 @@ namespace
     }
   }
 
-  void requesterFunc(MessageBusMqtt* messageBus)
+  void requesterFunc(MessageBus* messageBus)
   {
     auto correlationId = utils::generateUuid();
     auto replyTo = REPLY_QUEUE + '/' + correlationId;
@@ -161,9 +164,11 @@ namespace
     message.metaData().emplace(REPLY_TO, replyTo);
     message.metaData().emplace(CORRELATION_ID, correlationId);
 
+
     correlationIdSniffer.emplace(correlationId, std::to_string(rand));
     messageBus->receive(replyTo, responseListener);
 
+log_info("correlationId requesterFunc %s size: %d", correlationId.c_str(), correlationIdSniffer.size());
     //replyerFunc(mqttMsgBus);
     // mqttMsgBus->receive(messagebus::REQUEST_QUEUE, mathOperationListener);
     // mqttMsgBus->sendRequest(messagebus::REQUEST_QUEUE, message);

@@ -26,10 +26,11 @@
 @end
 */
 
-#include <FtyCommonMqttTestDef.hpp>
 #include <FtyCommonMessageBusDto.hpp>
+#include <FtyCommonMqttTestDef.hpp>
 #include <fty/messagebus/MsgBusException.hpp>
 #include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqtt.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 #include <chrono>
@@ -44,6 +45,7 @@ namespace
   using namespace fty::messagebus::mqttv5;
   using namespace fty::messagebus::mqttv5::test;
   using Message = fty::messagebus::mqttv5::MqttMessage;
+  using MessageBus = fty::messagebus::IMessageBus<Message>;
 
   static bool _continue = true;
 

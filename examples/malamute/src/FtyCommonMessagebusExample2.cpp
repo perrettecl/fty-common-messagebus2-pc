@@ -28,6 +28,7 @@
 #include <FtyCommonMessageBusDto.hpp>
 #include <fty/messagebus/MsgBusException.hpp>
 #include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/mlm/MsgBusMalamute.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 #include <fty_log.h>
@@ -37,9 +38,10 @@ namespace
   using namespace fty::messagebus;
   using namespace fty::messagebus::mlm;
   using Message = fty::messagebus::mlm::MlmMessage;
+  using MessageBus = fty::messagebus::IMessageBus<Message>;
 
-  MessageBusMalamute* receiver;
-  MessageBusMalamute* publisher;
+  MessageBus* receiver;
+  MessageBus* publisher;
 
   void queryListener(const Message& message)
   {

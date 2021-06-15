@@ -27,10 +27,11 @@
 */
 
 #include "FtyCommonMqttTestDef.hpp"
-#include "FtyCommonMqttTestMathDto.h"
-#include "fty/messagebus/MsgBusException.hpp"
-#include "fty/messagebus/MsgBusFactory.hpp"
-#include "fty/messagebus/utils/MsgBusHelper.hpp"
+#include <FtyCommonMqttTestMathDto.h>
+#include <fty/messagebus/MsgBusException.hpp>
+#include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/utils/MsgBusHelper.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqtt.hpp>
 
 #include <chrono>
 #include <csignal>
@@ -46,8 +47,9 @@ namespace
   using namespace fty::messagebus::mqttv5::test;
   using namespace fty::messagebus::test;
   using Message = fty::messagebus::mqttv5::MqttMessage;
+  using MessageBus = fty::messagebus::IMessageBus<Message>;
 
-  MessageBusMqtt* replyer;
+  MessageBus* replyer;
   static bool _continue = true;
 
   auto getClientName() -> std::string

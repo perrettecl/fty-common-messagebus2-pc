@@ -26,21 +26,21 @@
 @end
 */
 
-#include "fty/messagebus/MsgBusFactory.hpp"
-
-
+#include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/mlm/MsgBusMalamute.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqtt.hpp>
 
 namespace fty::messagebus
 {
 
-  auto MessageBusFactory::createMlmMsgBus(const std::string& _endpoint, const std::string& _clientName) -> mlm::MessageBusMalamute*
+  auto MessageBusFactory::createMlmMsgBus(const std::string& _endpoint, const std::string& _clientName) -> IMessageBus<mlm::MlmMessage>*
   {
     return new mlm::MessageBusMalamute(_endpoint, _clientName);
   }
 
-  auto MessageBusFactory::createMqttMsgBus(const std::string& _endpoint, const std::string& _clientName) -> mqttv5::MessageBusMqtt*
+  auto MessageBusFactory::createMqttMsgBus(const std::string& _endpoint, const std::string& _clientName) -> IMessageBus<mqttv5::MqttMessage>*
   {
     return new mqttv5::MessageBusMqtt(_endpoint, _clientName);
   }
 
-} // namespace messagebus
+} // namespace fty::messagebus
