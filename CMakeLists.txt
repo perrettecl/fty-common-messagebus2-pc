@@ -3,7 +3,7 @@ cmake_policy(VERSION 3.13)
 
 project(fty-common-messagebus-evol-project
     VERSION 1.0.0
-    DESCRIPTION "Common messagebus evol interface and implementation"
+    DESCRIPTION "fty common messagebus evolution"
 )
 
 option(ENABLE_EXAMPLES "Build samples" TRUE)
@@ -11,10 +11,9 @@ set(PROJECT_NAME_UNDERSCORE fty_common_messagebus_evol)
 
 ##############################################################################################################
 find_package(fty-cmake PATHS ${CMAKE_BINARY_DIR}/fty-cmake REQUIRED)
-find_package(PahoMqttCpp REQUIRED)
-find_package(jsoncpp REQUIRED)
 ##############################################################################################################
 
+# Modules, interfaces, etc.
 add_subdirectory(${PROJECT_SOURCE_DIR}/utils)
 add_subdirectory(${PROJECT_SOURCE_DIR}/common)
 add_subdirectory(${PROJECT_SOURCE_DIR}/mqtt)
@@ -23,7 +22,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/malamute)
 # Library
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib)
 
-#### Examples
+# Examples
 if(ENABLE_EXAMPLES)
   add_subdirectory(examples)
 endif()
