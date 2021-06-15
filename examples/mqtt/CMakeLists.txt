@@ -76,19 +76,19 @@ etn_target(exe ${PROJECT_NAME}-stress-lib
 )
 
 # Req/Rep multi threaded
-# etn_target(exe ${PROJECT_NAME}-multi-thread-req-rep
-#   SOURCES
-#     src/*SampleMultiThreadReqRep.cpp
-#   INCLUDE_DIRS
-#     private_include
-#   USES_PUBLIC
-#     fty-messagebus-common
-#     fty-messagebus-utils
-#     fty-messagebus-mlm
-#     fty-messagebus-mqtt
-#     ${PROJECT_NAME_UNDERSCORE}
-#     ${SAMPLE_DTO_LIB_NAME}
-#     Threads::Threads
-#   FLAGS
-#     "-fmax-errors=1"
-# )
+etn_target(exe ${PROJECT_NAME}-multi-thread-req-rep
+  SOURCES
+    src/*SampleMultiThreadReqRep.cpp
+  INCLUDE_DIRS
+    private_include
+  USES_PUBLIC
+    fty-messagebus-common
+    fty-messagebus-utils
+    fty-messagebus-mlm
+    fty-messagebus-mqtt
+    ${PROJECT_NAME_UNDERSCORE}
+    ${SAMPLE_DTO_LIB_NAME}
+    Threads::Threads
+  FLAGS
+    "-fmax-errors=1"
+)

@@ -157,11 +157,11 @@ namespace
     message.userData() = MathOperation("add", 1, rand).serialize();
     message.metaData().clear();
     message.metaData().emplace(SUBJECT, QUERY_USER_PROPERTY);
-    message.metaData().emplace(FROM, rand);
+    message.metaData().emplace(FROM, std::to_string(rand));
     message.metaData().emplace(REPLY_TO, replyTo);
     message.metaData().emplace(CORRELATION_ID, correlationId);
 
-    correlationIdSniffer.emplace(correlationId, rand);
+    correlationIdSniffer.emplace(correlationId, std::to_string(rand));
     messageBus->receive(replyTo, responseListener);
 
     //replyerFunc(mqttMsgBus);
