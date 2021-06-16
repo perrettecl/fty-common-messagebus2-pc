@@ -11,22 +11,21 @@ project(fty-messagebus-mlm
 
 ##############################################################################################################
 etn_target(static ${PROJECT_NAME}
+  INCLUDE_DIRS
+    private_include
   PUBLIC_INCLUDE_DIR
     public_include
   PUBLIC_HEADERS
     *.hpp
   SOURCES
     src/*.cpp
-  USES_PRIVATE
+  USES_PUBLIC
     fty-messagebus-utils
     fty-messagebus-common
-  USES_PUBLIC
     fty_common_logging
-    mlm
-  USES
+    fty_common_mlm
     cxxtools
     czmq
-    fty_common_mlm
     mlm
   FLAGS
     "-fmax-errors=1"

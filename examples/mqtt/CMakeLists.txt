@@ -14,7 +14,6 @@ etn_target(exe ${PROJECT_NAME}-pub-sub
   INCLUDE_DIRS
     private_include
   USES_PRIVATE
-    fty-messagebus-mlm
     ${PROJECT_NAME_UNDERSCORE}
     ${SAMPLE_DTO_LIB_NAME}
   FLAGS
@@ -28,7 +27,6 @@ etn_target(exe ${PROJECT_NAME}-async-reply
   INCLUDE_DIRS
     private_include
   USES_PUBLIC
-    fty-messagebus-mlm
     ${PROJECT_NAME_UNDERSCORE}
     ${SAMPLE_DTO_LIB_NAME}
   FLAGS
@@ -42,7 +40,6 @@ etn_target(exe ${PROJECT_NAME}-send-request
   INCLUDE_DIRS
      private_include
   USES_PUBLIC
-    fty-messagebus-mlm
     ${PROJECT_NAME_UNDERSCORE}
     ${SAMPLE_DTO_LIB_NAME}
   FLAGS
@@ -56,7 +53,6 @@ etn_target(exe ${PROJECT_NAME}-stress-lib
   INCLUDE_DIRS
     private_include
   USES_PUBLIC
-    fty-messagebus-mlm
     ${PROJECT_NAME_UNDERSCORE}
     ${SAMPLE_DTO_LIB_NAME}
   FLAGS
@@ -70,7 +66,6 @@ etn_target(exe ${PROJECT_NAME}-multi-thread-req-rep
   INCLUDE_DIRS
     private_include
   USES_PUBLIC
-    fty-messagebus-mlm
     ${PROJECT_NAME_UNDERSCORE}
     ${SAMPLE_DTO_LIB_NAME}
     Threads::Threads

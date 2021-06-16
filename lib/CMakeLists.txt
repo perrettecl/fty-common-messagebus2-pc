@@ -11,13 +11,12 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
     *.hpp
   SOURCES
     src/*.cpp
-  USES_PRIVATE
+  USES_PUBLIC
+    fty-messagebus-common
     fty-messagebus-utils
     fty-messagebus-mlm
     fty-messagebus-mqtt
-  USES_PUBLIC
     fty_common_logging
-    fty-messagebus-common
   FLAGS
       "-fmax-errors=5"
 )
