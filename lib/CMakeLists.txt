@@ -15,7 +15,6 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
     fty-messagebus-utils
     fty-messagebus-mlm
     fty-messagebus-mqtt
-    jsoncpp
   USES_PUBLIC
     fty_common_logging
     fty-messagebus-common
