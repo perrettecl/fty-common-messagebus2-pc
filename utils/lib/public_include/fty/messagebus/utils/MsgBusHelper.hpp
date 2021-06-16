@@ -40,7 +40,7 @@ namespace fty::messagebus::utils
   static auto getClientId(const std::string& prefix) -> const std::string
   {
     std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-    std::chrono::system_clock::now().time_since_epoch());
+      std::chrono::system_clock::now().time_since_epoch());
     std::string clientId = prefix + "-" + std::to_string(ms.count());
     return clientId;
   }

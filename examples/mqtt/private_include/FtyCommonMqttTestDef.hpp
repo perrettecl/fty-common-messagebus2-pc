@@ -34,6 +34,6 @@ namespace fty::messagebus::mqttv5::test
   //static auto constexpr REPLY_QUEUE{"/etn/q/reply"};
   static const std::string REPLY_QUEUE = "/etn/q/reply/maths/operator";
 
-} // namespace messagebus
+} // namespace fty::messagebus::mqttv5::test
 
 #endif // FTY_COMMON_MQTT_TEST_DEF_HPP

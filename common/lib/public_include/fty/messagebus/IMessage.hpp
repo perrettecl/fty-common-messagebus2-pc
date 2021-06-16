@@ -19,8 +19,8 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MESSAGEBUS_IMESSAGE_H
-#define FTY_COMMON_MESSAGEBUS_IMESSAGE_H
+#ifndef FTY_COMMON_MESSAGEBUS_IMESSAGE_HPP
+#define FTY_COMMON_MESSAGEBUS_IMESSAGE_HPP
 
 #include <list>
 #include <map>
@@ -84,6 +84,6 @@ namespace fty::messagebus
     T m_data;
   };
 
-} // namespace messagebus
+} // namespace fty::messagebus
 
-#endif // FTY_COMMON_MESSAGEBUS_IMESSAGE_H
+#endif // FTY_COMMON_MESSAGEBUS_IMESSAGE_HPP

@@ -19,8 +19,8 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MESSAGEBUS_DISPATCHER_H_INCLUDED
-#define FTY_COMMON_MESSAGEBUS_DISPATCHER_H_INCLUDED
+#ifndef FTY_COMMON_MESSAGEBUS_DISPATCHER_HPP
+#define FTY_COMMON_MESSAGEBUS_DISPATCHER_HPP
 
 #include <functional>
 #include <map>
@@ -83,4 +83,4 @@ namespace fty::messagebus::utils
 
 } // namespace fty::messagebus::utils
 
-#endif
+#endif // FTY_COMMON_MESSAGEBUS_DISPATCHER_HPP

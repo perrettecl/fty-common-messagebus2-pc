@@ -19,11 +19,11 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MESSAGEBUS_MQTT
-#define FTY_COMMON_MESSAGEBUS_MQTT
+#ifndef FTY_COMMON_MESSAGEBUS_MQTT_HPP
+#define FTY_COMMON_MESSAGEBUS_MQTT_HPP
 
-#include "fty/messagebus/mqtt/MsgBusMqttCallBack.hpp"
 #include "fty/messagebus/IMessageBus.hpp"
+#include "fty/messagebus/mqtt/MsgBusMqttCallBack.hpp"
 
 #include <mqtt/async_client.h>
 #include <mqtt/client.h>
@@ -45,7 +45,6 @@ namespace fty::messagebus::mqttv5
   static auto constexpr WILL_MSG{" died unexpectedly"};
 
   using ClientPointer = std::shared_ptr<mqtt::async_client>;
-
 
   class MessageBusMqtt final : public IMessageBus<MqttMessage>
   {
@@ -86,4 +85,4 @@ namespace fty::messagebus::mqttv5
   };
 } // namespace fty::messagebus::mqttv5
 
-#endif // ifndef FTY_COMMON_MESSAGEBUS_MQTT
+#endif // ifndef FTY_COMMON_MESSAGEBUS_MQTT_HPP

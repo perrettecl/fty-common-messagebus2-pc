@@ -19,8 +19,8 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MESSAGEBUS_INTERFACE_H_INCLUDED
-#define FTY_COMMON_MESSAGEBUS_INTERFACE_H_INCLUDED
+#ifndef FTY_COMMON_MESSAGEBUS_INTERFACE_HPP
+#define FTY_COMMON_MESSAGEBUS_INTERFACE_HPP
 
 #include <functional>
 #include <string>
@@ -132,6 +132,6 @@ namespace fty::messagebus
     IMessageBus() = default;
   };
 
-} // namespace messagebus
+} // namespace fty::messagebus
 
-#endif
+#endif FTY_COMMON_MESSAGEBUS_INTERFACE_HPP

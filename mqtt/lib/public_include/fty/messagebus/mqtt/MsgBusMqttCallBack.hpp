@@ -19,8 +19,8 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MESSAGEBUS_MQTT_CALL_BACK
-#define FTY_COMMON_MESSAGEBUS_MQTT_CALL_BACK
+#ifndef FTY_COMMON_MESSAGEBUS_MQTT_CALL_BACK_HPP
+#define FTY_COMMON_MESSAGEBUS_MQTT_CALL_BACK_HPP
 
 #include "fty/messagebus/IMessageBus.hpp"
 #include "fty/messagebus/mqtt/MsgBusMqttMessage.hpp"
@@ -58,4 +58,4 @@ namespace fty::messagebus::mqttv5
   };
 } // namespace fty::messagebus::mqttv5
 
-#endif // ifndef FTY_COMMON_MESSAGEBUS_MQTT_CALL_BACK
+#endif // ifndef FTY_COMMON_MESSAGEBUS_MQTT_CALL_BACK_HPP

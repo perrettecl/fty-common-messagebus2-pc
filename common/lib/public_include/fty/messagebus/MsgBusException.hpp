@@ -19,8 +19,8 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MESSAGEBUS_EXCEPTION_H_INCLUDED
-#define FTY_COMMON_MESSAGEBUS_EXCEPTION_H_INCLUDED
+#ifndef FTY_COMMON_MESSAGEBUS_EXCEPTION_HPP
+#define FTY_COMMON_MESSAGEBUS_EXCEPTION_HPP
 #include <stdexcept>
 
 namespace fty::messagebus
@@ -41,4 +41,4 @@ namespace fty::messagebus
   };
 } // namespace fty::messagebus
 
-#endif
+#endif // FTY_COMMON_MESSAGEBUS_EXCEPTION_HPP

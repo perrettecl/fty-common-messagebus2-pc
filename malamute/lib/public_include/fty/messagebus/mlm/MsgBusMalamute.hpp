@@ -19,13 +19,13 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MESSAGEBUS_MALAMUTE_H_INCLUDED
-#define FTY_COMMON_MESSAGEBUS_MALAMUTE_H_INCLUDED
+#ifndef FTY_COMMON_MESSAGEBUS_MLM_HPP
+#define FTY_COMMON_MESSAGEBUS_MLM_HPP
 
-#include "fty/messagebus/MsgBusException.hpp"
-#include "fty/messagebus/utils/MsgBusHelper.hpp"
 #include "fty/messagebus/IMessageBus.hpp"
+#include "fty/messagebus/MsgBusException.hpp"
 #include "fty/messagebus/mlm/MsgBusMlmMessage.hpp"
+#include "fty/messagebus/utils/MsgBusHelper.hpp"
 
 #include <fty_common_mlm.h>
 
@@ -85,4 +85,4 @@ namespace fty::messagebus::mlm
 
 void fty_common_messagebus_malamute_test(bool verbose);
 
-#endif
+#endif // FTY_COMMON_MESSAGEBUS_MLM_HPP
