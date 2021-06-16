@@ -17,6 +17,12 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
     fty-messagebus-mlm
     fty-messagebus-mqtt
     fty_common_logging
-  FLAGS
-      "-fmax-errors=5"
+  USES
+    cxxtools
+    czmq
+    mlm
+    pthread
+    paho-mqttpp3
+    paho-mqtt3as
+    paho-mqtt3c
 )
