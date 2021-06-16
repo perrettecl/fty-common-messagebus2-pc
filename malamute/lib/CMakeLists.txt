@@ -19,15 +19,11 @@ etn_target(static ${PROJECT_NAME}
     *.hpp
   SOURCES
     src/*.cpp
-  # USES_PUBLIC
-  USES
+  USES_PUBLIC
     fty-messagebus-utils
     fty-messagebus-common
     fty_common_logging
     fty_common_mlm
-    # cxxtools
-    # czmq
-    # mlm
   FLAGS
     "-fmax-errors=1"
 )

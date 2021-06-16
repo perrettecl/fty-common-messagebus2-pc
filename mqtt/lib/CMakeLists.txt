@@ -22,9 +22,6 @@ etn_target(static ${PROJECT_NAME}
     fty-messagebus-common
     fty_common_logging
     pthread
-    # paho-mqttpp3
-    # paho-mqtt3as
-    # paho-mqtt3c
   FLAGS
     "-fmax-errors=1"
 )
