@@ -65,6 +65,7 @@ namespace
 
   void replyerMessageListener(const Message& message)
   {
+    Message response;
     log_info("Replyer messageListener");
 
     for (const auto& pair : message.metaData())
@@ -72,25 +73,26 @@ namespace
       log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
     }
 
-    auto reqData = message.userData();
     MathOperation mathQuery = MathOperation(message.userData());
     auto mathResultResult = MathResult();
 
     if (mathQuery.operation == "add")
     {
       mathResultResult.result = mathQuery.param_1 + mathQuery.param_2;
+      response.metaData().emplace(STATUS, STATUS_OK);
     }
     else if (mathQuery.operation == "mult")
     {
       mathResultResult.result = mathQuery.param_1 * mathQuery.param_2;
+      response.metaData().emplace(STATUS, STATUS_OK);
     }
     else
     {
       mathResultResult.status = MathResult::STATUS_KO;
       mathResultResult.error = "Unsuported operation";
+      response.metaData().emplace(STATUS, STATUS_KO);
     }
 
-    Message response;
     response.userData() = mathResultResult.serialize();
     response.metaData().emplace(SUBJECT, ANSWER_USER_PROPERTY);
     response.metaData().emplace(FROM, getClientName());

@@ -82,6 +82,7 @@ namespace
   void mathOperationListener(const Message& message)
   {
     log_info("Question arrived");
+    Message response;
 
     auto mathQuery = MathOperation(message.userData());
     auto mathResult = MathResult();
@@ -89,18 +90,20 @@ namespace
     if (mathQuery.operation == "add")
     {
       mathResult.result = mathQuery.param_1 + mathQuery.param_2;
+      response.metaData().emplace(STATUS, STATUS_OK);
     }
     else if (mathQuery.operation == "mult")
     {
       mathResult.result = mathQuery.param_1 * mathQuery.param_2;
+      response.metaData().emplace(STATUS, STATUS_OK);
     }
     else
     {
       mathResult.status = MathResult::STATUS_KO;
       mathResult.error = "Unsuported operation";
+      response.metaData().emplace(STATUS, STATUS_KO);
     }
 
-    Message response;
     response.userData() = mathResult.serialize();
     response.metaData().emplace(SUBJECT, ANSWER_USER_PROPERTY);
     response.metaData().emplace(FROM, message.metaData().find(FROM)->second);
