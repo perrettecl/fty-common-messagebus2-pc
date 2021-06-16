@@ -27,19 +27,25 @@
 */
 
 #include "fty/messagebus/MsgBusFactory.hpp"
+#include "fty/messagebus/mlm/MsgBusMalamute.hpp"
+#include "fty/messagebus/mlm/MsgBusMlmMessage.hpp"
+#include "fty/messagebus/utils/MsgBusHelper.hpp"
 
+#include <condition_variable>
 #include <csignal>
+#include <fty_log.h>
 #include <iostream>
 #include <mutex>
 #include <sstream>
-#include <unistd.h>
 #include <string>
+#include <unistd.h>
 
 // Signal handler stuff.
 
 using namespace fty::messagebus;
 using namespace fty::messagebus::mlm;
 using Message = fty::messagebus::mlm::MlmMessage;
+using MessageBus = fty::messagebus::IMessageBus<Message>;
 
 volatile bool g_exit = false;
 std::condition_variable g_cv;
@@ -66,17 +72,17 @@ std::string endpoint, type, subject, topic, queue, destination, timeout = "5";
 std::string clientName;
 bool doMetadata = true;
 
-void sendRequest(MessageBusMalamute* msgbus, int argc, char** argv);
-void request(MessageBusMalamute* msgbus, int argc, char** argv);
-void receive(MessageBusMalamute* msgbus, int argc, char** argv);
-void subscribe(MessageBusMalamute* msgbus, int argc, char** argv);
-void publish(MessageBusMalamute* msgbus, int argc, char** argv);
+void sendRequest(MessageBus* msgbus, int argc, char** argv);
+void request(MessageBus* msgbus, int argc, char** argv);
+void receive(MessageBus* msgbus, int argc, char** argv);
+void subscribe(MessageBus* msgbus, int argc, char** argv);
+void publish(MessageBus* msgbus, int argc, char** argv);
 
 struct progAction
 {
   std::string arguments;
   std::string help;
-  void (*fn)(MessageBusMalamute*, int, char**);
+  void (*fn)(MessageBus*, int, char**);
 };
 
 const std::map<std::string, progAction> actions = {
@@ -87,8 +93,8 @@ const std::map<std::string, progAction> actions = {
   {"publish", {"", "publish a message on a topic", publish}},
 };
 
-const std::map<std::string, std::function<MessageBusMalamute*()>> busTypes = {
-  {"malamute", []() -> MessageBusMalamute* { return new MessageBusMalamute(endpoint, clientName); }},
+const std::map<std::string, std::function<MessageBus*()>> busTypes = {
+  {"malamute", []() -> MessageBus* { return MessageBusFactory::createMlmMsgBus(endpoint, clientName); }},
 };
 
 void dumpMessage(const MlmMessage& msg)
@@ -108,7 +114,7 @@ void dumpMessage(const MlmMessage& msg)
   log_info(buffer.str().c_str());
 }
 
-void receive(MessageBusMalamute* msgbus, int /*argc*/, char** /*argv*/)
+void receive(MessageBus* msgbus, int /*argc*/, char** /*argv*/)
 {
   msgbus->receive(queue, [](const MlmMessage& msg) { dumpMessage(msg); });
 
@@ -118,7 +124,7 @@ void receive(MessageBusMalamute* msgbus, int /*argc*/, char** /*argv*/)
   g_cv.wait(lock, [] { return g_exit; });
 }
 
-void subscribe(MessageBusMalamute* msgbus, int /*argc*/, char** /*argv*/)
+void subscribe(MessageBus* msgbus, int /*argc*/, char** /*argv*/)
 {
   msgbus->subscribe(topic, [](const MlmMessage& msg) { dumpMessage(msg); });
 
@@ -128,7 +134,7 @@ void subscribe(MessageBusMalamute* msgbus, int /*argc*/, char** /*argv*/)
   g_cv.wait(lock, [] { return g_exit; });
 }
 
-void sendRequest(MessageBusMalamute* msgbus, int /*argc*/, char** argv)
+void sendRequest(MessageBus* msgbus, int /*argc*/, char** argv)
 {
   MlmMessage msg;
 
@@ -156,7 +162,7 @@ void sendRequest(MessageBusMalamute* msgbus, int /*argc*/, char** argv)
   msgbus->sendRequest(queue, msg);
 }
 
-void request(MessageBusMalamute* msgbus, int /*argc*/, char** argv)
+void request(MessageBus* msgbus, int /*argc*/, char** argv)
 {
   Message msg;
 
@@ -191,7 +197,7 @@ void request(MessageBusMalamute* msgbus, int /*argc*/, char** argv)
   }
 }
 
-void publish(MessageBusMalamute* msgbus, int /*argc*/, char** argv)
+void publish(MessageBus* msgbus, int /*argc*/, char** argv)
 {
   Message msg;
 
@@ -250,7 +256,7 @@ void publish(MessageBusMalamute* msgbus, int /*argc*/, char** argv)
 
 int main(int argc, char** argv)
 {
-  endpoint = MLM_DEFAULT_ENDPOINT;
+  endpoint = DEFAULT_MLM_END_POINT;
   clientName = utils::getClientId("fty-msgbus-cli");
   type = "malamute";
 
@@ -316,7 +322,7 @@ int main(int argc, char** argv)
   }
 
   // Do the requested work.
-  auto msgBus = std::unique_ptr<MessageBusMalamute>(busIt->second());
+  auto msgBus = std::unique_ptr<MessageBus>(busIt->second());
   msgBus->connect();
   actionIt->second.fn(msgBus.get(), argc - optind - 1, argv + optind + 1);
 

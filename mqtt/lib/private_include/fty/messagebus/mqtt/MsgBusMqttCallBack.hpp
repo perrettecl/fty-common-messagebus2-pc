@@ -25,8 +25,8 @@
 #include "fty/messagebus/IMessageBus.hpp"
 #include "fty/messagebus/mqtt/MsgBusMqttMessage.hpp"
 
-#include <mqtt/async_client.h>
 #include <map>
+#include <mqtt/async_client.h>
 #include <string>
 #include <thread>
 
@@ -40,7 +40,6 @@ namespace fty::messagebus::mqttv5
   {
   public:
     CallBack() = default;
-    //CallBack();
     ~CallBack();
     void connection_lost(const std::string& cause) override;
     void onConnected(const std::string& cause);
@@ -57,6 +56,6 @@ namespace fty::messagebus::mqttv5
     // TODO replace by a real thread pool
     std::vector<std::thread> m_threadPool;
   };
-} // namespace messagebus::mqttv5
+} // namespace fty::messagebus::mqttv5
 
 #endif // ifndef FTY_COMMON_MESSAGEBUS_MQTT_CALL_BACK

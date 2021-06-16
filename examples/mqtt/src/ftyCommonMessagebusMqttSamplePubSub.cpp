@@ -26,11 +26,12 @@
 @end
 */
 
-#include "FtyCommonMqttTestDef.hpp"
-#include "FtyCommonMessageBusDto.hpp"
-#include "fty/messagebus/MsgBusException.hpp"
-#include "fty/messagebus/MsgBusFactory.hpp"
-#include "fty/messagebus/utils/MsgBusHelper.hpp"
+#include <FtyCommonMessageBusDto.hpp>
+#include <FtyCommonMqttTestDef.hpp>
+#include <fty/messagebus/MsgBusException.hpp>
+#include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqtt.hpp>
+#include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 #include <chrono>
 #include <csignal>
@@ -44,6 +45,7 @@ namespace
   using namespace fty::messagebus::mqttv5;
   using namespace fty::messagebus::mqttv5::test;
   using Message = fty::messagebus::mqttv5::MqttMessage;
+  using MessageBus = fty::messagebus::IMessageBus<Message>;
 
   static bool _continue = true;
 
@@ -61,9 +63,8 @@ namespace
     {
       log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
     }
-    auto data = message.userData();
-    FooBar fooBar;
-    data >> fooBar;
+
+    auto fooBar = FooBar(message.userData());
     log_info("  * foo    : '%s'", fooBar.foo.c_str());
     log_info("  * bar    : '%s'", fooBar.bar.c_str());
 
@@ -90,7 +91,7 @@ int main(int /*argc*/, char** argv)
 
   // Publish
   Message message;
-  message.userData() << FooBar("event", "hello");
+  message.userData() = FooBar("event", "hello").serialize();
   message.metaData().clear();
   message.metaData().emplace("mykey", "myvalue");
   message.metaData().emplace(FROM, "publisher");

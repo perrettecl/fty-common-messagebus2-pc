@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_common_messagebus_helper - class description
+    fty_common_messagebus_message - class description
 
     Copyright (C) 2014 - 2020 Eaton
 
@@ -19,35 +19,26 @@
     =========================================================================
 */
 
-/*
-@header
-    fty_common_messagebus_helper -
-@discuss
-@end
-*/
+#ifndef FTY_COMMON_MESSAGEBUS_MQTT_MESSAGE_HPP
+#define FTY_COMMON_MESSAGEBUS_MQTT_MESSAGE_HPP
 
-#include "fty/messagebus/utils/MsgBusHelper.hpp"
+#include "fty/messagebus/IMessage.hpp"
 
-#include <chrono>
-#include <ctime>
-#include <czmq.h>
+#include <list>
 
-namespace fty::messagebus::utils
+namespace fty::messagebus::mqttv5
 {
-  std::string generateUuid()
-  {
-    zuuid_t* uuid = zuuid_new();
-    std::string strUuid(zuuid_str_canonical(uuid));
-    zuuid_destroy(&uuid);
-    return strUuid;
-  }
+  // Json representation
+  using UserData = std::string;
 
-  std::string getClientId(const std::string& prefix)
+  class MqttMessage final : public IMessage<UserData>
   {
-    std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-      std::chrono::system_clock::now().time_since_epoch());
-    std::string clientId = prefix + "-" + std::to_string(ms.count());
-    return clientId;
-  }
+  public:
+    MqttMessage() = default;
+    MqttMessage(const MetaData& metaData, const UserData& userData = {});
+    ~MqttMessage() = default;
+  };
 
-} // namespace messagebus::helper
+} // namespace fty::messagebus::mqttv5
+
+#endif // FTY_COMMON_MESSAGEBUS_MQTT_MESSAGE_HPP

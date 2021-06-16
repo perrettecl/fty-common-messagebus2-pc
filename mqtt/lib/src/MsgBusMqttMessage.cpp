@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_common_messagebus_interface - class description
+    fty_common_messagebus_mqtt_message - class description
 
     Copyright (C) 2014 - 2020 Eaton
 
@@ -19,39 +19,21 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MESSAGEBUS_HELPER_HPP
-#define FTY_COMMON_MESSAGEBUS_HELPER_HPP
+/*
+@header
+    fty_common_messagebus_mqtt_message -
+@discuss
+@end
+*/
 
-#include <string>
+#include "fty/messagebus/mqtt/MsgBusMqttMessage.hpp"
 
-namespace fty::messagebus::utils
+namespace fty::messagebus::mqttv5
 {
+  MqttMessage::MqttMessage(const MetaData& metaData, const UserData& userData)
+  {
+    m_metadata = metaData;
+    m_data = userData;
+  }
 
-  /**
- * @brief Generate a random uuid
- *
- * @return uuid
- */
-  std::string generateUuid();
-
-  /**
- * @brief Build a reply queue for req/rep pattern
- *
- * @param clientName prefix queue name
- *
- * @return A reply queue name
- */
-  std::string buildReplyQueue(const std::string& queue);
-
-  /**
- * @brief Generate a random clientName
- *
- * @param clientName prefix for client Name
- *
- * @return client Name
- */
-  std::string getClientId(const std::string& prefix);
-
-} // namespace messagebus::helper
-
-#endif
+} // namespace fty::messagebus::mqttv5

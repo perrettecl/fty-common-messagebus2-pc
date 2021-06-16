@@ -39,6 +39,12 @@ struct FooBar
     , bar(_bar)
   {
   }
+  FooBar(const std::string& input)
+  {
+    deserialize(input);
+  }
+  auto serialize() -> const std::string;
+  void deserialize(const std::string& input);
 };
 
 void operator<<(messagebus::UserData& data, const FooBar& object);

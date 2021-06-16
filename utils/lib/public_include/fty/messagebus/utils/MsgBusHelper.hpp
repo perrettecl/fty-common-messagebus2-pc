@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_common_messagebus_factory - class description
+    fty_common_messagebus_interface - class description
 
     Copyright (C) 2014 - 2020 Eaton
 
@@ -19,28 +19,32 @@
     =========================================================================
 */
 
-/*
-@header
-    fty_common_messagebus_factory -
-@discuss
-@end
-*/
+#ifndef FTY_COMMON_MESSAGEBUS_UTILS_HELPER_HPP
+#define FTY_COMMON_MESSAGEBUS_UTILS_HELPER_HPP
 
-#include "fty/messagebus/MsgBusFactory.hpp"
+#include <chrono>
+#include <ctime>
+#include <czmq.h>
+#include <string>
 
-
-
-namespace fty::messagebus
+namespace fty::messagebus::utils
 {
-
-  auto MessageBusFactory::createMlmMsgBus(const std::string& _endpoint, const std::string& _clientName) -> mlm::MessageBusMalamute*
+  static auto generateUuid() -> const std::string
   {
-    return new mlm::MessageBusMalamute(_endpoint, _clientName);
+    zuuid_t* uuid = zuuid_new();
+    std::string strUuid(zuuid_str_canonical(uuid));
+    zuuid_destroy(&uuid);
+    return strUuid;
   }
 
-  auto MessageBusFactory::createMqttMsgBus(const std::string& _endpoint, const std::string& _clientName) -> mqttv5::MessageBusMqtt*
+  static auto getClientId(const std::string& prefix) -> const std::string
   {
-    return new mqttv5::MessageBusMqtt(_endpoint, _clientName);
+    std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+    std::chrono::system_clock::now().time_since_epoch());
+    std::string clientId = prefix + "-" + std::to_string(ms.count());
+    return clientId;
   }
 
-} // namespace messagebus
+} // namespace fty::messagebus::utils
+
+#endif // FTY_COMMON_MESSAGEBUS_UTILS_HELPER_HPP

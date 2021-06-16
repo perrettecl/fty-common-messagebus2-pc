@@ -27,12 +27,7 @@
 #include "fty/messagebus/IMessageBus.hpp"
 #include "fty/messagebus/mlm/MsgBusMlmMessage.hpp"
 
-#include <condition_variable>
 #include <fty_common_mlm.h>
-
-#include <functional>
-#include <map>
-#include <mutex>
 
 namespace fty::messagebus::mlm
 {

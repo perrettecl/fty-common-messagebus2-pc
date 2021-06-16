@@ -1,6 +1,6 @@
 project(${PROJECT_NAME}-sample
         VERSION ${PROJECT_VERSION}
-        DESCRIPTION "Fty common message bus sample"
+        DESCRIPTION "fty messagebus sample"
         LANGUAGES CXX)
 
 

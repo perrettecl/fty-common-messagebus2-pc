@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_common_messagebus_message - class description
+    fty_common_messagebus_factory - class description
 
     Copyright (C) 2014 - 2020 Eaton
 
@@ -19,30 +19,28 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MESSAGEBUS_MQTT_MESSAGE_HPP
-#define FTY_COMMON_MESSAGEBUS_MQTT_MESSAGE_HPP
+/*
+@header
+    fty_common_messagebus_factory -
+@discuss
+@end
+*/
 
-#include "fty/messagebus/IMessage.hpp"
+#include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/mlm/MsgBusMalamute.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqtt.hpp>
 
-#include <list>
-
-namespace fty::messagebus::mqttv5
+namespace fty::messagebus
 {
-  // Json representation
-  using UserData = std::list<std::string>;
 
-  class MqttMessage final : public IMessage<UserData>
+  auto MessageBusFactory::createMlmMsgBus(const std::string& _endpoint, const std::string& _clientName) -> IMessageBus<mlm::MlmMessage>*
   {
-  public:
-    MqttMessage() = default;
-    MqttMessage(const MetaData& metaData, const UserData& userData = {});
-    MqttMessage(const MetaData& metaData, const std::string& input);
-    ~MqttMessage() = default;
+    return new mlm::MessageBusMalamute(_endpoint, _clientName);
+  }
 
-    auto serialize() const -> std::string const;
-    void deSerialize(const std::string& input);
-  };
+  auto MessageBusFactory::createMqttMsgBus(const std::string& _endpoint, const std::string& _clientName) -> IMessageBus<mqttv5::MqttMessage>*
+  {
+    return new mqttv5::MessageBusMqtt(_endpoint, _clientName);
+  }
 
-} // namespace messagebus::mqttv5
-
-#endif // FTY_COMMON_MESSAGEBUS_MQTT_MESSAGE_HPP
+} // namespace fty::messagebus

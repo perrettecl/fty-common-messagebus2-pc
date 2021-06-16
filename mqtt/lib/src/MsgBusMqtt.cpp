@@ -95,9 +95,13 @@ namespace fty::messagebus::mqttv5
       });
       log_info("%s => connect status: %s", m_clientName.c_str(), m_client->is_connected() ? "true" : "false");
     }
-    catch (const mqtt::exception& exc)
+    catch (const mqtt::exception& e)
     {
-      log_error("Error to connect with the Mqtt server, raison: %s", exc.get_message().c_str());
+      throw MessageBusException("Error to connect with the Mqtt server, reason: " + e.get_message());
+    }
+    catch (const std::exception& e)
+    {
+      throw MessageBusException("Unexpected error: " + std::string{e.what()});
     }
   }
 
@@ -116,7 +120,7 @@ namespace fty::messagebus::mqttv5
       // Build the message
       auto pubMsg = mqtt::message_ptr_builder()
                       .topic(topic)
-                      .payload(message.serialize())
+                      .payload(message.userData())
                       .qos(QOS)
                       .properties(props)
                       .retained(false)
@@ -184,7 +188,7 @@ namespace fty::messagebus::mqttv5
 
       auto reqMsg = mqtt::message_ptr_builder()
                       .topic(requestQueue)
-                      .payload(message.serialize())
+                      .payload(message.userData())
                       .qos(QOS)
                       .properties(props)
                       .retained(RETAINED)
@@ -213,7 +217,7 @@ namespace fty::messagebus::mqttv5
       log_debug("Send reply to: %s", (mqtt::get<std::string>(props, mqtt::property::RESPONSE_TOPIC)).c_str());
       auto replyMsg = mqtt::message_ptr_builder()
                         .topic(replyQueue)
-                        .payload(message.serialize())
+                        .payload(message.userData())
                         .qos(QOS)
                         .properties(props)
                         .retained(RETAINED)

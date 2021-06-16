@@ -26,10 +26,11 @@
     \author Clement Perrette <clementperrette@eaton.com>
 */
 
-#include "FtyCommonMessageBusDto.hpp"
-#include "fty/messagebus/MsgBusException.hpp"
-#include "fty/messagebus/MsgBusFactory.hpp"
-#include "fty/messagebus/utils/MsgBusHelper.hpp"
+#include <FtyCommonMessageBusDto.hpp>
+#include <fty/messagebus/MsgBusException.hpp>
+#include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/mlm/MsgBusMalamute.hpp>
+#include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 #include <fty_log.h>
 
@@ -37,6 +38,7 @@ using namespace std::placeholders;
 using namespace fty::messagebus;
 using namespace fty::messagebus::mlm;
 using Message = fty::messagebus::mlm::MlmMessage;
+using MessageBus = fty::messagebus::IMessageBus<Message>;
 
 namespace srr
 {
@@ -47,7 +49,7 @@ namespace srr
     ~SrrManager();
     void init();
     void handleRequest(const Message& msg);
-    MessageBusMalamute* m_msgBus;
+    MessageBus* m_msgBus;
   };
 
   // All define value

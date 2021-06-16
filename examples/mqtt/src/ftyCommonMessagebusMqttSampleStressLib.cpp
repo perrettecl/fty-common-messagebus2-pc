@@ -27,10 +27,11 @@
 */
 
 #include "FtyCommonMqttTestDef.hpp"
-#include "FtyCommonMqttTestMathDto.h"
-#include "fty/messagebus/MsgBusException.hpp"
-#include "fty/messagebus/MsgBusFactory.hpp"
-#include "fty/messagebus/utils/MsgBusHelper.hpp"
+#include <FtyCommonMqttTestMathDto.h>
+#include <fty/messagebus/MsgBusException.hpp>
+#include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqtt.hpp>
+#include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 #include <mqtt/async_client.h>
 
@@ -52,8 +53,9 @@ namespace
   using namespace fty::messagebus::mqttv5::test;
   using namespace fty::messagebus::test;
   using Message = fty::messagebus::mqttv5::MqttMessage;
+  using MessageBus = fty::messagebus::IMessageBus<Message>;
 
-  MessageBusMqtt* mqttMsgBus;
+  MessageBus* mqttMsgBus;
   static bool _continue = true;
 
   auto getClientName() -> std::string
@@ -138,12 +140,12 @@ namespace
 
   void messageListener(const Message& message)
   {
-    log_info("Msg arrived: %s", message.userData().front().c_str());
+    log_info("Msg arrived: %s", message.userData().c_str());
   }
 
   // The MQTT publisher function will run in its own thread.
   // It runs until the receiver thread closes the counter object.
-  void publisherFunc(MessageBusMqtt* messageBus, MultithrCounter::ptr_t counter)
+  void publisherFunc(MessageBus* messageBus, MultithrCounter::ptr_t counter)
   {
     while (_continue)
     {
@@ -153,7 +155,7 @@ namespace
         _continue = false;
       }
       Message message;
-      message.userData().emplace_front(std::to_string(n));
+      message.userData() = std::to_string(n);
       messageBus->publish(SAMPLE_TOPIC, message);
     }
   }

@@ -28,27 +28,49 @@
 
 #include "FtyCommonMqttTestMathDto.h"
 
+#include <nlohmann/json.hpp>
 #include <ostream>
+
+using json = nlohmann::json;
 
 namespace fty::messagebus::test
 {
-  void operator<<(UserData& data, const MathOperation& object)
+
+  auto MathOperation::serialize () -> const std::string
   {
-    data.push_back(object.operation);
-    data.push_back(object.param_1);
-    data.push_back(object.param_2);
+    json op;
+    op["operation"] = operation;
+    op["param_1"] = param_1;
+    op["param_2"] = param_2;
+
+    return op.dump();
   }
 
-  void operator>>(UserData& data, MathOperation& object)
+  void MathOperation::deserialize (const std::string& input)
   {
-    auto operation = data.front();
-    data.pop_front();
-    auto param_1 = data.front();
-    data.pop_front();
-    auto param_2 = data.front();
-    data.pop_front();
-    object = MathOperation(operation, param_1, param_2);
+    auto jsonInput = json::parse(input);
+    operation = jsonInput["operation"];
+    param_1 = jsonInput["param_1"];
+    param_2 = jsonInput["param_2"];
   }
+
+  // void operator<<(UserData& data, const MathOperation& object)
+  // {
+  //   data.push_back(object.operation);
+  //   data.push_back(object.param_1);
+  //   data.push_back(object.param_2);
+  // }
+
+  // void operator>>(UserData& data, MathOperation& object)
+  // {
+  //   auto operation = data.front();
+  //   data.pop_front();
+  //   auto param_1 = data.front();
+  //   data.pop_front();
+  //   auto param_2 = data.front();
+  //   data.pop_front();
+  //   object = MathOperation(operation, param_1, param_2);
+  // }
 
   std::ostream& operator<<(std::ostream& os, const MathOperation& mathOperation)
   {
@@ -60,20 +82,38 @@ namespace fty::messagebus::test
     return os;
   }
 
-  void operator<<(UserData& data, const MathResult& object)
+  auto MathResult::serialize () -> const std::string
   {
-    data.push_back(object.status);
-    data.push_back(object.result);
+    json op;
+    op["status"] = status;
+    op["result"] = result;
+    op["error"] = error;
+
+    return op.dump();
   }
 
-  void operator>>(UserData& data, MathResult& object)
+  void MathResult::deserialize (const std::string& input)
   {
-    auto status = data.front();
-    data.pop_front();
-    auto result = data.front();
-    data.pop_front();
-    object = MathResult(status, result);
+    auto jsonInput = json::parse(input);
+    status = jsonInput["status"];
+    result = jsonInput["result"];
+    error = jsonInput["error"];
   }
+
+  // void operator<<(UserData& data, const MathResult& object)
+  // {
+  //   data.push_back(object.status);
+  //   data.push_back(object.result);
+  // }
+
+  // void operator>>(UserData& data, MathResult& object)
+  // {
+  //   auto status = data.front();
+  //   data.pop_front();
+  //   auto result = data.front();
+  //   data.pop_front();
+  //   object = MathResult(status, result);
+  // }
 
   std::ostream& operator<<(std::ostream& os, const MathResult& mathResult)
   {

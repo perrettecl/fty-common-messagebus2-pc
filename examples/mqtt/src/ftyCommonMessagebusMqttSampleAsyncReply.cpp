@@ -27,10 +27,11 @@
 */
 
 #include "FtyCommonMqttTestDef.hpp"
-#include "FtyCommonMqttTestMathDto.h"
-#include "fty/messagebus/MsgBusException.hpp"
-#include "fty/messagebus/MsgBusFactory.hpp"
-#include "fty/messagebus/utils/MsgBusHelper.hpp"
+#include <FtyCommonMqttTestMathDto.h>
+#include <fty/messagebus/MsgBusException.hpp>
+#include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/utils/MsgBusHelper.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqtt.hpp>
 
 #include <chrono>
 #include <csignal>
@@ -46,8 +47,9 @@ namespace
   using namespace fty::messagebus::mqttv5::test;
   using namespace fty::messagebus::test;
   using Message = fty::messagebus::mqttv5::MqttMessage;
+  using MessageBus = fty::messagebus::IMessageBus<Message>;
 
-  MessageBusMqtt* replyer;
+  MessageBus* replyer;
   static bool _continue = true;
 
   auto getClientName() -> std::string
@@ -71,29 +73,25 @@ namespace
     }
 
     auto reqData = message.userData();
-    MathOperation mathQuery = MathOperation();
-    reqData >> mathQuery;
+    MathOperation mathQuery = MathOperation(message.userData());
     auto mathResultResult = MathResult();
 
     if (mathQuery.operation == "add")
     {
-      mathResultResult.result = std::to_string(std::stoi(mathQuery.param_1) + std::stoi(mathQuery.param_2));
+      mathResultResult.result = mathQuery.param_1 + mathQuery.param_2;
     }
     else if (mathQuery.operation == "mult")
     {
-      mathResultResult.result = std::to_string(std::stoi(mathQuery.param_1) * std::stoi(mathQuery.param_2));
+      mathResultResult.result = mathQuery.param_1 * mathQuery.param_2;
     }
     else
     {
       mathResultResult.status = MathResult::STATUS_KO;
-      mathResultResult.result = "Unsuported operation";
+      mathResultResult.error = "Unsuported operation";
     }
 
     Message response;
-    UserData responseData;
-
-    responseData << mathResultResult;
-    response.userData() = responseData;
+    response.userData() = mathResultResult.serialize();
     response.metaData().emplace(SUBJECT, ANSWER_USER_PROPERTY);
     response.metaData().emplace(FROM, getClientName());
     response.metaData().emplace(CORRELATION_ID, message.metaData().find(CORRELATION_ID)->second);
