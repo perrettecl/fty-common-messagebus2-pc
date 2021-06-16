@@ -3,7 +3,7 @@ project(fty-messagebus-utils
         DESCRIPTION "fty messagebus utils interface"
 )
 
-etn_target(interface ${PROJECT_NAME}
+etn_target(static ${PROJECT_NAME}
   PUBLIC
     *.hpp
   PUBLIC_INCLUDE_DIR

@@ -30,15 +30,14 @@ endif()
 ##############################################################################################################
 
 # # Create a target for the tests
-# etn_test_target(${PROJECT_NAME_UNDERSCORE}
-#   SOURCES
-#     test/main.cpp
-#     test/dispatcher.cpp
-#     test/pool_worker.cpp
-#   INCLUDE_DIRS
-#     private_include
-#   USES
-#     ${PROJECT_NAME_UNDERSCORE}
-# )
+etn_test_target(${PROJECT_NAME_UNDERSCORE}
+  SOURCES
+    test/main.cpp
+    test/dispatcher.cpp
+    test/pool_worker.cpp
+  USES
+    fty-messagebus-utils
+    ${PROJECT_NAME_UNDERSCORE}
+)
 
 ##############################################################################################################

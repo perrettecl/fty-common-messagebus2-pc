@@ -66,7 +66,7 @@ TEST_CASE("Pool worker")
         for (size_t nWorkers = 0; nWorkers < NB_WORKERS; nWorkers = nWorkers * 2 + 1) {
             std::cerr << "  - Collatz sequence with PoolWorker(" << nWorkers << "): ";
 
-            PoolWorker                                 pool(nWorkers);
+            PoolWorker pool(nWorkers);
             std::array<std::future<uint64_t>, NB_JOBS> futuresArray;
             for (uint64_t i = 0; i < NB_JOBS; i++) {
                 futuresArray[i] = pool.schedule(collatz, i);
@@ -89,7 +89,7 @@ TEST_CASE("Pool worker")
         for (size_t nWorkers = 0; nWorkers < NB_WORKERS; nWorkers = nWorkers * 2 + 1) {
             std::cerr << "  - Summation with PoolWorker(" << nWorkers << "): ";
 
-            PoolWorker                                 pool(nWorkers);
+            PoolWorker pool(nWorkers);
             std::array<std::future<uint64_t>, NB_JOBS> futuresArray;
             for (uint64_t i = 0; i < NB_JOBS; i++) {
                 std::vector<uint64_t> terms(i);
