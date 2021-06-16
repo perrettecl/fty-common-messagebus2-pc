@@ -1,6 +1,6 @@
 project(fty-common-messagebus-evol
     VERSION 1.0.0
-    DESCRIPTION "Common messagebus library"
+    DESCRIPTION "fty common messagebus library evolution"
 )
 
 ##############################################################################################################

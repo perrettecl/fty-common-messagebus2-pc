@@ -41,3 +41,5 @@ etn_test_target(${PROJECT_NAME_UNDERSCORE}
 )
 
 ##############################################################################################################
+
+set_target_properties(${PROJECT_NAME_UNDERSCORE} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
