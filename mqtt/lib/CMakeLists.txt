@@ -8,7 +8,7 @@ project(fty-messagebus-mqtt
 find_package(PahoMqttCpp REQUIRED)
 ##############################################################################################################
 
-etn_target(shared ${PROJECT_NAME}
+etn_target(static ${PROJECT_NAME}
   INCLUDE_DIRS
     private_include
   PUBLIC_INCLUDE_DIR
