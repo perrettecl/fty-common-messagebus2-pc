@@ -54,6 +54,15 @@ namespace fty::messagebus::mqttv5
     if (isServiceAvailable())
     {
       log_debug("Cleaning: %s", m_clientName.c_str());
+      auto topic = DISCOVERY_TOPIC + m_clientName + DISCOVERY_TOPIC_SUBJECT;
+      auto disconnectedMsg = mqtt::message_ptr_builder()
+        .topic(topic)
+        .payload(DISCONNECTED_MSG)
+        .qos(QOS)
+        .retained(true)
+        .finalize();
+      m_client->publish(disconnectedMsg);
+      log_info("DISCOVERY %s => %s", m_clientName.c_str(), DISCONNECTED_MSG);
       m_client->disable_callbacks();
       m_client->stop_consuming();
       m_client->disconnect()->wait();
@@ -74,7 +83,12 @@ namespace fty::messagebus::mqttv5
                       .automatic_reconnect(true)
                       //.automatic_reconnect(std::chrono::seconds(2), std::chrono::seconds(30))
                       .clean_start(true)
-                      .will(mqtt::message{WILL_TOPIC + m_clientName, {m_clientName + WILL_MSG}, QOS, true})
+                      .will(mqtt::message{
+                        DISCOVERY_TOPIC + m_clientName + DISCOVERY_TOPIC_SUBJECT, 
+                        {DISAPPEARED_MSG}, 
+                        QOS, 
+                        true}
+                        )
                       .finalize();
 
     try
@@ -94,7 +108,17 @@ namespace fty::messagebus::mqttv5
         return cb.onConnectionUpdated(connData);
       });
       log_info("%s => connect status: %s", m_clientName.c_str(), m_client->is_connected() ? "true" : "false");
+      auto topic = DISCOVERY_TOPIC + m_clientName + DISCOVERY_TOPIC_SUBJECT;
+      auto connectedMsg = mqtt::message_ptr_builder()
+        .topic(topic)
+        .payload(CONNECTED_MSG)
+        .qos(QOS)
+        .retained(true)
+        .finalize();
+      m_client->publish(connectedMsg);
+      log_info("DISCOVERY %s => %s", m_clientName.c_str(), CONNECTED_MSG);
     }
+    
     catch (const mqtt::exception& e)
     {
       throw MessageBusException("Error to connect with the Mqtt server, reason: " + e.get_message());
