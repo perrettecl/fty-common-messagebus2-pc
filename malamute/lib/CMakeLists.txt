@@ -23,6 +23,4 @@ etn_target(static ${PROJECT_NAME} PRIVATE
     fty-messagebus-common
     fty_common_logging
     fty_common_mlm
-  FLAGS
-    "-fmax-errors=1"
 )
