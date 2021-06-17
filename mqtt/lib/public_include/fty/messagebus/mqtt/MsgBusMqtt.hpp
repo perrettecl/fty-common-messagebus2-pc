@@ -35,10 +35,13 @@ namespace fty::messagebus::mqttv5
   static auto constexpr MQTT_DELIMITER{'/'};
 
   // Mqtt will topic
-  static auto constexpr WILL_TOPIC{"/etn/t/service/status/"};
+  static auto constexpr DISCOVERY_TOPIC{"/etn/t/service/"};
+  static auto constexpr DISCOVERY_TOPIC_SUBJECT{"/status"};
 
   // Mqtt will message
-  static auto constexpr WILL_MSG{" died unexpectedly"};
+  static auto constexpr CONNECTED_MSG{"CONNECTED"};
+  static auto constexpr DISCONNECTED_MSG{"DISCONNECTED"};
+  static auto constexpr DISAPPEARED_MSG{"DISAPPEARED"};
 
   using ClientPointer = std::shared_ptr<mqtt::async_client>;
 
@@ -78,6 +81,8 @@ namespace fty::messagebus::mqttv5
     std::string m_clientName{};
     // Call back
     CallBack cb;
+
+    void sendServiceStatus(const std::string& message);
   };
 } // namespace fty::messagebus::mqttv5
 

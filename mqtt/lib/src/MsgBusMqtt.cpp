@@ -54,6 +54,7 @@ namespace fty::messagebus::mqttv5
     if (isServiceAvailable())
     {
       log_debug("Cleaning: %s", m_clientName.c_str());
+      sendServiceStatus(DISCONNECTED_MSG);
       m_client->disable_callbacks();
       m_client->stop_consuming();
       m_client->disconnect()->wait();
@@ -74,7 +75,7 @@ namespace fty::messagebus::mqttv5
                       .automatic_reconnect(true)
                       //.automatic_reconnect(std::chrono::seconds(2), std::chrono::seconds(30))
                       .clean_start(true)
-                      .will(mqtt::message{WILL_TOPIC + m_clientName, {m_clientName + WILL_MSG}, QOS, true})
+                      .will(mqtt::message{DISCOVERY_TOPIC + m_clientName + DISCOVERY_TOPIC_SUBJECT, {DISAPPEARED_MSG}, QOS, true})
                       .finalize();
 
     try
@@ -94,7 +95,9 @@ namespace fty::messagebus::mqttv5
         return cb.onConnectionUpdated(connData);
       });
       log_info("%s => connect status: %s", m_clientName.c_str(), m_client->is_connected() ? "true" : "false");
+      sendServiceStatus(CONNECTED_MSG);
     }
+    
     catch (const mqtt::exception& e)
     {
       throw MessageBusException("Error to connect with the Mqtt server, reason: " + e.get_message());
@@ -248,6 +251,19 @@ namespace fty::messagebus::mqttv5
       m_client->unsubscribe(replyQueue);
     }
     return Message{};
+  }
+
+  void MessageBusMqtt::sendServiceStatus(const std::string& message)
+  {
+      auto topic = DISCOVERY_TOPIC + m_clientName + DISCOVERY_TOPIC_SUBJECT;
+      auto msg = mqtt::message_ptr_builder()
+        .topic(topic)
+        .payload(message)
+        .qos(mqtt::ReasonCode::GRANTED_QOS_2)
+        .retained(true)
+        .finalize();
+      m_client->publish(msg);
+      log_info("DISCOVERY %s => %s", m_clientName.c_str(), message);
   }
 
 } // namespace fty::messagebus::mqttv5
