@@ -8,19 +8,18 @@ project(fty-messagebus-mlm
 
 ##############################################################################################################
 
-
-##############################################################################################################
-etn_target(static ${PROJECT_NAME}
+etn_target(static ${PROJECT_NAME} PRIVATE
   INCLUDE_DIRS
     private_include
   PUBLIC_INCLUDE_DIR
     public_include
   PUBLIC_HEADERS
-    *.hpp
+    public_include
   SOURCES
     src/*.cpp
-  USES_PUBLIC
+  USES_PRIVATE
     fty-messagebus-utils
+  USES_PUBLIC
     fty-messagebus-common
     fty_common_logging
     fty_common_mlm

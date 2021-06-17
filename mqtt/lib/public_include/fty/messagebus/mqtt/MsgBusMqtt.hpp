@@ -31,10 +31,6 @@
 
 namespace fty::messagebus::mqttv5
 {
-  // Default mqtt end point
-  static auto constexpr DEFAULT_MQTT_END_POINT{"tcp://localhost:1883"};
-  static auto constexpr SECURE_MQTT_END_POINT{"tcp://localhost:8883"};
-
   // Mqtt default delimiter
   static auto constexpr MQTT_DELIMITER{'/'};
 
