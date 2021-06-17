@@ -85,6 +85,8 @@ namespace fty::messagebus::mqttv5
     std::string m_clientName{};
     // Call back
     CallBack cb;
+
+    void sendServiceStatus(const std::string& message);
   };
 } // namespace fty::messagebus::mqttv5
 
