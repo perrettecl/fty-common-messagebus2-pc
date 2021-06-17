@@ -134,4 +134,4 @@ namespace fty::messagebus
 
 } // namespace fty::messagebus
 
-#endif FTY_COMMON_MESSAGEBUS_INTERFACE_HPP
+#endif // FTY_COMMON_MESSAGEBUS_INTERFACE_HPP
