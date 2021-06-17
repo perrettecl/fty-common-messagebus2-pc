@@ -11,14 +11,13 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
     *.hpp
   SOURCES
     src/*.cpp
-  USES_PUBLIC
-    fty-messagebus-common
+  USES_PRIVATE
     fty-messagebus-utils
     fty-messagebus-mlm
     fty-messagebus-mqtt
+  USES_PUBLIC
+    fty-messagebus-common
     fty_common_logging
-  USES
-    cxxtools
     czmq
     mlm
     pthread

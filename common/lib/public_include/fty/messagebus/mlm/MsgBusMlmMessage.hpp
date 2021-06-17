@@ -1,7 +1,7 @@
 /*  =========================================================================
-    FtyCommonMqttTestDef.hpp - class description
+    fty_common_messagebus_mlm_message - class description
 
-    Copyright (C) 2014 - 2021 Eaton
+    Copyright (C) 2014 - 2020 Eaton
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,25 +19,26 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MQTT_TEST_DEF_HPP
-#define FTY_COMMON_MQTT_TEST_DEF_HPP
+#ifndef FTY_COMMON_MESSAGEBUS_MLM_MESSAGE_HPP
+#define FTY_COMMON_MESSAGEBUS_MLM_MESSAGE_HPP
 
-#include <string>
+#include "fty/messagebus/IMessage.hpp"
 
-namespace fty::messagebus::mqttv5::test
+#include <list>
+
+namespace fty::messagebus::mlm
 {
-  // Default mqtt end point
-  static auto constexpr DEFAULT_MQTT_END_POINT{"tcp://localhost:1883"};
-  static auto constexpr SECURE_MQTT_END_POINT{"tcp://localhost:8883"};
+  // Json representation
+  using UserData = std::list<std::string>;
 
-  // Topic
-  static auto constexpr SAMPLE_TOPIC{"/etn/t/metric/samplemqtt"};
+  class MlmMessage final : public IMessage<UserData>
+  {
+  public:
+    MlmMessage() = default;
+    MlmMessage(const MetaData& metaData, const UserData& userData = {});
+    ~MlmMessage() = default;
+  };
 
-  // Queues
-  static auto constexpr REQUEST_QUEUE{"/etn/q/request/maths/operator"};
-  //static auto constexpr REPLY_QUEUE{"/etn/q/reply"};
-  static const std::string REPLY_QUEUE = "/etn/q/reply/maths/operator";
+} // namespace fty::messagebus::mlm
 
-} // namespace fty::messagebus::mqttv5::test
-
-#endif // FTY_COMMON_MQTT_TEST_DEF_HPP
+#endif // FTY_COMMON_MESSAGEBUS_MLM_MESSAGE_HPP
