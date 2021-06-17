@@ -26,11 +26,9 @@
 @end
 */
 
-#include <FtyCommonMessageBusDto.hpp>
-#include <FtyCommonMqttTestDef.hpp>
+#include "FtyCommonMqttTestDef.hpp"
 #include <fty/messagebus/MsgBusException.hpp>
 #include <fty/messagebus/MsgBusFactory.hpp>
-#include <fty/messagebus/mqtt/MsgBusMqtt.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 #include <chrono>

@@ -74,7 +74,7 @@ etn_target(exe ${PROJECT_NAME}-multi-thread-req-rep PRIVATE
 )
 
 # Discovery topic
-etn_target(exe ${PROJECT_NAME}-discovery
+etn_target(exe ${PROJECT_NAME}-discovery PRIVATE
   SOURCES
     src/*SampleDiscovery.cpp
   INCLUDE_DIRS
