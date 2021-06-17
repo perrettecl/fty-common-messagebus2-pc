@@ -75,12 +75,7 @@ namespace fty::messagebus::mqttv5
                       .automatic_reconnect(true)
                       //.automatic_reconnect(std::chrono::seconds(2), std::chrono::seconds(30))
                       .clean_start(true)
-                      .will(mqtt::message{
-                        DISCOVERY_TOPIC + m_clientName + DISCOVERY_TOPIC_SUBJECT, 
-                        {DISAPPEARED_MSG}, 
-                        QOS, 
-                        true}
-                        )
+                      .will(mqtt::message{DISCOVERY_TOPIC + m_clientName + DISCOVERY_TOPIC_SUBJECT, {DISAPPEARED_MSG}, QOS, true})
                       .finalize();
 
     try
