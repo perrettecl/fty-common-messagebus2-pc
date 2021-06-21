@@ -37,17 +37,22 @@ namespace fty::messagebus::utils
       while (true)
       {
         std::unique_lock<std::mutex> lk(m_mutex);
-        m_cv.wait(lk, [this]() -> bool { return m_terminated.load() || m_jobs.size(); });
+        m_cv.wait(lk, [this]() -> bool { return m_terminated.load() || !m_jobs.empty(); });
 
         while (!m_jobs.empty())
         {
-          auto work = std::move(m_jobs.front());
+          auto job = std::move(m_jobs.front());
           m_jobs.pop();
           lk.unlock();
 
-          work();
+          auto shouldReschedule = job();
 
           lk.lock();
+          if (shouldReschedule)
+          {
+            m_jobs.emplace(std::move(job));
+            m_cv.notify_one();
+          }
         }
 
         if (m_terminated.load())
@@ -57,6 +62,7 @@ namespace fty::messagebus::utils
       }
     };
 
+    m_workers.reserve(workers);
     for (size_t cpt = 0; cpt < workers; cpt++)
     {
       m_workers.emplace_back(std::thread(workerMainloop));
@@ -80,17 +86,13 @@ namespace fty::messagebus::utils
     }
   }
 
-  void PoolWorker::scheduleWork(WorkUnit&& work)
+  void PoolWorker::addJob(Job&& work)
   {
     std::unique_lock<std::mutex> lk(m_mutex);
-    if (m_terminated.load())
-    {
-      throw std::runtime_error("PoolThread is terminated");
-    }
 
     if (m_workers.empty())
     {
-      // No workers, run job synchronously.
+      // No workers, run work unit synchronously.
       work();
     }
     else
@@ -101,4 +103,4 @@ namespace fty::messagebus::utils
     }
   }
 
-} // namespace messagebus
+} // namespace fty::messagebus::utils
