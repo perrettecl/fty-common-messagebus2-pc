@@ -263,7 +263,7 @@ namespace fty::messagebus::mqttv5
         .retained(true)
         .finalize();
       m_client->publish(msg);
-      log_info("DISCOVERY %s => %s", m_clientName.c_str(), message);
+      log_info("DISCOVERY %s => %s", m_clientName.c_str(), message.c_str());
   }
 
 } // namespace fty::messagebus::mqttv5
