@@ -22,8 +22,9 @@
 #ifndef FTY_COMMON_MESSAGEBUS_MQTT_CALL_BACK_HPP
 #define FTY_COMMON_MESSAGEBUS_MQTT_CALL_BACK_HPP
 
-#include "fty/messagebus/IMessageBus.hpp"
-#include "fty/messagebus/mqtt/MsgBusMqttMessage.hpp"
+#include <fty/messagebus/IMessageBus.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqttMessage.hpp>
+#include <fty/messagebus/utils/MsgBusPoolWorker.hpp>
 
 #include <map>
 #include <mqtt/async_client.h>
@@ -36,10 +37,12 @@ namespace fty::messagebus::mqttv5
   using MessageListener = fty::messagebus::MessageListener<MqttMessage>;
   using subScriptionListener = std::map<std::string, MessageListener>;
 
+  using PoolWorkerPointer = std::shared_ptr<utils::PoolWorker>;
+
   class CallBack : public virtual mqtt::callback
   {
   public:
-    CallBack() = default;
+    CallBack();
     ~CallBack();
     void connection_lost(const std::string& cause) override;
     void onConnected(const std::string& cause);
@@ -51,9 +54,8 @@ namespace fty::messagebus::mqttv5
 
   private:
     subScriptionListener m_subscriptions;
-
-    std::condition_variable_any m_cv;
-    // TODO replace by a real thread pool
+    PoolWorkerPointer m_poolWorkers;
+    // TODO Remove it after using the pool worker
     std::vector<std::thread> m_threadPool;
   };
 } // namespace fty::messagebus::mqttv5

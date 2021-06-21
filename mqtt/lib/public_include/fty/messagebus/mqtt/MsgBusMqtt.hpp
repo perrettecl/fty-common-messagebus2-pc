@@ -22,7 +22,6 @@
 #ifndef FTY_COMMON_MESSAGEBUS_MQTT_HPP
 #define FTY_COMMON_MESSAGEBUS_MQTT_HPP
 
-#include "fty/messagebus/IMessageBus.hpp"
 #include "fty/messagebus/mqtt/MsgBusMqttCallBack.hpp"
 
 #include <mqtt/async_client.h>
@@ -45,10 +44,11 @@ namespace fty::messagebus::mqttv5
 
   using ClientPointer = std::shared_ptr<mqtt::async_client>;
 
+
   class MessageBusMqtt final : public IMessageBus<MqttMessage>
   {
   public:
-    MessageBusMqtt() = default;
+    MessageBusMqtt() = delete;
 
     MessageBusMqtt(const std::string& endpoint, const std::string& clientName)
       : m_endpoint(endpoint)
@@ -79,6 +79,7 @@ namespace fty::messagebus::mqttv5
 
     std::string m_endpoint{};
     std::string m_clientName{};
+
     // Call back
     CallBack cb;
 

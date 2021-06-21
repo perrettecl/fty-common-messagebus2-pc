@@ -70,18 +70,16 @@ namespace
 
 namespace fty::messagebus::mqttv5
 {
+  size_t NB_WORKERS = 16;
   /////////////////////////////////////////////////////////////////////////////
 
-  // CallBack::CallBack()
-  // {
-  //   //auto num_threads = std::thread::hardware_concurrency();
-  // }
-
-
+  CallBack::CallBack()
+  {
+    m_poolWorkers = std::make_shared<utils::PoolWorker>(NB_WORKERS);
+  }
 
   CallBack::~CallBack()
   {
-    m_cv.notify_all();
     for (auto& thread: m_threadPool)
     {
       thread.join();

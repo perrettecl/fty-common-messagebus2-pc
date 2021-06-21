@@ -36,10 +36,10 @@
 #include <mqtt/async_client.h>
 #include <mqtt/properties.h>
 
-using namespace fty::messagebus;
-
 namespace fty::messagebus::mqttv5
 {
+  using namespace fty::messagebus;
+
   using duration = int64_t;
   using Message = fty::messagebus::mqttv5::MqttMessage;
 
