@@ -58,6 +58,8 @@ namespace fty::messagebus::mqttv5
       m_client->disable_callbacks();
       m_client->stop_consuming();
       m_client->disconnect()->wait();
+    } else {
+      log_error("Cleaning: %s", m_clientName.c_str());
     }
   }
 
@@ -97,7 +99,6 @@ namespace fty::messagebus::mqttv5
       log_info("%s => connect status: %s", m_clientName.c_str(), m_client->is_connected() ? "true" : "false");
       sendServiceStatus(CONNECTED_MSG);
     }
-    
     catch (const mqtt::exception& e)
     {
       throw MessageBusException("Error to connect with the Mqtt server, reason: " + e.get_message());
@@ -262,8 +263,10 @@ namespace fty::messagebus::mqttv5
         .qos(mqtt::ReasonCode::GRANTED_QOS_2)
         .retained(true)
         .finalize();
-      m_client->publish(msg);
-      log_info("DISCOVERY %s => %s", m_clientName.c_str(), message.c_str());
+      mqtt::delivery_token_ptr pubtok = m_client->publish(msg);
+      bool status = pubtok->wait_for(TIMEOUT);
+
+      log_info("DISCOVERY %s => %s [%d]", m_clientName.c_str(), message.c_str(), status);
   }
 
 } // namespace fty::messagebus::mqttv5
