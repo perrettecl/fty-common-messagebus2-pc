@@ -1,30 +1,43 @@
-# fty-common-messagebus
-fty-common-messagebus:
+# fty-common-messagebus-evol
 
-* Centralize all methods to address Request/Reply, Publish/Subscribe patterns above malamute message bus. 
+## Dependencies
+* [fty-cmake](https://github.com/42ity/fty-cmake/)
+* [fty_common_mlm](https://github.com/42ity/fty-common-mlm)
+* [fty_common_logging](https://github.com/42ity/fty-common-logging)
+* [PahoMqttC](https://github.com/eclipse/paho.mqtt.c)
+* [PahoMqttCpp](https://github.com/eclipse/paho.mqtt.cpp)
+* [googletest](https://github.com/google/googletest)
+
+## Description
+This project is developped on the purpose to provide somme common methods to address Request/Reply, and Publish/Subscribe patterns above malamute or Mqtt message bus.
 
 ## How to build
 
-To build fty-common-messagebus project run:
+To build fty-common-messagebus-evol project run:
 
-```bash
-./autogen.sh
-./configure
-make
-make check # to run self-test
+```cmake
+cmake -B build -DENABLE_EXAMPLES=ON|OFF -DBUILD_TESTING=ON|OFF
+cmake --build build
 ```
 
 ## How to use the dependency in your project
 
-In the project.xml, add following lines:
+Add the dependency in CMakeList.txt:
 
-```bash
-<use project = "fty-common-messagebus" libname = "libfty_common_messagebus" header = "fty_common_messagebus.h"
-        repository = "https://github.com/42ity/fty-common-messagebus.git"
-        release = "master"
-        test = "fty_common_messagebus_selftest" />
-```
+```cmake
+etn_target(${PROJECT_NAME}
+  SOURCES
+    .....
+  USES_PUBLIC
+    .....
+    fty_common_messagebus_evol
+    .....
+)
 
-## Howto 
+## Howto
 
-See all samples in src folder.
+See all samples in examples folder.
+
+## Change log
+
+[Change log](CHANGELOG.md) provides informations about bug fixing, improvement, etc.
