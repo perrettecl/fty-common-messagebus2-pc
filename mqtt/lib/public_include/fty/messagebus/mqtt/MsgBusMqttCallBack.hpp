@@ -36,7 +36,7 @@ namespace fty::messagebus::mqttv5
 
   using ClientPointer = std::shared_ptr<mqtt::async_client>;
   using MessageListener = fty::messagebus::MessageListener<MqttMessage>;
-  using subScriptionListener = std::map<std::string, MessageListener>;
+  using SubScriptionListener = std::map<std::string, MessageListener>;
 
   using PoolWorkerPointer = std::shared_ptr<utils::PoolWorker>;
 
@@ -50,13 +50,15 @@ namespace fty::messagebus::mqttv5
     bool onConnectionUpdated(const mqtt::connect_data& connData);
     void onMessageArrived(mqtt::const_message_ptr msg, ClientPointer clientPointer = nullptr);
 
-    auto getSubscriptions() -> subScriptionListener;
-    void setSubscriptions(const std::string& queue, MessageListener messageListener);
+    auto getSubscriptions() -> SubScriptionListener;
+    void setSubscriptions(const std::string& topic, MessageListener messageListener);
+    void eraseSubscriptions(const std::string& topic);
 
   private:
-    subScriptionListener m_subscriptions;
+    SubScriptionListener m_subscriptions;
     PoolWorkerPointer m_poolWorkers;
   };
+
 } // namespace fty::messagebus::mqttv5
 
 #endif // ifndef FTY_COMMON_MESSAGEBUS_MQTT_CALL_BACK_HPP

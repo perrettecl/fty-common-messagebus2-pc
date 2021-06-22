@@ -156,6 +156,7 @@ namespace fty::messagebus::mqttv5
     {
       log_trace("%s - unsubscribed for topic '%s'", m_clientName.c_str(), topic.c_str());
       m_client->unsubscribe(topic)->wait();
+      cb.eraseSubscriptions(topic);
     }
   }
 

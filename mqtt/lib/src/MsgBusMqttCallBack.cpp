@@ -104,18 +104,23 @@ namespace fty::messagebus::mqttv5
     return true;
   }
 
-  auto CallBack::getSubscriptions() -> subScriptionListener
+  auto CallBack::getSubscriptions() -> SubScriptionListener
   {
     return m_subscriptions;
   }
 
-  void CallBack::setSubscriptions(const std::string& queue, MessageListener messageListener)
+  void CallBack::setSubscriptions(const std::string& topic, MessageListener messageListener)
   {
-    if (auto it{m_subscriptions.find(queue)}; it == m_subscriptions.end())
+    if (auto it{m_subscriptions.find(topic)}; it == m_subscriptions.end())
     {
-      m_subscriptions.emplace(queue, messageListener);
-      log_trace("m_subscriptions emplaced: %s %d", queue.c_str());
+      m_subscriptions.emplace(topic, messageListener);
+      log_trace("m_subscriptions emplaced: %s %d", topic.c_str());
     }
+  }
+
+  void CallBack::eraseSubscriptions(const std::string& topic)
+  {
+    m_subscriptions.erase(topic);
   }
 
   // Callback called when a mqtt message arrives.
@@ -125,18 +130,19 @@ namespace fty::messagebus::mqttv5
     log_trace("Message received from topic: '%s'", topic.c_str());
     // build metaData message from mqtt properties
     auto metaData = getMetaDataFromMqttProperties(msg->get_properties());
-    if (auto it{m_subscriptions.find(msg->get_topic())}; it != m_subscriptions.end())
+    if (auto it{m_subscriptions.find(topic)}; it != m_subscriptions.end())
     {
       try
       {
         // Delegate to the pool worker
-        m_poolWorkers->offload([clientPointer, topic](MessageListener listener, const MqttMessage& mqttMsg)
+        m_poolWorkers->offload([this, clientPointer, topic](MessageListener listener, const MqttMessage& mqttMsg)
         {
           listener(mqttMsg);
           // Unsubscribe only reply
           if (clientPointer && mqttMsg.metaData().find(SUBJECT)->second == ANSWER_USER_PROPERTY)
           {
             clientPointer->unsubscribe(topic);
+            this->eraseSubscriptions(topic);
           }
         },(it->second), MqttMessage{metaData, msg->get_payload_str()});
       }
@@ -151,7 +157,7 @@ namespace fty::messagebus::mqttv5
     }
     else
     {
-      log_warning("Message skipped for %s", msg->get_topic().c_str());
+      log_warning("Message skipped for %s", topic.c_str());
     }
   }
 
