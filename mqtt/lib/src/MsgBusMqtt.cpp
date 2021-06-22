@@ -58,7 +58,9 @@ namespace fty::messagebus::mqttv5
       m_client->disable_callbacks();
       m_client->stop_consuming();
       m_client->disconnect()->wait();
-    } else {
+    }
+    else
+    {
       log_error("Cleaning: %s", m_clientName.c_str());
     }
   }
@@ -256,17 +258,17 @@ namespace fty::messagebus::mqttv5
 
   void MessageBusMqtt::sendServiceStatus(const std::string& message)
   {
-      auto topic = DISCOVERY_TOPIC + m_clientName + DISCOVERY_TOPIC_SUBJECT;
-      auto msg = mqtt::message_ptr_builder()
-        .topic(topic)
-        .payload(message)
-        .qos(mqtt::ReasonCode::GRANTED_QOS_2)
-        .retained(true)
-        .finalize();
-      mqtt::delivery_token_ptr pubtok = m_client->publish(msg);
-      bool status = pubtok->wait_for(TIMEOUT);
+    auto topic = DISCOVERY_TOPIC + m_clientName + DISCOVERY_TOPIC_SUBJECT;
+    auto msg = mqtt::message_ptr_builder()
+                 .topic(topic)
+                 .payload(message)
+                 .qos(mqtt::ReasonCode::GRANTED_QOS_2)
+                 .retained(true)
+                 .finalize();
+    mqtt::delivery_token_ptr pubtok = m_client->publish(msg);
+    bool status = pubtok->wait_for(TIMEOUT);
 
-      log_info("DISCOVERY %s => %s [%d]", m_clientName.c_str(), message.c_str(), status);
+    log_info("DISCOVERY %s => %s [%d]", m_clientName.c_str(), message.c_str(), status);
   }
 
 } // namespace fty::messagebus::mqttv5
