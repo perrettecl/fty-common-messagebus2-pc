@@ -42,9 +42,6 @@ namespace fty::messagebus::mqttv5
   static auto constexpr DISCONNECTED_MSG{"DISCONNECTED"};
   static auto constexpr DISAPPEARED_MSG{"DISAPPEARED"};
 
-  using ClientPointer = std::shared_ptr<mqtt::async_client>;
-
-
   class MessageBusMqtt final : public IMessageBus<MqttMessage>
   {
   public:

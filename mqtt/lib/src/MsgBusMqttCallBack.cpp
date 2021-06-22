@@ -71,19 +71,10 @@ namespace
 namespace fty::messagebus::mqttv5
 {
   size_t NB_WORKERS = 16;
-  /////////////////////////////////////////////////////////////////////////////
 
   CallBack::CallBack()
   {
     m_poolWorkers = std::make_shared<utils::PoolWorker>(NB_WORKERS);
-  }
-
-  CallBack::~CallBack()
-  {
-    for (auto& thread: m_threadPool)
-    {
-      thread.join();
-    }
   }
 
   // Callback called when connection lost.
@@ -123,24 +114,31 @@ namespace fty::messagebus::mqttv5
     if (auto it{m_subscriptions.find(queue)}; it == m_subscriptions.end())
     {
       m_subscriptions.emplace(queue, messageListener);
-      log_debug("m_subscriptions emplaced: %s %d", queue.c_str(), m_subscriptions.size());
+      log_trace("m_subscriptions emplaced: %s %d", queue.c_str());
     }
   }
 
-  // Callback called when a request or a reply message arrives.
-  void CallBack::onMessageArrived(mqtt::const_message_ptr msg)
+  // Callback called when a mqtt message arrives.
+  void CallBack::onMessageArrived(mqtt::const_message_ptr msg, ClientPointer clientPointer)
   {
-    log_trace("Message received from topic: '%s'", msg->get_topic().c_str());
+    auto topic = msg->get_topic();
+    log_trace("Message received from topic: '%s'", topic.c_str());
     // build metaData message from mqtt properties
     auto metaData = getMetaDataFromMqttProperties(msg->get_properties());
     if (auto it{m_subscriptions.find(msg->get_topic())}; it != m_subscriptions.end())
     {
       try
       {
-        (it->second)(MqttMessage{metaData, msg->get_payload_str()});
-        // std::thread thread(it->second, Message{metaData, msg->get_payload_str()});
-        // thread.detach();
-        //m_threadPool.emplace_back(std::thread(it->second, MqttMessage{metaData, msg->get_payload_str()}));
+        // Delegate to the pool worker
+        m_poolWorkers->offload([clientPointer, topic](MessageListener listener, const MqttMessage& mqttMsg)
+        {
+          listener(mqttMsg);
+          // Unsubscribe only reply
+          if (clientPointer && mqttMsg.metaData().find(SUBJECT)->second == ANSWER_USER_PROPERTY)
+          {
+            clientPointer->unsubscribe(topic);
+          }
+        },(it->second), MqttMessage{metaData, msg->get_payload_str()});
       }
       catch (const std::exception& e)
       {
@@ -155,13 +153,6 @@ namespace fty::messagebus::mqttv5
     {
       log_warning("Message skipped for %s", msg->get_topic().c_str());
     }
-    //}
-    // else
-    // {
-    //   log_error("no response topic");
-    // }
-    // TODO do it but core dump in terminate?
-    //MessageBusMqtt::unsubscribe(msg->get_topic());
   }
 
-} // namespace messagebus
+} // namespace fty::messagebus::mqttv5

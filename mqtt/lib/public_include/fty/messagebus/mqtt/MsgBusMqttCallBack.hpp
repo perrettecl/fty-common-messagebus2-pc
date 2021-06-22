@@ -34,6 +34,7 @@
 namespace fty::messagebus::mqttv5
 {
 
+  using ClientPointer = std::shared_ptr<mqtt::async_client>;
   using MessageListener = fty::messagebus::MessageListener<MqttMessage>;
   using subScriptionListener = std::map<std::string, MessageListener>;
 
@@ -43,11 +44,11 @@ namespace fty::messagebus::mqttv5
   {
   public:
     CallBack();
-    ~CallBack();
+    ~CallBack() = default;
     void connection_lost(const std::string& cause) override;
     void onConnected(const std::string& cause);
     bool onConnectionUpdated(const mqtt::connect_data& connData);
-    void onMessageArrived(mqtt::const_message_ptr msg);
+    void onMessageArrived(mqtt::const_message_ptr msg, ClientPointer clientPointer = nullptr);
 
     auto getSubscriptions() -> subScriptionListener;
     void setSubscriptions(const std::string& queue, MessageListener messageListener);
@@ -55,8 +56,6 @@ namespace fty::messagebus::mqttv5
   private:
     subScriptionListener m_subscriptions;
     PoolWorkerPointer m_poolWorkers;
-    // TODO Remove it after using the pool worker
-    std::vector<std::thread> m_threadPool;
   };
 } // namespace fty::messagebus::mqttv5
 
