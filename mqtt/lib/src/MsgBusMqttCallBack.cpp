@@ -139,11 +139,11 @@ namespace fty::messagebus::mqttv5
         {
           listener(mqttMsg);
           // Unsubscribe only reply
-          if (clientPointer && mqttMsg.metaData().find(SUBJECT)->second == ANSWER_USER_PROPERTY)
-          {
-            clientPointer->unsubscribe(topic);
-            this->eraseSubscriptions(topic);
-          }
+          // if (clientPointer && mqttMsg.metaData().find(SUBJECT)->second == ANSWER_USER_PROPERTY)
+          // {
+          //   clientPointer->unsubscribe(topic);
+          //   this->eraseSubscriptions(topic);
+          // }
         },(it->second), MqttMessage{metaData, msg->get_payload_str()});
       }
       catch (const std::exception& e)
