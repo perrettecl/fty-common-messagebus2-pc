@@ -46,7 +46,7 @@ namespace fty::messagebus::mqttv5
   duration KEEP_ALIVE = 20;
   static auto constexpr QOS = mqtt::ReasonCode::GRANTED_QOS_2;
   static auto constexpr RETAINED = false; //true;s
-  auto constexpr TIMEOUT = std::chrono::seconds(10);
+  auto constexpr TIMEOUT = std::chrono::seconds(5);
 
   MessageBusMqtt::~MessageBusMqtt()
   {
@@ -132,7 +132,7 @@ namespace fty::messagebus::mqttv5
                       .retained(false)
                       .finalize();
       // Publish it
-      m_client->publish(pubMsg);
+      m_client->publish(pubMsg)->wait_for(TIMEOUT);
     }
   }
 
@@ -146,7 +146,7 @@ namespace fty::messagebus::mqttv5
         // Wrapper from mqtt msg to Message
         cb.onMessageArrived(msg);
       });
-      m_client->subscribe(topic, QOS);
+      m_client->subscribe(topic, QOS)->wait_for(TIMEOUT);
     }
   }
 
@@ -155,7 +155,7 @@ namespace fty::messagebus::mqttv5
     if (isServiceAvailable())
     {
       log_trace("%s - unsubscribed for topic '%s'", m_clientName.c_str(), topic.c_str());
-      m_client->unsubscribe(topic)->wait();
+      m_client->unsubscribe(topic)->wait_for(TIMEOUT);
       cb.eraseSubscriptions(topic);
     }
   }
@@ -179,7 +179,7 @@ namespace fty::messagebus::mqttv5
       });
 
       log_debug("Waiting to receive msg from: %s", queue.c_str());
-      m_client->subscribe(queue, QOS);
+      m_client->subscribe(queue, QOS)->wait_for(TIMEOUT);
     }
   }
 
@@ -201,7 +201,7 @@ namespace fty::messagebus::mqttv5
                       .retained(RETAINED)
                       .finalize();
 
-      m_client->publish(reqMsg); //->wait_for(TIMEOUT);
+      m_client->publish(reqMsg)->wait_for(TIMEOUT);
       log_debug("Request sent");
     }
   }
@@ -228,7 +228,7 @@ namespace fty::messagebus::mqttv5
                         .retained(RETAINED)
                         .finalize();
 
-      m_client->publish(replyMsg);
+      m_client->publish(replyMsg)->wait_for(TIMEOUT);
     }
   }
 
@@ -240,10 +240,10 @@ namespace fty::messagebus::mqttv5
       mqtt::const_message_ptr msg;
       auto replyQueue = getReplyQueue(message);
 
-      m_client->subscribe(replyQueue, QOS);
+      m_client->subscribe(replyQueue, QOS)->wait_for(TIMEOUT);
       sendRequest(requestQueue, message);
       auto messageArrived = m_client->try_consume_message_for(&msg, std::chrono::seconds(receiveTimeOut));
-      m_client->unsubscribe(replyQueue);
+      m_client->unsubscribe(replyQueue)->wait_for(TIMEOUT);
       if (messageArrived)
       {
         replyMsg = Message{getMetaDataFromMqttProperties(msg->get_properties()), msg->get_payload_str()};
