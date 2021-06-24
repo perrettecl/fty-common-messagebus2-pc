@@ -36,7 +36,7 @@ using json = nlohmann::json;
 namespace fty::messagebus::test
 {
 
-  auto MathOperation::serialize () -> const std::string
+  auto MathOperation::serialize() -> const std::string
   {
     json op;
     op["operation"] = operation;
@@ -46,31 +46,13 @@ namespace fty::messagebus::test
     return op.dump();
   }
 
-  void MathOperation::deserialize (const std::string& input)
+  void MathOperation::deserialize(const std::string& input)
   {
     auto jsonInput = json::parse(input);
     operation = jsonInput["operation"];
     param_1 = jsonInput["param_1"];
     param_2 = jsonInput["param_2"];
   }
-
-  // void operator<<(UserData& data, const MathOperation& object)
-  // {
-  //   data.push_back(object.operation);
-  //   data.push_back(object.param_1);
-  //   data.push_back(object.param_2);
-  // }
-
-  // void operator>>(UserData& data, MathOperation& object)
-  // {
-  //   auto operation = data.front();
-  //   data.pop_front();
-  //   auto param_1 = data.front();
-  //   data.pop_front();
-  //   auto param_2 = data.front();
-  //   data.pop_front();
-  //   object = MathOperation(operation, param_1, param_2);
-  // }
 
   std::ostream& operator<<(std::ostream& os, const MathOperation& mathOperation)
   {
@@ -82,7 +64,7 @@ namespace fty::messagebus::test
     return os;
   }
 
-  auto MathResult::serialize () -> const std::string
+  auto MathResult::serialize() -> const std::string
   {
     json op;
     op["status"] = status;
@@ -92,7 +74,7 @@ namespace fty::messagebus::test
     return op.dump();
   }
 
-  void MathResult::deserialize (const std::string& input)
+  void MathResult::deserialize(const std::string& input)
   {
     auto jsonInput = json::parse(input);
     status = jsonInput["status"];
@@ -100,26 +82,12 @@ namespace fty::messagebus::test
     error = jsonInput["error"];
   }
 
-  // void operator<<(UserData& data, const MathResult& object)
-  // {
-  //   data.push_back(object.status);
-  //   data.push_back(object.result);
-  // }
-
-  // void operator>>(UserData& data, MathResult& object)
-  // {
-  //   auto status = data.front();
-  //   data.pop_front();
-  //   auto result = data.front();
-  //   data.pop_front();
-  //   object = MathResult(status, result);
-  // }
-
   std::ostream& operator<<(std::ostream& os, const MathResult& mathResult)
   {
     os << "MathResult(";
     os << "status=" << mathResult.status;
     os << ", result=" << mathResult.result;
+    os << ", error=" << mathResult.error;
     os << ")";
     return os;
   }

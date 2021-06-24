@@ -45,7 +45,7 @@ namespace fty::messagebus::mqttv5
 
   duration KEEP_ALIVE = 20;
   static auto constexpr QOS = mqtt::ReasonCode::GRANTED_QOS_2;
-  static auto constexpr RETAINED = false; //true;s
+  static auto constexpr RETAINED = false; //true;
   auto constexpr TIMEOUT = std::chrono::seconds(5);
 
   MessageBusMqtt::~MessageBusMqtt()
