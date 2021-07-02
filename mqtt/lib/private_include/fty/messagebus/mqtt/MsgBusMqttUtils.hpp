@@ -31,9 +31,9 @@ namespace fty::messagebus::mqttv5
 {
   using Message = MqttMessage;
 
-  static auto getMetaDataFromMqttProperties(const mqtt::properties& props) -> const MetaData
+  inline const MetaData getMetaDataFromMqttProperties(const mqtt::properties& props)
   {
-    auto metaData = MetaData{};
+    MetaData metaData{};
 
     // User properties
     if (props.contains(mqtt::property::USER_PROPERTY))
@@ -58,7 +58,7 @@ namespace fty::messagebus::mqttv5
     return metaData;
   }
 
-  static auto getMqttPropertiesFromMetaData(const MetaData& metaData) -> const mqtt::properties
+  inline const mqtt::properties getMqttPropertiesFromMetaData(const MetaData& metaData)
   {
     auto props = mqtt::properties{};
     for (const auto&[key, value] : metaData)
@@ -77,7 +77,7 @@ namespace fty::messagebus::mqttv5
     return props;
   }
 
-  static auto getCorrelationId(const Message& message) -> const std::string
+  inline const std::string getCorrelationId(const Message& message)
   {
     auto iterator = message.metaData().find(CORRELATION_ID);
     if (iterator == message.metaData().end() || iterator->second == "")
@@ -87,7 +87,7 @@ namespace fty::messagebus::mqttv5
     return iterator->second;
   }
 
-  static auto getReplyQueue(const Message& message) -> const std::string
+  inline const std::string getReplyQueue(const Message& message)
   {
     auto iterator = message.metaData().find(REPLY_TO);
     if (iterator == message.metaData().end() || iterator->second == "")
