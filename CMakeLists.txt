@@ -24,6 +24,8 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/malamute)
 
 # Library
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib)
+# Tools
+add_subdirectory(${PROJECT_SOURCE_DIR}/tools)
 
 # Examples
 if(ENABLE_EXAMPLES)

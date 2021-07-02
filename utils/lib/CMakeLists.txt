@@ -8,6 +8,4 @@ etn_target(static ${PROJECT_NAME} PRIVATE
     public_include
   SOURCES
     src/*.cpp
-  USES_PUBLIC
-    czmq
 )
