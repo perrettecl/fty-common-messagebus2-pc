@@ -61,17 +61,17 @@ namespace fty::messagebus::mqttv5
   static auto getMqttPropertiesFromMetaData(const MetaData& metaData) -> const mqtt::properties
   {
     auto props = mqtt::properties{};
-    for (const auto& data : metaData)
+    for (const auto&[key, value] : metaData)
     {
-      if (data.first == REPLY_TO)
+      if (key == REPLY_TO)
       {
         std::string correlationId = metaData.find(CORRELATION_ID)->second;
         props.add({mqtt::property::CORRELATION_DATA, correlationId});
-        props.add({mqtt::property::RESPONSE_TOPIC, data.second});
+        props.add({mqtt::property::RESPONSE_TOPIC, value});
       }
-      else if (data.first != CORRELATION_ID)
+      else if (key != CORRELATION_ID)
       {
-        props.add({mqtt::property::USER_PROPERTY, data.first, data.second});
+        props.add({mqtt::property::USER_PROPERTY, key, value});
       }
     }
     return props;
