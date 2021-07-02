@@ -24,10 +24,6 @@
 
 #include "fty/messagebus/mqtt/MsgBusMqttCallBack.hpp"
 
-#include <mqtt/async_client.h>
-#include <mqtt/client.h>
-#include <mqtt/message.h>
-
 namespace fty::messagebus::mqttv5
 {
   // Mqtt default delimiter
