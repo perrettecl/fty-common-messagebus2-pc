@@ -6,7 +6,10 @@ project(fty-common-messagebus-evol-project
     DESCRIPTION "fty common messagebus evolution"
 )
 
-option(ENABLE_EXAMPLES "Build samples" FALSE)
+option(ENABLE_EXAMPLES "Build samples" TRUE)
+option(BUILD_TESTING "Build tests" OFF)
+option(BUILD_DOC "Build documentation" OFF)
+
 set(PROJECT_NAME_UNDERSCORE fty_common_messagebus_evol)
 
 ##############################################################################################################
