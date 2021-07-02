@@ -21,7 +21,6 @@
 
 #pragma once
 
-
 #include <functional>
 #include <map>
 
@@ -29,17 +28,17 @@ namespace fty::messagebus::utils
 {
 
   /**
- * \brief Callable dispatcher based on std::map.
- */
+  * @brief Callable dispatcher based on std::map.
+  */
   template <class KeyType, typename WorkFunctionType, typename MissingFunctionType>
   class Dispatcher
   {
   public:
-    /// \brief Map of (key -> callable).
+    /// @brief Map of (key -> callable).
     using Map = std::map<KeyType, WorkFunctionType>;
 
     /**
-     * \brief Constructor without default handler.
+     * @brief Constructor without default handler.
      * \param map Function map.
      */
     Dispatcher(Map map)
@@ -48,7 +47,7 @@ namespace fty::messagebus::utils
     }
 
     /**
-     * \brief Constructor with default handler.
+     * @brief Constructor with default handler.
      * \param map Function map.
      * \param defaultHandler Default handler callable.
      */
@@ -59,7 +58,7 @@ namespace fty::messagebus::utils
     }
 
     /**
-     * \brief Dispatch a callable based on a key.
+     * @brief Dispatch a callable based on a key.
      * \param key Value to dispatch with.
      * \param args Arguments to pass to the callable.
      * \return Result of callable.

@@ -36,13 +36,13 @@ namespace fty::messagebus::utils
 {
 
   /**
- * \brief Pool of worker threads.
+ * @brief Pool of worker threads.
  */
   class PoolWorker
   {
   public:
     /**
-     * \brief Create a pool of worker threads.
+     * @brief Create a pool of worker threads.
      * \param workers Number of workers (work will be processed synchronously if 0).
      */
     PoolWorker(size_t workers = std::thread::hardware_concurrency() + 1);
@@ -55,7 +55,7 @@ namespace fty::messagebus::utils
     void operator=(PoolWorker&&) = delete;
 
     /**
-     * \brief Destroy the pool of workers.
+     * @brief Destroy the pool of workers.
      *
      * Once the destructor is called, PoolWorker will wait until all scheduled jobs
      * are completed before returning.
@@ -63,7 +63,7 @@ namespace fty::messagebus::utils
     ~PoolWorker();
 
     /**
-     * \brief Offload job (do not keep a std::future for the result).
+     * @brief Offload job (do not keep a std::future for the result).
      * \param job Callable of the job to do.
      * \param args Arguments to pass to the callable.
      */
@@ -80,7 +80,7 @@ namespace fty::messagebus::utils
     }
 
     /**
-     * \brief Queue job (keep a std::future for the result).
+     * @brief Queue job (keep a std::future for the result).
      * \param fn Callable of the job to do.
      * \param args Arguments to pass to the callable.
      * \return A future of the return value of the callable.
@@ -100,7 +100,7 @@ namespace fty::messagebus::utils
     }
 
     /**
-     * \brief Schedule job (queue when the std::future is ready).
+     * @brief Schedule job (queue when the std::future is ready).
      * \warning Jobs cannot be scheduled with a PoolWorker of 0 threads!
      * \param fn Callable of the job to do.
      * \param arg Future argument to pass to the callable.
@@ -125,7 +125,7 @@ namespace fty::messagebus::utils
     }
 
     /**
-     * \brief Schedule job (queue when the std::future is ready).
+     * @brief Schedule job (queue when the std::future is ready).
      * \warning Jobs cannot be scheduled with a PoolWorker of 0 threads!
      * \param fn Callable of the job to do.
      * \param args Future arguments to apply to the callable.
@@ -150,11 +150,11 @@ namespace fty::messagebus::utils
     }
 
   private:
-    /// \brief Unit of scheduled job for pool worker.
+    /// @brief Unit of scheduled job for pool worker.
     using Job = std::function<bool()>;
 
     /**
-     * \brief Add a Job to the queue of jobs to process.
+     * @brief Add a Job to the queue of jobs to process.
      * \param Job Job to queue.
      */
     void addJob(Job&& Job);

@@ -20,7 +20,7 @@
 */
 
 /*! \file   fty_common_messagebus_example_req.cc
-    \brief  Provides message bus for agents - example
+    @brief  Provides message bus for agents - example
     \author Jean-Baptiste Boric <Jean-BaptisteBORIC@Eaton.com>
     \author Xavier Millieret <XavierMillieret@eaton.com>
     \author Clement Perrette <clementperrette@eaton.com>
