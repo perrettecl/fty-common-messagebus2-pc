@@ -19,8 +19,8 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MESSAGEBUS_MLM_HPP
-#define FTY_COMMON_MESSAGEBUS_MLM_HPP
+#pragma once
+
 
 #include "fty/messagebus/IMessageBus.hpp"
 #include "fty/messagebus/MsgBusException.hpp"
@@ -83,5 +83,3 @@ namespace fty::messagebus::mlm
 } // namespace fty::messagebus::mlm
 
 void fty_common_messagebus_malamute_test(bool verbose);
-
-#endif // FTY_COMMON_MESSAGEBUS_MLM_HPP

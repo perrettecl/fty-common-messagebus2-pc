@@ -19,8 +19,8 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MESSAGEBUS_INTERFACE_HPP
-#define FTY_COMMON_MESSAGEBUS_INTERFACE_HPP
+#pragma once
+
 
 #include <functional>
 #include <string>
@@ -133,5 +133,3 @@ namespace fty::messagebus
   };
 
 } // namespace fty::messagebus
-
-#endif // FTY_COMMON_MESSAGEBUS_INTERFACE_HPP

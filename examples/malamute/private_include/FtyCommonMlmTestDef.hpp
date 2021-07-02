@@ -19,8 +19,8 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MLM_TEST_DEF_HPP
-#define FTY_COMMON_MLM_TEST_DEF_HPP
+#pragma once
+
 
 #include <string>
 
@@ -30,5 +30,3 @@ namespace fty::messagebus::mlm::test
   static auto constexpr DEFAULT_MLM_END_POINT{"ipc://@/malamute"};
 
 } // namespace fty::messagebus::mlm::test
-
-#endif // FTY_COMMON_MLM_TEST_DEF_HPP

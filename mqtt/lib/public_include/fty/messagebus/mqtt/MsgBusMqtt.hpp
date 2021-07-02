@@ -19,8 +19,8 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MESSAGEBUS_MQTT_HPP
-#define FTY_COMMON_MESSAGEBUS_MQTT_HPP
+#pragma once
+
 
 #include "fty/messagebus/mqtt/MsgBusMqttCallBack.hpp"
 
@@ -83,5 +83,3 @@ namespace fty::messagebus::mqttv5
     void sendServiceStatus(const std::string& message);
   };
 } // namespace fty::messagebus::mqttv5
-
-#endif // ifndef FTY_COMMON_MESSAGEBUS_MQTT_HPP

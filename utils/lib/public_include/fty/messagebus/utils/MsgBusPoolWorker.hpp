@@ -19,8 +19,8 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MESSAGEBUS_POOL_WORKER_HPP
-#define FTY_COMMON_MESSAGEBUS_POOL_WORKER_HPP
+#pragma once
+
 
 #include <atomic>
 #include <condition_variable>
@@ -168,5 +168,3 @@ namespace fty::messagebus::utils
   };
 
 } // namespace fty::messagebus::utils
-
-#endif // FTY_COMMON_MESSAGEBUS_POOL_WORKER_HPP

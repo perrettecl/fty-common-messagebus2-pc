@@ -19,8 +19,7 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MESSAGEBUS_MQTT_UTILS_HPP
-#define FTY_COMMON_MESSAGEBUS_MQTT_UTILS_HPP
+#pragma once
 
 #include "fty/messagebus/mqtt/MsgBusMqttMessage.hpp"
 
@@ -99,5 +98,3 @@ namespace fty::messagebus::mqttv5
   }
 
 } // namespace fty::messagebus::mqttv5
-
-#endif // ifndef FTY_COMMON_MESSAGEBUS_MQTT_UTILS_HPP

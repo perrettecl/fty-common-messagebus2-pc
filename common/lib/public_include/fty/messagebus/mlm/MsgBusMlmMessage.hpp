@@ -19,8 +19,8 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MESSAGEBUS_MLM_MESSAGE_HPP
-#define FTY_COMMON_MESSAGEBUS_MLM_MESSAGE_HPP
+#pragma once
+
 
 #include "fty/messagebus/IMessage.hpp"
 
@@ -40,5 +40,3 @@ namespace fty::messagebus::mlm
   };
 
 } // namespace fty::messagebus::mlm
-
-#endif // FTY_COMMON_MESSAGEBUS_MLM_MESSAGE_HPP

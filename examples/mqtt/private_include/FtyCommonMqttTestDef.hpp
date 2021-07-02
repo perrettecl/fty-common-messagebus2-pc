@@ -19,8 +19,8 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MQTT_TEST_DEF_HPP
-#define FTY_COMMON_MQTT_TEST_DEF_HPP
+#pragma once
+
 
 #include <string>
 
@@ -39,5 +39,3 @@ namespace fty::messagebus::mqttv5::test
   static const std::string REPLY_QUEUE = "/etn/q/reply/maths/operator";
 
 } // namespace fty::messagebus::mqttv5::test
-
-#endif // FTY_COMMON_MQTT_TEST_DEF_HPP

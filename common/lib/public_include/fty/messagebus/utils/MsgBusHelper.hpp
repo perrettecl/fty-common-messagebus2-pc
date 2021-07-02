@@ -19,8 +19,8 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MESSAGEBUS_UTILS_HELPER_HPP
-#define FTY_COMMON_MESSAGEBUS_UTILS_HELPER_HPP
+#pragma once
+
 
 #include <chrono>
 #include <ctime>
@@ -46,5 +46,3 @@ namespace fty::messagebus::utils
   }
 
 } // namespace fty::messagebus::utils
-
-#endif // FTY_COMMON_MESSAGEBUS_UTILS_HELPER_HPP

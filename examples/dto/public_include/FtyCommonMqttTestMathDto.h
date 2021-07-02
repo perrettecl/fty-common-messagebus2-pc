@@ -19,8 +19,8 @@
     =========================================================================
 */
 
-#ifndef FTY_COMMON_MQTT_TEST_MATH_DTO_HPP
-#define FTY_COMMON_MQTT_TEST_MATH_DTO_HPP
+#pragma once
+
 
 #include <list>
 #include <string>
@@ -76,5 +76,3 @@ namespace fty::messagebus::test
   };
 
 } // namespace fty::messagebus::test
-
-#endif // FTY_COMMON_MQTT_TEST_MATH_DTO_HPP
