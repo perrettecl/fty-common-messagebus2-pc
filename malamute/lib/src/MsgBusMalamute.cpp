@@ -24,7 +24,6 @@
 
 #include "fty/messagebus/mlm/MsgBusMalamute.hpp"
 
-#include <new>
 #include <thread>
 
 namespace fty::messagebus::mlm

@@ -43,7 +43,7 @@ namespace fty::messagebus::mlm
   {
   public:
     MessageBusMalamute(const std::string& endpoint, const std::string& clientName);
-    ~MessageBusMalamute();
+    ~MessageBusMalamute() override;
 
     void connect() override;
 
