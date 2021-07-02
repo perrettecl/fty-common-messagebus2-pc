@@ -41,7 +41,7 @@ namespace fty::messagebus::utils
      * @brief Constructor without default handler.
      * \param map Function map.
      */
-    Dispatcher(Map map)
+    Dispatcher(const Map& map)
       : Dispatcher(map, MissingFunctionType())
     {
     }
@@ -51,7 +51,7 @@ namespace fty::messagebus::utils
      * \param map Function map.
      * \param defaultHandler Default handler callable.
      */
-    Dispatcher(Map map, MissingFunctionType defaultHandler)
+    Dispatcher(const Map& map, MissingFunctionType defaultHandler)
       : m_map(map)
       , m_defaultHandler(defaultHandler)
     {
