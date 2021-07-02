@@ -21,23 +21,22 @@
 
 #pragma once
 
-
 #include <chrono>
 #include <ctime>
-#include <czmq.h>
+
 #include <string>
+#include <uuid/uuid.h>
 
 namespace fty::messagebus::utils
 {
-  static auto generateUuid() -> const std::string
+  inline const std::string generateUuid()
   {
-    zuuid_t* uuid = zuuid_new();
-    std::string strUuid(zuuid_str_canonical(uuid));
-    zuuid_destroy(&uuid);
-    return strUuid;
+    uuid_t id;
+    uuid_generate(id);
+    return (reinterpret_cast<const char*>(id));
   }
 
-  static auto getClientId(const std::string& prefix) -> const std::string
+  inline const std::string getClientId(const std::string& prefix)
   {
     std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(
       std::chrono::system_clock::now().time_since_epoch());

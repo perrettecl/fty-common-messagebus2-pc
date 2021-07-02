@@ -32,9 +32,9 @@
 #include <fty/messagebus/MsgBusFactory.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
 
+#include <czmq.h>
 #include <fty_log.h>
 #include <thread>
-
 
 using namespace std::placeholders;
 using namespace fty::messagebus;
