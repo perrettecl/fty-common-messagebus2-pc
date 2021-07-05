@@ -21,15 +21,16 @@
 
 #pragma once
 
-
 #include <fty/messagebus/IMessageBus.hpp>
 #include <fty/messagebus/mlm/MsgBusMlmMessage.hpp>
 #include <fty/messagebus/mqtt/MsgBusMqttMessage.hpp>
 
+#include <memory>
 #include <string>
 
 namespace fty::messagebus
 {
+
   class MessageBusFactory
   {
 
@@ -45,9 +46,9 @@ namespace fty::messagebus
    *
    * @return client Name
    */
-    auto static createMlmMsgBus(const std::string& _endpoint, const std::string& _clientName) -> IMessageBus<mlm::MlmMessage>*;
+    static std::unique_ptr<IMessageBus<mlm::MlmMessage>> createMlmMsgBus(const std::string& _endpoint, const std::string& _clientName);
 
-    /**
+      /**
    * @brief Mqtt implementation
    *
    * @param _endpoint Mqtt end point
@@ -55,7 +56,7 @@ namespace fty::messagebus
    *
    * @return IMessageBus
    */
-    auto static createMqttMsgBus(const std::string& _endpoint, const std::string& _clientName) -> IMessageBus<mqttv5::MqttMessage>*;
+    static std::unique_ptr<IMessageBus<mqttv5::MqttMessage>> createMqttMsgBus(const std::string& _endpoint, const std::string& _clientName);
   };
 
 } // namespace fty::messagebus

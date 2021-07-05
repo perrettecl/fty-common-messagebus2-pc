@@ -33,14 +33,14 @@
 namespace fty::messagebus
 {
 
-  auto MessageBusFactory::createMlmMsgBus(const std::string& _endpoint, const std::string& _clientName) -> IMessageBus<mlm::MlmMessage>*
+  std::unique_ptr<IMessageBus<mlm::MlmMessage>> MessageBusFactory::createMlmMsgBus(const std::string& _endpoint, const std::string& _clientName)
   {
-    return new mlm::MessageBusMalamute(_endpoint, _clientName);
+    return std::make_unique<mlm::MessageBusMalamute>(_endpoint, _clientName);
   }
 
-  auto MessageBusFactory::createMqttMsgBus(const std::string& _endpoint, const std::string& _clientName) -> IMessageBus<mqttv5::MqttMessage>*
+  std::unique_ptr<IMessageBus<mqttv5::MqttMessage>> MessageBusFactory::createMqttMsgBus(const std::string& _endpoint, const std::string& _clientName)
   {
-    return new mqttv5::MessageBusMqtt(_endpoint, _clientName);
+    return std::make_unique<mqttv5::MessageBusMqtt>(_endpoint, _clientName);
   }
 
 } // namespace fty::messagebus
