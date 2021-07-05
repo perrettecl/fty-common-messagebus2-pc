@@ -93,8 +93,8 @@ const std::map<std::string, progAction> actions = {
   {"publish", {"", "publish a message on a topic", publish}},
 };
 
-const std::map<std::string, std::function<MessageBus*()>> busTypes = {
-  {"malamute", []() -> MessageBus* { return MessageBusFactory::createMlmMsgBus(endpoint, clientName); }},
+const std::map<std::string, std::function<std::unique_ptr<MessageBus>()>> busTypes = {
+  {"malamute", []() -> std::unique_ptr<MessageBus> { return MessageBusFactory::createMlmMsgBus(endpoint, clientName); }},
 };
 
 void dumpMessage(const MlmMessage& msg)
@@ -322,9 +322,9 @@ int main(int argc, char** argv)
   }
 
   // Do the requested work.
-  auto msgBus = std::unique_ptr<MessageBus>(busIt->second());
+  auto msgBus = busIt->second();
   msgBus->connect();
   actionIt->second.fn(msgBus.get(), argc - optind - 1, argv + optind + 1);
 
-  return 0;
+  return EXIT_SUCCESS;
 }
