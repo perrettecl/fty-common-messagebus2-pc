@@ -43,7 +43,7 @@ namespace
   using Message = fty::messagebus::mlm::MlmMessage;
   using MessageBus = fty::messagebus::IMessageBus<Message>;
 
-  MessageBus* requester;
+  std::unique_ptr<MessageBus> requester;
 
   bool _continue = true;
 
@@ -128,8 +128,6 @@ int main(int argc, char** argv)
   log_info(" receive: %d", rcv);
   log_info(" loose  : %d", loose);
   log_info("**************************************************");
-
-  delete requester;
 
   log_info(argv[0]);
   return EXIT_SUCCESS;

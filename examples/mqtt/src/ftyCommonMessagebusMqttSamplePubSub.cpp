@@ -44,7 +44,6 @@ namespace
   using namespace fty::messagebus::mqttv5;
   using namespace fty::messagebus::mqttv5::test;
   using Message = fty::messagebus::mqttv5::MqttMessage;
-  using MessageBus = fty::messagebus::IMessageBus<Message>;
 
   static bool _continue = true;
 
@@ -101,9 +100,6 @@ int main(int /*argc*/, char** argv)
   {
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
-
-  delete publisher;
-  delete subscriber;
 
   log_info("%s - end", argv[0]);
   return EXIT_SUCCESS;

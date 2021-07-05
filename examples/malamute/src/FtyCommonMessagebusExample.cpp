@@ -43,8 +43,8 @@ namespace
   using Message = fty::messagebus::mlm::MlmMessage;
   using MessageBus = fty::messagebus::IMessageBus<Message>;
 
-  MessageBus* receiver;
-  MessageBus* publisher;
+  std::unique_ptr<MessageBus> receiver;
+  std::unique_ptr<MessageBus> publisher;
 
   void messageListener(MlmMessage message)
   {
@@ -233,9 +233,6 @@ int main(int /*argc*/, char** argv)
   message4.metaData().clear();
   publisher->publish("discovery", message4);
   std::this_thread::sleep_for(std::chrono::seconds(5));
-
-  delete publisher;
-  delete receiver;
 
   log_info(argv[0]);
   return EXIT_SUCCESS;

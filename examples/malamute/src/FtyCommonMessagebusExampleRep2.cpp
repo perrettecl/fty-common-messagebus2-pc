@@ -52,7 +52,7 @@ namespace srr
     ~SrrManager();
     void init();
     void handleRequest(const Message& msg);
-    MessageBus* m_msgBus;
+    std::unique_ptr<MessageBus> m_msgBus;
   };
 
   // All define value
@@ -72,11 +72,6 @@ namespace srr
   SrrManager::~SrrManager()
   {
     log_debug("Delete all Srr resources");
-    if (m_msgBus)
-    {
-      delete m_msgBus;
-      log_debug("msgBus resource deleted");
-    }
   }
 
   /**
