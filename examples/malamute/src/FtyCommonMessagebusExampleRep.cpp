@@ -44,7 +44,7 @@ namespace
   using Message = fty::messagebus::mlm::MlmMessage;
   using MessageBus = fty::messagebus::IMessageBus<Message>;
 
-  MessageBus* receiver;
+  std::unique_ptr<MessageBus> receiver;
 
   void queryListener(const Message& message)
   {
@@ -105,8 +105,6 @@ int main(int /*argc*/, char** argv)
   {
     std::this_thread::sleep_for(std::chrono::seconds(1));
   } while (_continue == true);
-
-  delete receiver;
 
   log_info(argv[0]);
 

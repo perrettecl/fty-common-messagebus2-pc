@@ -54,7 +54,7 @@ namespace
   using Message = fty::messagebus::mqttv5::MqttMessage;
   using MessageBus = fty::messagebus::IMessageBus<Message>;
 
-  MessageBus* mqttMsgBus;
+  std::unique_ptr<MessageBus> mqttMsgBus;
   static bool _continue = true;
 
   auto getClientName() -> std::string
@@ -144,7 +144,7 @@ namespace
 
   // The MQTT publisher function will run in its own thread.
   // It runs until the receiver thread closes the counter object.
-  void publisherFunc(MessageBus* messageBus, MultithrCounter::ptr_t counter)
+  void publisherFunc(std::unique_ptr<MessageBus> messageBus, MultithrCounter::ptr_t counter)
   {
     while (_continue)
     {
@@ -176,7 +176,7 @@ int main(int /*argc*/, char** argv)
   mqttMsgBus->connect();
   mqttMsgBus->subscribe(SAMPLE_TOPIC, messageListener);
 
-  std::thread publisher(publisherFunc, mqttMsgBus, counter);
+  std::thread publisher(publisherFunc, std::move(mqttMsgBus), counter);
 
   while (_continue)
   {
@@ -188,8 +188,6 @@ int main(int /*argc*/, char** argv)
   log_info("Shutting down...");
   counter->close();
   publisher.join();
-
-  delete mqttMsgBus;
 
   log_info("%s - end", argv[0]);
   return EXIT_SUCCESS;

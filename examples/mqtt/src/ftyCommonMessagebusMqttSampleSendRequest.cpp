@@ -127,8 +127,6 @@ int main(int argc, char** argv)
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
 
-  delete requester;
-
   log_info("%s - end", argv[0]);
   return EXIT_SUCCESS;
 }

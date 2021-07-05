@@ -54,7 +54,7 @@ namespace
   using Message = fty::messagebus::mqttv5::MqttMessage;
   using MessageBus = fty::messagebus::IMessageBus<Message>;
 
-  MessageBus* mqttMsgBus;
+  std::unique_ptr<MessageBus> mqttMsgBus;
 
   static bool _continue = true;
   static auto correlationIdSniffer = std::map<std::string, std::string>();
@@ -151,7 +151,7 @@ namespace
     }
   }
 
-  void requesterFunc(MessageBus* messageBus)
+  void requesterFunc(std::unique_ptr<MessageBus> messageBus)
   {
     auto correlationId = utils::generateUuid();
     auto replyTo = REPLY_QUEUE + '/' + correlationId;
@@ -190,7 +190,7 @@ int main(int /*argc*/, char** argv)
   mqttMsgBus = MessageBusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, getClientName());
   mqttMsgBus->connect();
 
-  requesterFunc(mqttMsgBus);
+  requesterFunc(std::move(mqttMsgBus));
 
   //replyerFunc(mqttMsgBus2);
 

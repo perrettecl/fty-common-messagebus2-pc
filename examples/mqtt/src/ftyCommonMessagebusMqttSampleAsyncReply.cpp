@@ -48,7 +48,7 @@ namespace
   using Message = fty::messagebus::mqttv5::MqttMessage;
   using MessageBus = fty::messagebus::IMessageBus<Message>;
 
-  MessageBus* replyer;
+  std::unique_ptr<MessageBus> replyer;
   static bool _continue = true;
 
   auto getClientName() -> std::string
@@ -121,8 +121,6 @@ int main(int /*argc*/, char** argv)
   {
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
-
-  delete replyer;
 
   log_info("%s - end", argv[0]);
   return EXIT_SUCCESS;

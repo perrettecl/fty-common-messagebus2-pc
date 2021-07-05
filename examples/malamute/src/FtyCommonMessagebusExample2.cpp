@@ -42,8 +42,8 @@ namespace
   using Message = fty::messagebus::mlm::MlmMessage;
   using MessageBus = fty::messagebus::IMessageBus<Message>;
 
-  MessageBus* receiver;
-  MessageBus* publisher;
+  std::unique_ptr<MessageBus> receiver;
+  std::unique_ptr<MessageBus> publisher;
 
   void queryListener(const Message& message)
   {
@@ -135,9 +135,6 @@ int main(int /*argc*/, char** argv)
   message2.metaData().emplace(REPLY_TO, "doAction.queue.response");
   publisher->sendRequest("doAction.queue.query", message2);
   std::this_thread::sleep_for(std::chrono::seconds(15));
-
-  delete publisher;
-  delete receiver;
 
   log_info(argv[0]);
   return 0;
