@@ -21,10 +21,7 @@
 
 #pragma once
 
-
 #include "fty/messagebus/IMessage.hpp"
-
-#include <list>
 
 namespace fty::messagebus::mqttv5
 {

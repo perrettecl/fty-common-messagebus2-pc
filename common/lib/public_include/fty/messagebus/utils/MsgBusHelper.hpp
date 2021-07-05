@@ -24,6 +24,7 @@
 #include <chrono>
 #include <ctime>
 
+#include <random>
 #include <string>
 #include <uuid/uuid.h>
 
@@ -31,9 +32,19 @@ namespace fty::messagebus::utils
 {
   inline const std::string generateUuid()
   {
-    uuid_t id;
-    uuid_generate(id);
-    return (reinterpret_cast<const char*>(id));
+    uuid_t uuid;
+    uuid_generate(uuid);
+    char uuid_str[UUID_STR_LEN + 1];
+    uuid_unparse_lower(uuid, uuid_str);
+    return uuid_str;
+  }
+
+  inline const std::string generateId()
+  {
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::uniform_int_distribution<int> uni(0, RAND_MAX);
+    return std::to_string(uni(rng));
   }
 
   inline const std::string getClientId(const std::string& prefix)
