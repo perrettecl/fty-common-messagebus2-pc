@@ -27,6 +27,13 @@
 
 namespace fty::messagebus
 {
+
+  enum class ReturnStatus
+  {
+    MALAMUTE,
+    MQTT
+  };
+
   template <typename MessageType>
   using MessageListener = std::function<void(MessageType)>;
 

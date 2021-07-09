@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_common_messagebus_factory - class description
+    MsgBusFactory - class description
 
     Copyright (C) 2014 - 2020 Eaton
 

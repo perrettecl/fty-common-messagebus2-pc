@@ -6,7 +6,7 @@ project(fty-common-messagebus-evol-project
     DESCRIPTION "fty common messagebus evolution"
 )
 
-option(ENABLE_EXAMPLES "Build samples" TRUE)
+option(ENABLE_EXAMPLES "Build samples" OFF)
 option(BUILD_TESTING "Build tests" OFF)
 option(BUILD_DOC "Build documentation" OFF)
 
@@ -37,10 +37,12 @@ endif()
 # # Create a target for the tests
 etn_test_target(${PROJECT_NAME_UNDERSCORE}
   SOURCES
+    # common/test/src/*.cpp
     test/main.cpp
     test/dispatcher.cpp
     test/pool_worker.cpp
   USES
+    fty-messagebus-common
     fty-messagebus-utils
     ${PROJECT_NAME_UNDERSCORE}
 )
