@@ -8,7 +8,7 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
   PUBLIC_INCLUDE_DIR
     public_include
   PUBLIC_HEADERS
-    public_include
+    *.hpp
   SOURCES
     src/*.cpp
   USES_PRIVATE
