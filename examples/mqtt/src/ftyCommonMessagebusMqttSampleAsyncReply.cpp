@@ -1,5 +1,5 @@
 /*  =========================================================================
-    ftyCommonMessagebusMqttSampleRep.cpp - description
+    ftyCommonMessagebusMqttSampleAsyncReply.cpp - description
 
     Copyright (C) 2014 - 2021 Eaton
 
@@ -21,7 +21,7 @@
 
 /*
 @header
-    ftyCommonMessagebusMqttSampleRep.cpp -
+    ftyCommonMessagebusMqttSampleAsyncReply.cpp -
 @discuss
 @end
 */
@@ -29,15 +29,11 @@
 #include "FtyCommonMqttTestDef.hpp"
 #include <FtyCommonMqttTestMathDto.h>
 #include <fty/messagebus/MsgBusException.hpp>
-#include <fty/messagebus/MsgBusFactory.hpp>
-#include <fty/messagebus/utils/MsgBusHelper.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqttRequestReply.hpp>
 
-#include <chrono>
 #include <csignal>
 #include <fty_log.h>
 #include <iostream>
-#include <ostream>
-#include <thread>
 
 namespace
 {
@@ -49,12 +45,8 @@ namespace
   using MessageBus = fty::messagebus::IMessageBus<Message>;
 
   std::unique_ptr<MessageBus> replyer;
+  auto reqRep = MqttRequestReply();
   static bool _continue = true;
-
-  auto getClientName() -> std::string
-  {
-    return utils::getClientId("MqttSampleMathReplyer");
-  }
 
   static void signalHandler(int signal)
   {
@@ -64,7 +56,6 @@ namespace
 
   void replyerMessageListener(const Message& message)
   {
-    Message response;
     log_info("Replyer messageListener");
 
     for (const auto& pair : message.metaData())
@@ -78,28 +69,18 @@ namespace
     if (mathQuery.operation == "add")
     {
       mathResultResult.result = mathQuery.param_1 + mathQuery.param_2;
-      response.metaData().emplace(STATUS, STATUS_OK);
     }
     else if (mathQuery.operation == "mult")
     {
       mathResultResult.result = mathQuery.param_1 * mathQuery.param_2;
-      response.metaData().emplace(STATUS, STATUS_OK);
     }
     else
     {
       mathResultResult.status = MathResult::STATUS_KO;
       mathResultResult.error = "Unsuported operation";
-      response.metaData().emplace(STATUS, STATUS_KO);
     }
 
-    response.userData() = mathResultResult.serialize();
-    response.metaData().emplace(SUBJECT, ANSWER_USER_PROPERTY);
-    response.metaData().emplace(FROM, getClientName());
-    response.metaData().emplace(CORRELATION_ID, message.metaData().find(CORRELATION_ID)->second);
-    response.metaData().emplace(REPLY_TO, message.metaData().find(REPLY_TO)->second);
-
-    replyer->sendReply(message.metaData().find(REPLY_TO)->second, response);
-
+    reqRep.sendReply(mathResultResult.serialize(), message);
     //_continue = false;
   }
 
@@ -112,10 +93,7 @@ int main(int /*argc*/, char** argv)
   // Install a signal handler
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
-
-  replyer = MessageBusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, getClientName());
-  replyer->connect();
-  replyer->receive(REQUEST_QUEUE, replyerMessageListener);
+  reqRep.waitRequest(SAMPLE_QUEUE, replyerMessageListener);
 
   while (_continue)
   {

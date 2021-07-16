@@ -154,7 +154,7 @@ namespace
   void requesterFunc(std::unique_ptr<MessageBus> messageBus)
   {
     auto correlationId = utils::generateUuid();
-    auto replyTo = REPLY_QUEUE + '/' + correlationId;
+    auto replyTo = SAMPLE_QUEUE + '/' + correlationId;
 
     auto rand = buildRandom(1, 10);
 
@@ -170,11 +170,11 @@ namespace
     correlationIdSniffer.emplace(correlationId, std::to_string(rand));
     messageBus->receive(replyTo, responseListener);
 
-log_info("correlationId requesterFunc %s size: %d", correlationId.c_str(), correlationIdSniffer.size());
+    log_info("correlationId requesterFunc %s size: %d", correlationId.c_str(), correlationIdSniffer.size());
     //replyerFunc(mqttMsgBus);
     // mqttMsgBus->receive(messagebus::REQUEST_QUEUE, mathOperationListener);
     // mqttMsgBus->sendRequest(messagebus::REQUEST_QUEUE, message);
-    messageBus->sendRequest(REQUEST_QUEUE, message, mathOperationListener);
+    messageBus->sendRequest(SAMPLE_QUEUE, message, mathOperationListener);
   }
 
 } // namespace

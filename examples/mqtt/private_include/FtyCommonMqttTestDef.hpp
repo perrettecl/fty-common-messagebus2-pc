@@ -34,8 +34,6 @@ namespace fty::messagebus::mqttv5::test
   static auto constexpr SAMPLE_TOPIC{"/etn/t/metric/samplemqtt"};
 
   // Queues
-  static auto constexpr REQUEST_QUEUE{"/etn/q/request/maths/operator"};
-  //static auto constexpr REPLY_QUEUE{"/etn/q/reply"};
-  static const std::string REPLY_QUEUE = "/etn/q/reply/maths/operator";
+  static auto constexpr SAMPLE_QUEUE{"/maths/operator"};
 
 } // namespace fty::messagebus::mqttv5::test

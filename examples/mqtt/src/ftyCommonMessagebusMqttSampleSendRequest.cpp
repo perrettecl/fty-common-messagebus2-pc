@@ -29,14 +29,11 @@
 #include "FtyCommonMqttTestDef.hpp"
 #include <FtyCommonMqttTestMathDto.h>
 #include <fty/messagebus/MsgBusException.hpp>
-#include <fty/messagebus/MsgBusFactory.hpp>
-#include <fty/messagebus/utils/MsgBusHelper.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqttRequestReply.hpp>
 
-#include <chrono>
 #include <csignal>
 #include <fty_log.h>
 #include <iostream>
-#include <thread>
 
 namespace
 {
@@ -82,34 +79,20 @@ int main(int argc, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  std::string clientName = utils::getClientId("MqttSampleMathRequester");
+  auto reqRep = MqttRequestReply();
 
-  auto requester = MessageBusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, clientName);
-  requester->connect();
-
-  auto correlationId = utils::generateUuid();
-  auto replyTo = REPLY_QUEUE + '/' + correlationId;
-
-  Message message;
   auto query = MathOperation(argv[3], std::stoi(argv[4]), std::stoi(argv[5]));
-  message.userData() = query.serialize();
-  message.metaData().clear();
-  message.metaData().emplace(SUBJECT, QUERY_USER_PROPERTY);
-  message.metaData().emplace(FROM, clientName);
-  message.metaData().emplace(REPLY_TO, replyTo);
-  message.metaData().emplace(CORRELATION_ID, correlationId);
 
   if (strcmp(argv[2], "async") == 0)
   {
-    requester->receive(replyTo, responseMessageListener);
-    requester->sendRequest(requestQueue, message);
+    reqRep.sendRequest(requestQueue, query.serialize(), responseMessageListener);
   }
   else
   {
     _continue = false;
     try
     {
-      auto replyMsg = requester->request(requestQueue, message, WAIT_RESPONSE_FOR);
+      auto replyMsg = reqRep.sendRequest(requestQueue, query.serialize(), WAIT_RESPONSE_FOR);
       responseMessageListener(replyMsg);
     }
     catch (MessageBusException& ex)

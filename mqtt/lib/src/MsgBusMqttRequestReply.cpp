@@ -19,53 +19,54 @@
     =========================================================================
 */
 
-/*
-@header
-    fty_common_messagebus_mqtt_message -
-@discuss
-@end
-*/
-
 #include "fty/messagebus/mqtt/MsgBusMqttRequestReply.hpp"
-
-#include <cxxabi.h>
-#include <iostream>
 
 namespace fty::messagebus::mqttv5
 {
-
-  // MqttRequestReply::MqttRequestReply(const std::string& endpoint, const std::string& clientName)
-  // {
-  //   // m_msgBus = std::unique_ptr<IMessageBus<Message>> {fty::messagebus::MessageBusFactory::createMqttMsgBus(endpoint, clientName)};
-  //   // //static_assert(std::is_same_v<std::unique_ptr<IMessageBus<Message>>, decltype(fty::messagebus::MessageBusFactory::createMqttMsgBus(endpoint, clientName))>);
-  //   // //std::unique_ptr<IMessageBus<Message>> msgBus = fty::messagebus::MessageBusFactory::createMqttMsgBus(endpoint, clientName);
-  //   // // m_msgBus = fty::messagebus::MessageBusFactory::createMqttMsgBus(endpoint, clientName);
-  //   /*std::unique_ptr<IMessageBus<Message>>*/
-  //   auto msgBus = MessageBusFactory::createMqttMsgBus(endpoint, clientName);
-  //   int status;
-  //   char * policyType = abi::__cxa_demangle(typeid(msgBus).name(), 0, 0, &status);
-
-  //   std::cout << "msgBus => "<< policyType << std::endl;
-
-  //   std::cout << "msgBus => "<< abi::__cxa_demangle(typeid(std::unique_ptr<IMessageBus<Message>>).name(), 0, 0, &status) << std::endl;
-  //   std::cout << "msgBus => "<< abi::__cxa_demangle(typeid(decltype(fty::messagebus::MessageBusFactory::createMqttMsgBus(endpoint, clientName))).name(), 0, 0, &status) << std::endl;
-
-  //   //std::make_unique<session::Authorization>(std::move(authorization))
-  //   //m_msgBus = std::make_unique<Message>(std::move(endpoint), std::move(clientName));
-  //   //   m_msgBus->connect();
-  // }
-
-  void MqttRequestReply::onMessage(const Message& /*msg*/)
+  void MqttRequestReply::sendRequest(const std::string& requestQueue, const std::string& request, MessageListener messageListener)
   {
+    auto message = buildMessage(requestQueue, request);
+    m_msgBus->receive(message.metaData().find(REPLY_TO)->second, messageListener);
+    m_msgBus->sendRequest(PREFIX_REQUEST_QUEUE + requestQueue, message);
   }
 
-  void MqttRequestReply::sendRequest(const std::string& requestQueue, const Message& message /*, MessageListener messageListener*/)
+  Message MqttRequestReply::sendRequest(const std::string& requestQueue, const std::string& request, int timeOut)
+  {
+    return m_msgBus->request(PREFIX_REQUEST_QUEUE + requestQueue, buildMessage(requestQueue, request), timeOut);
+  }
+
+  void MqttRequestReply::sendReply(const std::string& response, const Message& message)
+  {
+    Message responseMsg;
+    responseMsg.userData() = response;
+    responseMsg.metaData().emplace(STATUS, STATUS_OK);
+    responseMsg.metaData().emplace(SUBJECT, ANSWER_USER_PROPERTY);
+    responseMsg.metaData().emplace(FROM, m_clientName);
+    responseMsg.metaData().emplace(REPLY_TO, message.metaData().find(REPLY_TO)->second);
+    responseMsg.metaData().emplace(CORRELATION_ID, message.metaData().find(CORRELATION_ID)->second);
+
+    m_msgBus->sendReply(message.metaData().find(REPLY_TO)->second, responseMsg);
+  }
+
+  void MqttRequestReply::waitRequest(const std::string& requestQueue, MessageListener messageListener)
+  {
+    m_msgBus->receive(PREFIX_REQUEST_QUEUE + requestQueue, messageListener);
+  }
+
+  Message MqttRequestReply::buildMessage(const std::string& queue, const std::string& request)
   {
     auto correlationId = utils::generateUuid();
-    auto replyTo = "/etn/q/reply" + '/' + utils::generateUuid();
+    auto replyTo = PREFIX_REPLY_QUEUE + queue + '/' + correlationId;
 
-    //requester->receive(replyTo, messageListener);
-    m_msgBus->sendRequest(requestQueue, message);
+    Message message;
+    message.userData() = request;
+    message.metaData().clear();
+    message.metaData().emplace(SUBJECT, QUERY_USER_PROPERTY);
+    message.metaData().emplace(FROM, m_clientName);
+    message.metaData().emplace(REPLY_TO, replyTo);
+    message.metaData().emplace(CORRELATION_ID, correlationId);
+
+    return message;
   }
 
 } // namespace fty::messagebus::mqttv5

@@ -40,32 +40,30 @@ namespace fty::messagebus::mqttv5
 {
 
   using Message = fty::messagebus::mqttv5::MqttMessage;
-  using MessageListener = fty::messagebus::MessageListener<MqttMessage>;
+  using MessageListener = fty::messagebus::MessageListener<Message>;
+  using MsgBusPointer = std::unique_ptr<fty::messagebus::IMessageBus<Message>>;
 
   class MqttRequestReply : public fty::messagebus::RequestReply<Message>
   {
   public:
     MqttRequestReply(const std::string& endpoint = DEFAULT_MQTT_END_POINT, const std::string& clientName = utils::getClientId("MqttRequestReply"))
-      : m_msgBus{fty::messagebus::MessageBusFactory::createMqttMsgBus(endpoint, clientName)} {
-          //   auto requester = MessageBusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, "clientName");
-          m_msgBus->connect();
-          // int status;
-          // char * policyType = abi::__cxa_demangle(typeid(m_msgBus).name(), 0, 0, &status);
-
-          // std::cout << "msgBus => "<< policyType << std::endl;
-
-          };
+      : m_clientName(clientName)
+      , m_msgBus{fty::messagebus::MessageBusFactory::createMqttMsgBus(endpoint, clientName)}
+    {
+      m_msgBus->connect();
+    };
 
     ~MqttRequestReply() = default;
-    void onMessage(const Message& msg) override;
-
-    //void sendRequest() override;
-    void sendRequest(const std::string& requestQueue, const Message& message /*, MessageListener messageListener*/) override;
-
-    void test();
+    void sendRequest(const std::string& requestQueue, const std::string& message, MessageListener messageListener) override;
+    Message sendRequest(const std::string& requestQueue, const std::string& message, int timeOut) override;
+    void waitRequest(const std::string& requestQueue, MessageListener messageListener) override;
+    void sendReply(const std::string& response, const Message& message) override;
 
   private:
-    std::unique_ptr<fty::messagebus::IMessageBus<Message>> m_msgBus;
+    std::string m_clientName{};
+    MsgBusPointer m_msgBus;
+
+    Message buildMessage(const std::string& queue, const std::string& request);
   };
 
 } // namespace fty::messagebus::mqttv5
