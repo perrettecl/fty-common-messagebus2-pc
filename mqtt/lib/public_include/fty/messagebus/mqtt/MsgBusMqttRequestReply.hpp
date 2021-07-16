@@ -21,47 +21,24 @@
 
 #pragma once
 
-#include <fty/messagebus/IMessageBus.hpp>
+#include "fty/messagebus/mqtt/MsgBusMqttWrapper.hpp"
 #include <fty/messagebus/RequestReply.hpp>
-#include <fty/messagebus/mqtt/MsgBusMqttDef.hpp>
-#include <fty/messagebus/mqtt/MsgBusMqttMessage.hpp>
-#include <fty/messagebus/utils/MsgBusHelper.hpp>
 
-#include <fty/messagebus/MsgBusFactory.hpp>
-
-#include <map>
-#include <string>
-#include <thread>
-
-#include <iostream>
 
 namespace fty::messagebus::mqttv5
 {
-
-  using Message = fty::messagebus::mqttv5::MqttMessage;
-  using MessageListener = fty::messagebus::MessageListener<Message>;
-  using MsgBusPointer = std::unique_ptr<fty::messagebus::IMessageBus<Message>>;
-
-  class MqttRequestReply : public fty::messagebus::RequestReply<Message>
+  class MqttRequestReply : public fty::messagebus::mqttv5::MsgBusMqttWrapper, fty::messagebus::RequestReply<Message>
   {
   public:
     MqttRequestReply(const std::string& endpoint = DEFAULT_MQTT_END_POINT, const std::string& clientName = utils::getClientId("MqttRequestReply"))
-      : m_clientName(clientName)
-      , m_msgBus{fty::messagebus::MessageBusFactory::createMqttMsgBus(endpoint, clientName)}
-    {
-      m_msgBus->connect();
-    };
+      : MsgBusMqttWrapper(endpoint, clientName){};
 
-    ~MqttRequestReply() = default;
     void sendRequest(const std::string& requestQueue, const std::string& message, MessageListener messageListener) override;
     Message sendRequest(const std::string& requestQueue, const std::string& message, int timeOut) override;
     void waitRequest(const std::string& requestQueue, MessageListener messageListener) override;
     void sendReply(const std::string& response, const Message& message) override;
 
   private:
-    std::string m_clientName{};
-    MsgBusPointer m_msgBus;
-
     Message buildMessage(const std::string& queue, const std::string& request);
   };
 

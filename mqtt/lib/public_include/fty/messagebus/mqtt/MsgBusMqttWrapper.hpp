@@ -1,5 +1,5 @@
 /*  =========================================================================
-    MsgBusMqttPublishSubscribe - class description
+    MsgBusMqttWrapper - class description
 
     Copyright (C) 2014 - 2021 Eaton
 
@@ -21,22 +21,36 @@
 
 #pragma once
 
-#include "fty/messagebus/mqtt/MsgBusMqttWrapper.hpp"
-#include <fty/messagebus/PublishSubscribe.hpp>
+#include <fty/messagebus/IMessageBus.hpp>
+#include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqttDef.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqttMessage.hpp>
+#include <fty/messagebus/utils/MsgBusHelper.hpp>
 
-#include <string>
 #include <thread>
 
 namespace fty::messagebus::mqttv5
 {
-  class MsgBusMqttPublishSubscribe : public fty::messagebus::mqttv5::MsgBusMqttWrapper, fty::messagebus::PublishSubscribe<Message>
+
+  using Message = fty::messagebus::mqttv5::MqttMessage;
+  using MessageListener = fty::messagebus::MessageListener<Message>;
+  using MsgBusPointer = std::unique_ptr<fty::messagebus::IMessageBus<Message>>;
+
+  class MsgBusMqttWrapper
   {
   public:
-    MsgBusMqttPublishSubscribe(const std::string& endpoint = DEFAULT_MQTT_END_POINT, const std::string& clientName = utils::getClientId("MqttPubSub"))
-      : MsgBusMqttWrapper(endpoint, clientName){};
+    MsgBusMqttWrapper(const std::string& endpoint, const std::string& clientName)
+      : m_clientName(clientName)
+      , m_msgBus{fty::messagebus::MessageBusFactory::createMqttMsgBus(endpoint, clientName)}
+    {
+      m_msgBus->connect();
+    };
 
-    void subscribe(const std::string& topic, MessageListener messageListener) override;
-    void publish(const std::string& topic, const std::string& message) override;
+    ~MsgBusMqttWrapper() = default;
+
+  protected:
+    std::string m_clientName{};
+    MsgBusPointer m_msgBus;
   };
 
 } // namespace fty::messagebus::mqttv5

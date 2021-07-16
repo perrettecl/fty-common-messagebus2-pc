@@ -1,7 +1,7 @@
 /*  =========================================================================
     MsgBusMqttPublishSubscribe - class description
 
-    Copyright (C) 2014 - 2021 Eaton
+    Copyright (C) 2014 - 2020 Eaton
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,24 +19,24 @@
     =========================================================================
 */
 
-#pragma once
-
-#include "fty/messagebus/mqtt/MsgBusMqttWrapper.hpp"
-#include <fty/messagebus/PublishSubscribe.hpp>
-
-#include <string>
-#include <thread>
+#include "fty/messagebus/mqtt/MsgBusMqttPublishSubscribe.hpp"
 
 namespace fty::messagebus::mqttv5
 {
-  class MsgBusMqttPublishSubscribe : public fty::messagebus::mqttv5::MsgBusMqttWrapper, fty::messagebus::PublishSubscribe<Message>
+  void MsgBusMqttPublishSubscribe::subscribe(const std::string& topic, MessageListener messageListener)
   {
-  public:
-    MsgBusMqttPublishSubscribe(const std::string& endpoint = DEFAULT_MQTT_END_POINT, const std::string& clientName = utils::getClientId("MqttPubSub"))
-      : MsgBusMqttWrapper(endpoint, clientName){};
+    m_msgBus->subscribe(PREFIX_TOPIC + topic, messageListener);
+  }
 
-    void subscribe(const std::string& topic, MessageListener messageListener) override;
-    void publish(const std::string& topic, const std::string& message) override;
-  };
+  void MsgBusMqttPublishSubscribe::publish(const std::string& topic, const std::string& msg)
+  {
+    Message message;
+    message.userData() = msg;
+    message.metaData().clear();
+    message.metaData().emplace(SUBJECT, PUBLISH_USER_PROPERTY);
+    message.metaData().emplace(FROM, m_clientName);
+
+    m_msgBus->publish(PREFIX_TOPIC + topic, message);
+  }
 
 } // namespace fty::messagebus::mqttv5
