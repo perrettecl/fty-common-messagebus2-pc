@@ -1,5 +1,5 @@
 /*  =========================================================================
-    MsgBusFactory.hpp - class description
+    RequestReply - class description
 
     Copyright (C) 2014 - 2020 Eaton
 
@@ -21,42 +21,21 @@
 
 #pragma once
 
-#include <fty/messagebus/IMessageBus.hpp>
-#include <fty/messagebus/mlm/MsgBusMlmMessage.hpp>
-#include <fty/messagebus/mqtt/MsgBusMqttMessage.hpp>
-
-#include <memory>
+#include "fty/messagebus/MsgListener.hpp"
 #include <string>
 
 namespace fty::messagebus
 {
-
-  class MessageBusFactory
+  template <typename MessageType>
+  class RequestReply : public MsgListener<MessageType>
   {
-
   public:
-    MessageBusFactory() = delete;
-    virtual ~MessageBusFactory(){};
+    //RequestReply() = delete;
+    virtual ~RequestReply() = default;
+    //virtual void sendRequest() = 0;
+    virtual void sendRequest(const std::string& requestQueue, const MessageType& message) = 0;
 
-    /**
-   * @brief Malamute implementation
-   *
-   * @param _endpoint Message bus end point
-   * @param clientName prefix for client Name
-   *
-   * @return client Name
-   */
-    static std::unique_ptr<IMessageBus<mlm::MlmMessage>> createMlmMsgBus(const std::string& _endpoint, const std::string& _clientName);
-
-    /**
-   * @brief Mqtt implementation
-   *
-   * @param _endpoint Mqtt end point
-   * @param _clientName prefix for client Name
-   *
-   * @return IMessageBus
-   */
-    static std::unique_ptr<IMessageBus<mqttv5::MqttMessage>> createMqttMsgBus(const std::string& _endpoint, const std::string& _clientName);
+  protected:
   };
 
 } // namespace fty::messagebus

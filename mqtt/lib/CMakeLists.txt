@@ -14,7 +14,7 @@ etn_target(static ${PROJECT_NAME} PRIVATE
   PUBLIC_INCLUDE_DIR
     public_include
   PUBLIC_HEADERS
-    public_include
+    *.hpp
   SOURCES
     src/*.cpp
   USES_PRIVATE
@@ -24,5 +24,5 @@ etn_target(static ${PROJECT_NAME} PRIVATE
     fty_common_logging
     pthread
   FLAGS
-    "-fmax-errors=1"
+    "-fmax-errors=2"
 )
