@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include "fty/messagebus/MsgListener.hpp"
 #include <string>
 
 namespace fty::messagebus

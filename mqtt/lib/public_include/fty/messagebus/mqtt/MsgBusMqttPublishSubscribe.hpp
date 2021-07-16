@@ -1,5 +1,5 @@
 /*  =========================================================================
-    MsgBusMqttRequestReply - class description
+    MsgBusMqttPublishSubscribe - class description
 
     Copyright (C) 2014 - 2021 Eaton
 
@@ -22,18 +22,15 @@
 #pragma once
 
 #include <fty/messagebus/IMessageBus.hpp>
-#include <fty/messagebus/RequestReply.hpp>
+#include <fty/messagebus/PublishSubscribe.hpp>
 #include <fty/messagebus/mqtt/MsgBusMqttDef.hpp>
 #include <fty/messagebus/mqtt/MsgBusMqttMessage.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 #include <fty/messagebus/MsgBusFactory.hpp>
 
-#include <map>
-#include <string>
 #include <thread>
-
-#include <iostream>
+#include <string>
 
 namespace fty::messagebus::mqttv5
 {
@@ -42,21 +39,19 @@ namespace fty::messagebus::mqttv5
   using MessageListener = fty::messagebus::MessageListener<Message>;
   using MsgBusPointer = std::unique_ptr<fty::messagebus::IMessageBus<Message>>;
 
-  class MqttRequestReply : public fty::messagebus::RequestReply<Message>
+  class MsgBusMqttPublishSubscribe : public fty::messagebus::PublishSubscribe<Message>
   {
   public:
-    MqttRequestReply(const std::string& endpoint = DEFAULT_MQTT_END_POINT, const std::string& clientName = utils::getClientId("MqttRequestReply"))
+    MsgBusMqttPublishSubscribe(const std::string& endpoint = DEFAULT_MQTT_END_POINT, const std::string& clientName = utils::getClientId("MqttPubSub"))
       : m_clientName(clientName)
       , m_msgBus{fty::messagebus::MessageBusFactory::createMqttMsgBus(endpoint, clientName)}
     {
       m_msgBus->connect();
     };
 
-    ~MqttRequestReply() = default;
-    void sendRequest(const std::string& requestQueue, const std::string& message, MessageListener messageListener) override;
-    Message sendRequest(const std::string& requestQueue, const std::string& message, int timeOut) override;
-    void waitRequest(const std::string& requestQueue, MessageListener messageListener) override;
-    void sendReply(const std::string& response, const Message& message) override;
+    ~MsgBusMqttPublishSubscribe() = default;
+    void subscribe(const std::string& topic, MessageListener messageListener) override;
+    void publish(const std::string& topic, const std::string& message) override;
 
   private:
     std::string m_clientName{};

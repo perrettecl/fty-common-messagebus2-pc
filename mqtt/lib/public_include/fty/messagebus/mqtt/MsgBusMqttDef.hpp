@@ -30,7 +30,7 @@ namespace fty::messagebus::mqttv5
   static auto constexpr SECURE_MQTT_END_POINT{"tcp://localhost:8883"};
 
   // Topic
-  static const std::string PREFIX_TOPIC = "/etn/t/";
+  static const std::string PREFIX_TOPIC = "/etn/t";
 
   // Queues
   static const std::string PREFIX_QUEUE = "/etn/q/";

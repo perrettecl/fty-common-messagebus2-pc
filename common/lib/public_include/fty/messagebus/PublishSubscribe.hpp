@@ -1,7 +1,7 @@
 /*  =========================================================================
-    FtyCommonMqttTestDef.hpp - class description
+    PublishSubscribe - class description
 
-    Copyright (C) 2014 - 2021 Eaton
+    Copyright (C) 2014 - 2020 Eaton
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,19 +21,18 @@
 
 #pragma once
 
-
 #include <string>
 
-namespace fty::messagebus::mqttv5::test
+namespace fty::messagebus
 {
-  // Default mqtt end point
-  static auto constexpr DEFAULT_MQTT_END_POINT{"tcp://localhost:1883"};
-  static auto constexpr SECURE_MQTT_END_POINT{"tcp://localhost:8883"};
+  template <typename MessageType>
+  class PublishSubscribe
+  {
+  public:
+    PublishSubscribe() = default;
+    virtual ~PublishSubscribe() = default;
+    virtual void subscribe(const std::string& topic, MessageListener<MessageType> messageListener) = 0;
+    virtual void publish(const std::string& topic, const std::string& message) = 0;
+  };
 
-  // Topic
-  static auto constexpr SAMPLE_TOPIC{"/metric/samplemqtt"};
-
-  // Queues
-  static auto constexpr SAMPLE_QUEUE{"/maths/operator"};
-
-} // namespace fty::messagebus::mqttv5::test
+} // namespace fty::messagebus

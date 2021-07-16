@@ -35,6 +35,7 @@ namespace fty::messagebus
   // Metadata user property
   static constexpr auto QUERY_USER_PROPERTY = "_query";
   static constexpr auto ANSWER_USER_PROPERTY = "_answer";
+  static constexpr auto PUBLISH_USER_PROPERTY = "_publish";
 
   static constexpr auto REPLY_TO = "_replyTo";
   static constexpr auto CORRELATION_ID = "_correlationId";

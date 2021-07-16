@@ -29,8 +29,8 @@
 #include <FtyCommonMessageBusDto.hpp>
 #include <FtyCommonMqttTestDef.hpp>
 #include <fty/messagebus/MsgBusException.hpp>
-#include <fty/messagebus/MsgBusFactory.hpp>
-#include <fty/messagebus/utils/MsgBusHelper.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqttPublishSubscribe.hpp>
+
 
 #include <chrono>
 #include <csignal>
@@ -78,23 +78,11 @@ int main(int /*argc*/, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  auto publisher = MessageBusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, utils::getClientId("MqttPublisher"));
-  publisher->connect();
-
-  auto subscriber = MessageBusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, utils::getClientId("MqttSubscriber"));
-  subscriber->connect();
-  subscriber->subscribe(SAMPLE_TOPIC, messageListener);
+  auto pubSub = MsgBusMqttPublishSubscribe();
+  pubSub.subscribe(SAMPLE_TOPIC, messageListener);
 
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
-  // Publish
-  Message message;
-  message.userData() = FooBar("event", "hello").serialize();
-  message.metaData().clear();
-  message.metaData().emplace("mykey", "myvalue");
-  message.metaData().emplace(FROM, "publisher");
-  message.metaData().emplace(SUBJECT, "discovery");
-  publisher->publish(SAMPLE_TOPIC, message);
+  pubSub.publish(SAMPLE_TOPIC, FooBar("event", "hello").serialize());
 
   while (_continue)
   {
