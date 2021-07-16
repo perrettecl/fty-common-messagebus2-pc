@@ -48,7 +48,7 @@ namespace fty::messagebus
    */
     static std::unique_ptr<IMessageBus<mlm::MlmMessage>> createMlmMsgBus(const std::string& _endpoint, const std::string& _clientName);
 
-    /**
+      /**
    * @brief Mqtt implementation
    *
    * @param _endpoint Mqtt end point
