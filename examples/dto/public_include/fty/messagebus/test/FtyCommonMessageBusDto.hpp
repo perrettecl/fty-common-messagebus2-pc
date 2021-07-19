@@ -24,7 +24,7 @@
 #include <list>
 #include <string>
 
-namespace messagebus
+namespace fty::messagebus::test
 {
   using UserData = std::list<std::string>;
 }
