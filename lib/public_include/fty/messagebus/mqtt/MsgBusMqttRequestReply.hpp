@@ -33,7 +33,7 @@ namespace fty::messagebus::mqttv5
       : MsgBusMqttWrapper(endpoint, clientName){};
 
     void sendRequest(const std::string& requestQueue, const std::string& message, MessageListener messageListener) override;
-    Message sendRequest(const std::string& requestQueue, const std::string& message, int timeOut) override;
+    Opt<Message> sendRequest(const std::string& requestQueue, const std::string& message, int timeOut) override;
     void waitRequest(const std::string& requestQueue, MessageListener messageListener) override;
     void sendReply(const std::string& response, const Message& message) override;
 

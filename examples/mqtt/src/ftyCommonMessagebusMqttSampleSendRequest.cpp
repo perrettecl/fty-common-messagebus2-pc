@@ -41,7 +41,7 @@ namespace
   using Message = fty::messagebus::mqttv5::MqttMessage;
 
   static bool _continue = true;
-  static auto constexpr WAIT_RESPONSE_FOR = 5;
+  static auto constexpr SYNC_REQUEST_TIMEOUT = 5;
 
   static void signalHandler(int signal)
   {
@@ -87,18 +87,15 @@ int main(int argc, char** argv)
   else
   {
     _continue = false;
-    try
+
+    Opt<Message> replyMsg = reqRep.sendRequest(requestQueue, query.serialize(), SYNC_REQUEST_TIMEOUT);
+    if (replyMsg.has_value())
     {
-      auto replyMsg = reqRep.sendRequest(requestQueue, query.serialize(), WAIT_RESPONSE_FOR);
-      responseMessageListener(replyMsg);
+      responseMessageListener(replyMsg.value());
     }
-    catch (MessageBusException& ex)
+    else
     {
-      log_error("Message bus error: %s", ex.what());
-    }
-    catch (std::exception& ex)
-    {
-      log_error("Unexpected error: %s", ex.what());
+      log_error("Time out reached: (%s)", std::to_string(SYNC_REQUEST_TIMEOUT));
     }
   }
 

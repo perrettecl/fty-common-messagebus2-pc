@@ -136,7 +136,7 @@ void subscribe(MessageBus* msgbus, int /*argc*/, char** /*argv*/)
 
 void sendRequest(MessageBus* msgbus, int /*argc*/, char** argv)
 {
-  MlmMessage msg;
+  Message msg;
 
   // Build message metadata.
   if (doMetadata)
@@ -165,7 +165,6 @@ void sendRequest(MessageBus* msgbus, int /*argc*/, char** argv)
 void request(MessageBus* msgbus, int /*argc*/, char** argv)
 {
   Message msg;
-
   // Build message metadata.
   if (doMetadata)
   {
@@ -189,7 +188,15 @@ void request(MessageBus* msgbus, int /*argc*/, char** argv)
   dumpMessage(msg);
   try
   {
-    dumpMessage(msgbus->request(queue, msg, stoi(timeout)));
+    auto reply = msgbus->request(queue, msg, stoi(timeout));
+    if (reply.has_value())
+    {
+      dumpMessage(reply.value());
+    }
+    else
+    {
+      std::cerr << "Time out reached: (" << timeout << ")" << std::endl;
+    }
   }
   catch (const std::exception& ex)
   {

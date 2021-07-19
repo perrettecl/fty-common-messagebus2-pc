@@ -130,6 +130,7 @@ namespace fty::messagebus::mqttv5
 
   void MessageBusMqtt::publish(const std::string& topic, const Message& message)
   {
+    bool status = false;
     if (isServiceAvailable())
     {
       log_debug("Publishing on topic: %s", topic.c_str());
@@ -144,8 +145,9 @@ namespace fty::messagebus::mqttv5
                       .retained(false)
                       .finalize();
       // Publish it
-      m_client->publish(pubMsg)->wait_for(TIMEOUT);
+      status = m_client->publish(pubMsg)->wait_for(TIMEOUT);
     }
+    //return status;
   }
 
   void MessageBusMqtt::subscribe(const std::string& topic, MessageListener messageListener)
@@ -244,9 +246,9 @@ namespace fty::messagebus::mqttv5
     }
   }
 
-  Message MessageBusMqtt::request(const std::string& requestQueue, const Message& message, int receiveTimeOut)
+  Opt<Message> MessageBusMqtt::request(const std::string& requestQueue, const Message& message, int receiveTimeOut)
   {
-    auto replyMsg = Message{};
+    auto replyMsg = Opt<Message>{};
     if (isServiceAvailable())
     {
       mqtt::const_message_ptr msg;

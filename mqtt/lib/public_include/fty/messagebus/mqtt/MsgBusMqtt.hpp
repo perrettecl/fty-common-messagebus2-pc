@@ -63,7 +63,7 @@ namespace fty::messagebus::mqttv5
     void receive(const std::string& queue, MessageListener messageListener) override;
 
     // Sync queue
-    MqttMessage request(const std::string& requestQueue, const MqttMessage& message, int receiveTimeOut) override;
+    Opt<MqttMessage> request(const std::string& requestQueue, const MqttMessage& message, int receiveTimeOut) override;
 
     auto isServiceAvailable() -> bool;
 

@@ -32,7 +32,7 @@ namespace fty::messagebus
     RequestReply() = default;
     virtual ~RequestReply() = default;
     virtual void sendRequest(const std::string& requestQueue, const std::string& message, MessageListener<MessageType> messageListener) = 0;
-    virtual MessageType sendRequest(const std::string& requestQueue, const std::string& message, int timeOut) = 0;
+    virtual Opt<MessageType> sendRequest(const std::string& requestQueue, const std::string& message, int timeOut) = 0;
     virtual void waitRequest(const std::string& requestQueue, MessageListener<MessageType> messageListener) = 0;
     virtual void sendReply(const std::string& response, const MessageType& message) = 0;
   };

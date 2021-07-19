@@ -4,10 +4,10 @@ project(${PROJECT_NAME}-sample
         LANGUAGES CXX)
 
 
-set (SAMPLE_DTO_LIB_NAME ${PROJECT_NAME}-dto)
+set (SAMPLE_DTO_LIB_NAME fty-common-messagebus-evol-sample-dto)
 # Dto(s)
 add_subdirectory(dto)
 # Malamute samples
-add_subdirectory(malamute)
+#add_subdirectory(malamute)
 # Mqtt samples
 add_subdirectory(mqtt)

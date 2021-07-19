@@ -30,7 +30,7 @@ namespace fty::messagebus::mqttv5
     m_msgBus->sendRequest(PREFIX_REQUEST_QUEUE + requestQueue, message);
   }
 
-  Message MqttRequestReply::sendRequest(const std::string& requestQueue, const std::string& request, int timeOut)
+  Opt<Message> MqttRequestReply::sendRequest(const std::string& requestQueue, const std::string& request, int timeOut)
   {
     return m_msgBus->request(PREFIX_REQUEST_QUEUE + requestQueue, buildMessage(requestQueue, request), timeOut);
   }

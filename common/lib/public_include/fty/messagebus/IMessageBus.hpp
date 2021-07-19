@@ -23,6 +23,7 @@
 
 #include "fty/messagebus/MsgBusStatus.hpp"
 
+#include <optional>
 #include <functional>
 #include <string>
 
@@ -34,6 +35,9 @@ namespace fty::messagebus
     MALAMUTE,
     MQTT
   };
+
+  template<typename T>
+  using Opt = std::optional<T>;
 
   template <typename MessageType>
   using MessageListener = std::function<void(MessageType)>;
@@ -134,7 +138,7 @@ namespace fty::messagebus
      *
      * @throw MessageBusException any exceptions
      */
-    virtual MessageType request(const std::string& requestQueue, const MessageType& message, int receiveTimeOut) = 0;
+    virtual Opt<MessageType> request(const std::string& requestQueue, const MessageType& message, int receiveTimeOut) = 0;
 
   protected:
     IMessageBus() = default;

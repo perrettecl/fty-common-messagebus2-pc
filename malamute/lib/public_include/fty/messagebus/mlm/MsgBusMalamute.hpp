@@ -59,7 +59,7 @@ namespace fty::messagebus::mlm
     void receive(const std::string& queue, MessageListener messageListener) override;
 
     // Sync queue
-    MlmMessage request(const std::string& requestQueue, const MlmMessage& message, int receiveTimeOut) override;
+    Opt<MlmMessage> request(const std::string& requestQueue, const MlmMessage& message, int receiveTimeOut) override;
 
   private:
     static void listener(zsock_t* pipe, void* ptr);

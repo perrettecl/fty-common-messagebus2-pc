@@ -251,9 +251,9 @@ namespace fty::messagebus::mlm
     log_trace("%s - receive from queue '%s'", m_clientName.c_str(), queue.c_str());
   }
 
-  MlmMessage MessageBusMalamute::request(const std::string& requestQueue, const MlmMessage& message, int receiveTimeOut)
+  Opt<MlmMessage> MessageBusMalamute::request(const std::string& requestQueue, const MlmMessage& message, int receiveTimeOut)
   {
-
+    auto replyMsg = Opt<MlmMessage>{};
     auto iterator = message.metaData().find(CORRELATION_ID);
 
     if (iterator == message.metaData().end() || iterator->second == "")
@@ -284,8 +284,9 @@ namespace fty::messagebus::mlm
     }
     else
     {
-      return m_syncResponse;
+      replyMsg = m_syncResponse;
     }
+    return replyMsg;
   }
 
   void MessageBusMalamute::listener(zsock_t* pipe, void* args)
