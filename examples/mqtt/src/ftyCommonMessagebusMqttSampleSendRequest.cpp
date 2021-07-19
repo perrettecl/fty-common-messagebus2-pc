@@ -62,7 +62,7 @@ namespace
 
 int main(int argc, char** argv)
 {
-  if (argc < 5)
+  if (argc != 6)
   {
     std::cout << "USAGE: " << argv[0] << " <reqQueue> <async|sync> <add|mult> <num1> <num2>" << std::endl;
     return EXIT_FAILURE;
@@ -95,7 +95,7 @@ int main(int argc, char** argv)
     }
     else
     {
-      log_error("Time out reached: (%s)", std::to_string(SYNC_REQUEST_TIMEOUT));
+      log_error("Time out reached: (%ds)", SYNC_REQUEST_TIMEOUT);
     }
   }
 
