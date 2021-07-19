@@ -262,10 +262,6 @@ namespace fty::messagebus::mqttv5
       {
         replyMsg = Message{getMetaDataFromMqttProperties(msg->get_properties()), msg->get_payload_str()};
       }
-      else
-      {
-        throw MessageBusException("Request timed out of '" + std::to_string(receiveTimeOut) + "' seconds reached.");
-      }
     }
     return replyMsg;
   }

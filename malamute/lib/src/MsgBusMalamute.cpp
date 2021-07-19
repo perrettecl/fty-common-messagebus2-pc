@@ -278,11 +278,7 @@ namespace fty::messagebus::mlm
     //Todo: Check error code after sendto
     mlm_client_sendto(m_client, iterator->second.c_str(), requestQueue.c_str(), nullptr, 200, &msgMlm);
 
-    if (m_cv.wait_for(lock, std::chrono::seconds(receiveTimeOut)) == std::cv_status::timeout)
-    {
-      throw MessageBusException("Request timed out.");
-    }
-    else
+    if (m_cv.wait_for(lock, std::chrono::seconds(receiveTimeOut)) != std::cv_status::timeout)
     {
       replyMsg = m_syncResponse;
     }
