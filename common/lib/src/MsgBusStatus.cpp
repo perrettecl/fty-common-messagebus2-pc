@@ -19,7 +19,7 @@
     =========================================================================
 */
 
-#include "fty/messagebus/CommunicationStatus.hpp"
+#include "fty/messagebus/MsgBusStatus.hpp"
 
 #include <ostream>
 #include <sstream>
@@ -48,46 +48,32 @@ namespace fty::messagebus
     return "UNDEFINED";
   }
 
-   CommunicationStatus::CommunicationStatus()
-    : CommunicationStatus(COM_STATE_NO_CONTACT)
+  std::string to_string(const DeliveryState& state)
   {
-  }
-
-  CommunicationStatus::CommunicationStatus(const ComState comState)
-    : state(comState)
-  {
-  }
-
-  CommunicationStatus::CommunicationStatus(const CommunicationStatus& other)
-    : CommunicationStatus(other.state)
-  {
-  }
-
-  bool CommunicationStatus::set(const ComState comState)
-  {
-    bool differs = (state != comState);
-    if (differs)
+    switch (state)
     {
-      state = comState;
+      case DELI_STATE_UNKNOWN:
+        return "UNKNOWN";
+      case DELI_STATE_ACCEPTED:
+        return "ACCEPTED";
+      case DELI_STATE_REJECTED:
+        return "REJECTED";
+      case DELI_STATE_TIMEOUT:
+        return "TIMEOUT";
+      case DELI_STATE_NOT_SUPPORTED:
+        return "NOT SUPPORTED";
+      case DELI_STATE_PENDING:
+        return "PENDING";
+      case DELI_STATE_BUSY:
+        return "BUSY";
+      case DELI_STATE_ABORTED:
+        return "ABORTED";
+      default:
+        break;
     }
-    return differs;
+    return "UNDEFINED";
   }
 
-  bool CommunicationStatus::operator==(const CommunicationStatus& other) const
-  {
-    return (state == other.state);
-  }
 
-  bool CommunicationStatus::operator!=(const CommunicationStatus& other) const
-  {
-    return !operator==(other);
-  }
-
-  std::ostream& operator<<(std::ostream& os, const CommunicationStatus& status)
-  {
-    os << "communication status:" << std::endl;
-    os << "\t\tstate = " << status.state << std::endl;
-    return os;
-  }
 
 } // namespace fty::messagebus

@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "fty/messagebus/CommunicationStatus.hpp"
+#include "fty/messagebus/MsgBusStatus.hpp"
 
 #include <functional>
 #include <string>

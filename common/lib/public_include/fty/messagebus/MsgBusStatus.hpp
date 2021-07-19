@@ -36,18 +36,17 @@ namespace fty::messagebus
   };
   std::string to_string(const ComState& state);
 
-  struct CommunicationStatus
+  enum DeliveryState : uint8_t
   {
-    ComState state;
-    CommunicationStatus();
-    explicit CommunicationStatus(const ComState comState);
-    CommunicationStatus(const CommunicationStatus& other);
-
-    bool set(const ComState comState);
-
-    bool operator==(const CommunicationStatus& other) const;
-    bool operator!=(const CommunicationStatus& other) const;
+    DELI_STATE_UNKNOWN = 0,
+    DELI_STATE_ACCEPTED = 1,
+    DELI_STATE_REJECTED = 2,
+    DELI_STATE_TIMEOUT = 3,
+    DELI_STATE_NOT_SUPPORTED = 4,
+    DELI_STATE_PENDING = 5,
+    DELI_STATE_BUSY = 6,
+    DELI_STATE_ABORTED = 7
   };
-  std::ostream& operator<<(std::ostream& os, const CommunicationStatus& status);
+  std::string to_string(const DeliveryState& state);
 
 } // namespace fty::messagebus
