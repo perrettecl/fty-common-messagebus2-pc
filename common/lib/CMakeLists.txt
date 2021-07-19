@@ -12,6 +12,8 @@ etn_target(interface ${PROJECT_NAME}
     public_include
   PUBLIC_HEADERS
     *.hpp
+  SOURCES
+    src/*.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} INTERFACE uuid)
