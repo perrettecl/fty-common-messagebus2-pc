@@ -65,8 +65,6 @@ namespace fty::messagebus::mqttv5
     // Sync queue
     Opt<MqttMessage> request(const std::string& requestQueue, const MqttMessage& message, int receiveTimeOut) override;
 
-    auto isServiceAvailable() -> bool;
-
   private:
     ClientPointer m_client;
 
@@ -77,5 +75,6 @@ namespace fty::messagebus::mqttv5
     CallBack cb;
 
     void sendServiceStatus(const std::string& message);
+    bool isServiceAvailable();
   };
 } // namespace fty::messagebus::mqttv5
