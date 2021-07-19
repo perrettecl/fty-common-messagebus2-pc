@@ -39,6 +39,15 @@ etn_target(${PROJECT_NAME}
 
 See all samples in examples folder.
 
+### Mqtt samples
+
+* [PubSub](examples/mqtt/src/ftyCommonMessagebusMqttSamplePubSub.cpp)
+* [WaitRequest](examples/mqtt/src/ftyCommonMessagebusMqttSampleAsyncReply.cpp)
+* [SendRequest](examples/mqtt/src/ftyCommonMessagebusMqttSampleSendRequest.cpp)
+
+### Malamute
+
+
 ## Change log
 
 [Change log](CHANGELOG.md) provides informations about bug fixing, improvement, etc.
