@@ -29,7 +29,7 @@
 
 namespace fty::messagebus::mqttv5
 {
-  class MsgBusMqttPublishSubscribe : public fty::messagebus::mqttv5::MsgBusMqttWrapper, fty::messagebus::PublishSubscribe<Message>
+  class [[nodiscard]] MsgBusMqttPublishSubscribe final : public fty::messagebus::mqttv5::MsgBusMqttWrapper, fty::messagebus::PublishSubscribe<Message>
   {
   public:
     MsgBusMqttPublishSubscribe(const std::string& endpoint = DEFAULT_MQTT_END_POINT, const std::string& clientName = utils::getClientId("MqttPubSub"))

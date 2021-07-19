@@ -24,10 +24,9 @@
 #include "fty/messagebus/mqtt/MsgBusMqttWrapper.hpp"
 #include <fty/messagebus/RequestReply.hpp>
 
-
 namespace fty::messagebus::mqttv5
 {
-  class MqttRequestReply : public fty::messagebus::mqttv5::MsgBusMqttWrapper, fty::messagebus::RequestReply<Message>
+  class [[nodiscard]] MqttRequestReply final : public fty::messagebus::mqttv5::MsgBusMqttWrapper, fty::messagebus::RequestReply<Message>
   {
   public:
     MqttRequestReply(const std::string& endpoint = DEFAULT_MQTT_END_POINT, const std::string& clientName = utils::getClientId("MqttRequestReply"))
