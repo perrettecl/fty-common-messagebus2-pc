@@ -48,13 +48,13 @@ namespace fty::messagebus
     return "UNDEFINED";
   }
 
-  CommunicationStatus::CommunicationStatus()
+   CommunicationStatus::CommunicationStatus()
     : CommunicationStatus(COM_STATE_NO_CONTACT)
   {
   }
 
   CommunicationStatus::CommunicationStatus(const ComState comState)
-    : CommunicationStatus(comState)
+    : state(comState)
   {
   }
 

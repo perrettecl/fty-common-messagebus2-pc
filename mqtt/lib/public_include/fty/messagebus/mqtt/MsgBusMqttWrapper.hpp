@@ -23,6 +23,7 @@
 
 #include <fty/messagebus/IMessageBus.hpp>
 #include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/MsgBusException.hpp>
 #include <fty/messagebus/mqtt/MsgBusMqttDef.hpp>
 #include <fty/messagebus/mqtt/MsgBusMqttMessage.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
@@ -43,7 +44,11 @@ namespace fty::messagebus::mqttv5
       : m_clientName(clientName)
       , m_msgBus{fty::messagebus::MessageBusFactory::createMqttMsgBus(endpoint, clientName)}
     {
-      m_msgBus->connect();
+      auto state = m_msgBus->connect();
+      if (state != fty::messagebus::COM_STATE_OK)
+      {
+        throw MessageBusException("Mqtt server connection error");
+      }
     };
 
     ~MsgBusMqttWrapper() = default;

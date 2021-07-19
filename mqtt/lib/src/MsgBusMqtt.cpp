@@ -67,8 +67,9 @@ namespace fty::messagebus::mqttv5
     }
   }
 
-  void MessageBusMqtt::connect()
+  ComState MessageBusMqtt::connect()
   {
+    auto status = ComState::COM_STATE_NO_CONTACT;
     mqtt::create_options opts(MQTTVERSION_5);
 
     m_client = std::make_shared<mqtt::async_client>(m_endpoint, utils::getClientId("etn"), opts);
@@ -100,17 +101,21 @@ namespace fty::messagebus::mqttv5
       m_client->set_update_connection_handler([this](const mqtt::connect_data& connData) {
         return cb.onConnectionUpdated(connData);
       });
+      status = ComState::COM_STATE_OK;
       log_info("%s => connect status: %s", m_clientName.c_str(), m_client->is_connected() ? "true" : "false");
       sendServiceStatus(CONNECTED_MSG);
     }
     catch (const mqtt::exception& e)
     {
-      throw MessageBusException("Error to connect with the Mqtt server, reason: " + e.get_message());
+      status = ComState::COM_STATE_NONE;
+      log_error("Error to connect with the Mqtt server, reason: %s", e.get_message().c_str());
     }
     catch (const std::exception& e)
     {
-      throw MessageBusException("Unexpected error: " + std::string{e.what()});
+      status = ComState::COM_STATE_UNKNOWN;
+      log_error("Unexpected error: %s", e.what());
     }
+    return status;
   }
 
   auto MessageBusMqtt::isServiceAvailable() -> bool

@@ -49,7 +49,7 @@ namespace fty::messagebus::mqttv5
 
     ~MessageBusMqtt() override;
 
-    void connect() override;
+    [[nodiscard]] fty::messagebus::ComState connect() override;
 
     // Pub/Sub pattern
     void publish(const std::string& topic, const MqttMessage& message) override;

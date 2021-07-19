@@ -7,7 +7,7 @@ project(fty-messagebus-common
 pkg_check_modules(UUID REQUIRED uuid)
 ##############################################################################################################
 
-etn_target(interface ${PROJECT_NAME}
+etn_target(static ${PROJECT_NAME}
   PUBLIC_INCLUDE_DIR
     public_include
   PUBLIC_HEADERS

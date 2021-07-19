@@ -45,7 +45,7 @@ namespace fty::messagebus::mlm
     MessageBusMalamute(const std::string& endpoint, const std::string& clientName);
     ~MessageBusMalamute() override;
 
-    void connect() override;
+    fty::messagebus::ComState connect() override;
 
     // Async topic
     void publish(const std::string& topic, const MlmMessage& message) override;

@@ -36,8 +36,8 @@ namespace fty::messagebus
   };
   std::string to_string(const ComState& state);
 
-  {
   struct CommunicationStatus
+  {
     ComState state;
     CommunicationStatus();
     explicit CommunicationStatus(const ComState comState);

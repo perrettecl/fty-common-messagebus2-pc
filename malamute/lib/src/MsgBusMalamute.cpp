@@ -28,6 +28,8 @@
 
 namespace fty::messagebus::mlm
 {
+  using namespace fty::messagebus;
+
   static MlmMessage _fromZmsg(zmsg_t* msg)
   {
     MlmMessage message;
@@ -109,12 +111,14 @@ namespace fty::messagebus::mlm
     mlm_client_destroy(&m_client);
   }
 
-  void MessageBusMalamute::connect()
+  ComState MessageBusMalamute::connect()
   {
+    auto status = ComState::COM_STATE_NO_CONTACT;
     if (mlm_client_connect(m_client, m_endpoint.c_str(), 1000, m_clientName.c_str()) == -1)
     {
       throw MessageBusException("Failed to connect to Malamute server.");
     }
+    status = ComState::COM_STATE_OK;
     log_trace("%s - connected to Malamute server", m_clientName.c_str());
 
     // Create listener thread.
@@ -123,6 +127,7 @@ namespace fty::messagebus::mlm
     {
       throw std::bad_alloc();
     }
+    return status;
   }
 
   void MessageBusMalamute::publish(const std::string& topic, const MlmMessage& message)

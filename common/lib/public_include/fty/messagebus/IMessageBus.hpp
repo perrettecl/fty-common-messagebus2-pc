@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include "fty/messagebus/CommunicationStatus.hpp"
 
 #include <functional>
 #include <string>
@@ -49,7 +50,7 @@ namespace fty::messagebus
      *
      * @throw MessageBusException any exceptions
      */
-    virtual void connect() = 0;
+    virtual ComState connect() = 0;
 
     /**
      * @brief Publish message to a topic
