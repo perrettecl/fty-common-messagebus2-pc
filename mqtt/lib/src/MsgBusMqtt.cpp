@@ -120,7 +120,12 @@ namespace fty::messagebus::mqttv5
 
   auto MessageBusMqtt::isServiceAvailable() -> bool
   {
-    return (m_client && m_client->is_connected());
+    bool serviceAvailable = m_client && m_client->is_connected();
+    if (!serviceAvailable)
+    {
+      log_error("Mqtt service is unvailable");
+    }
+    return serviceAvailable;
   }
 
   void MessageBusMqtt::publish(const std::string& topic, const Message& message)
