@@ -130,13 +130,15 @@ namespace fty::messagebus::mlm
     return status;
   }
 
-  void MessageBusMalamute::publish(const std::string& topic, const MlmMessage& message)
+  DeliveryState MessageBusMalamute::publish(const std::string& topic, const MlmMessage& message)
   {
+    auto delivState = DeliveryState::DELI_STATE_ACCEPTED;
     if (m_publishTopic == "")
     {
       m_publishTopic = topic;
       if (mlm_client_set_producer(m_client, m_publishTopic.c_str()) == -1)
       {
+        delivState = DeliveryState::DELI_STATE_REJECTED;
         throw MessageBusException("Failed to set producer on Malamute connection.");
       }
       log_trace("%s - registered as stream producter on '%s'", m_clientName.c_str(), m_publishTopic.c_str());
@@ -144,31 +146,38 @@ namespace fty::messagebus::mlm
 
     if (topic != m_publishTopic)
     {
+      delivState = DeliveryState::DELI_STATE_UNKNOWN;
       throw MessageBusException("MessageBusMalamute requires publishing to declared topic.");
     }
 
     zmsg_t* msg = _toZmsg(message);
     log_trace("%s - publishing on topic '%s'", m_clientName.c_str(), m_publishTopic.c_str());
     mlm_client_send(m_client, topic.c_str(), &msg);
+    return delivState;
   }
 
-  void MessageBusMalamute::subscribe(const std::string& topic, MessageListener messageListener)
+  DeliveryState MessageBusMalamute::subscribe(const std::string& topic, MessageListener messageListener)
   {
+    auto delivState = DeliveryState::DELI_STATE_ACCEPTED;
     if (mlm_client_set_consumer(m_client, topic.c_str(), "") == -1)
     {
+      delivState = DeliveryState::DELI_STATE_REJECTED;
       throw MessageBusException("Failed to set consumer on Malamute connection.");
     }
 
     m_subscriptions.emplace(topic, messageListener);
     log_trace("%s - subscribed to topic '%s'", m_clientName.c_str(), topic.c_str());
+    return delivState;
   }
 
-  void MessageBusMalamute::unsubscribe(const std::string& topic, MessageListener /*messageListener*/)
+  DeliveryState MessageBusMalamute::unsubscribe(const std::string& topic, MessageListener /*messageListener*/)
   {
+    auto delivState = DeliveryState::DELI_STATE_NOT_SUPPORTED;
     auto iterator = m_subscriptions.find(topic);
 
     if (iterator == m_subscriptions.end())
     {
+      delivState = DeliveryState::DELI_STATE_REJECTED;
       throw MessageBusException("Trying to unsubscribe on non-subscribed topic.");
     }
 
@@ -177,6 +186,7 @@ namespace fty::messagebus::mlm
 
     m_subscriptions.erase(iterator);
     log_trace("%s - unsubscribed to topic '%s'", m_clientName.c_str(), topic.c_str());
+    return delivState;
   }
 
   void MessageBusMalamute::sendRequest(const std::string& requestQueue, const MlmMessage& message)

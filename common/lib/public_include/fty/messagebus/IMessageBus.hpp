@@ -64,7 +64,7 @@ namespace fty::messagebus
      *
      * @throw MessageBusException any exceptions
      */
-    virtual void publish(const std::string& topic, const MessageType& message) = 0;
+    virtual DeliveryState publish(const std::string& topic, const MessageType& message) = 0;
 
     /**
      * @brief Subscribe to a topic
@@ -74,7 +74,7 @@ namespace fty::messagebus
      *
      * @throw MessageBusException any exceptions
      */
-    virtual void subscribe(const std::string& topic, MessageListener<MessageType> messageListener) = 0;
+    virtual DeliveryState subscribe(const std::string& topic, MessageListener<MessageType> messageListener) = 0;
 
     /**
      * @brief Unsubscribe to a topic
@@ -84,7 +84,7 @@ namespace fty::messagebus
      *
      * @throw MessageBusException any exceptions
      */
-    virtual void unsubscribe(const std::string& topic, MessageListener<MessageType> messageListener) = 0;
+    virtual DeliveryState unsubscribe(const std::string& topic, MessageListener<MessageType> messageListener) = 0;
 
     /**
      * @brief Send request to a queue

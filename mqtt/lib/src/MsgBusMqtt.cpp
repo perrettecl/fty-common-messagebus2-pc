@@ -128,9 +128,9 @@ namespace fty::messagebus::mqttv5
     return serviceAvailable;
   }
 
-  void MessageBusMqtt::publish(const std::string& topic, const Message& message)
+  DeliveryState MessageBusMqtt::publish(const std::string& topic, const Message& message)
   {
-    bool status = false;
+    auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
     if (isServiceAvailable())
     {
       log_debug("Publishing on topic: %s", topic.c_str());
@@ -145,13 +145,14 @@ namespace fty::messagebus::mqttv5
                       .retained(false)
                       .finalize();
       // Publish it
-      status = m_client->publish(pubMsg)->wait_for(TIMEOUT);
+      delivState = m_client->publish(pubMsg)->wait_for(TIMEOUT) ? DeliveryState::DELI_STATE_ACCEPTED : DeliveryState::DELI_STATE_REJECTED;
     }
-    //return status;
+    return delivState;
   }
 
-  void MessageBusMqtt::subscribe(const std::string& topic, MessageListener messageListener)
+  DeliveryState MessageBusMqtt::subscribe(const std::string& topic, MessageListener messageListener)
   {
+    auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
     if (isServiceAvailable())
     {
       log_debug("Subscribing on topic: %s", topic.c_str());
@@ -160,18 +161,21 @@ namespace fty::messagebus::mqttv5
         // Wrapper from mqtt msg to Message
         cb.onMessageArrived(msg);
       });
-      m_client->subscribe(topic, QOS)->wait_for(TIMEOUT);
+      delivState = m_client->subscribe(topic, QOS)->wait_for(TIMEOUT) ? DeliveryState::DELI_STATE_ACCEPTED : DeliveryState::DELI_STATE_REJECTED;
     }
+    return delivState;
   }
 
-  void MessageBusMqtt::unsubscribe(const std::string& topic, MessageListener /*messageListener*/)
+  DeliveryState MessageBusMqtt::unsubscribe(const std::string& topic, MessageListener /*messageListener*/)
   {
+    auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
     if (isServiceAvailable())
     {
       log_trace("%s - unsubscribed for topic '%s'", m_clientName.c_str(), topic.c_str());
-      m_client->unsubscribe(topic)->wait_for(TIMEOUT);
+      delivState = m_client->unsubscribe(topic)->wait_for(TIMEOUT) ? DeliveryState::DELI_STATE_ACCEPTED : DeliveryState::DELI_STATE_REJECTED;
       cb.eraseSubscriptions(topic);
     }
+    return delivState;
   }
 
   void MessageBusMqtt::receive(const std::string& queue, MessageListener messageListener)

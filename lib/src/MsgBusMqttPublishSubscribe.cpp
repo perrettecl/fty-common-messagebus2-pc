@@ -23,12 +23,17 @@
 
 namespace fty::messagebus::mqttv5
 {
-  void MsgBusMqttPublishSubscribe::subscribe(const std::string& topic, MessageListener messageListener)
+  DeliveryState MsgBusMqttPublishSubscribe::subscribe(const std::string& topic, MessageListener messageListener)
   {
-    m_msgBus->subscribe(PREFIX_TOPIC + topic, messageListener);
+    return m_msgBus->subscribe(PREFIX_TOPIC + topic, messageListener);
   }
 
-  void MsgBusMqttPublishSubscribe::publish(const std::string& topic, const std::string& msg)
+  DeliveryState MsgBusMqttPublishSubscribe::unsubscribe(const std::string& topic)
+  {
+    return m_msgBus->unsubscribe(PREFIX_TOPIC + topic, nullptr);
+  }
+
+  DeliveryState MsgBusMqttPublishSubscribe::publish(const std::string& topic, const std::string& msg)
   {
     Message message;
     message.userData() = msg;
@@ -36,7 +41,7 @@ namespace fty::messagebus::mqttv5
     message.metaData().emplace(SUBJECT, PUBLISH_USER_PROPERTY);
     message.metaData().emplace(FROM, m_clientName);
 
-    m_msgBus->publish(PREFIX_TOPIC + topic, message);
+    return m_msgBus->publish(PREFIX_TOPIC + topic, message);
   }
 
 } // namespace fty::messagebus::mqttv5

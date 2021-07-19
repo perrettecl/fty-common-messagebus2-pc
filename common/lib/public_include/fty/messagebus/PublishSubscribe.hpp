@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "fty/messagebus/MsgBusStatus.hpp"
+
 #include <string>
 
 namespace fty::messagebus
@@ -31,8 +33,9 @@ namespace fty::messagebus
   public:
     PublishSubscribe() = default;
     virtual ~PublishSubscribe() = default;
-    virtual void subscribe(const std::string& topic, MessageListener<MessageType> messageListener) = 0;
-    virtual void publish(const std::string& topic, const std::string& message) = 0;
+    virtual DeliveryState subscribe(const std::string& topic, MessageListener<MessageType> messageListener) = 0;
+    virtual DeliveryState unsubscribe(const std::string& topic) = 0;
+    virtual DeliveryState publish(const std::string& topic, const std::string& message) = 0;
   };
 
 } // namespace fty::messagebus

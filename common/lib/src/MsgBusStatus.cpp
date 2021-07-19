@@ -68,6 +68,8 @@ namespace fty::messagebus
         return "BUSY";
       case DELI_STATE_ABORTED:
         return "ABORTED";
+      case DELI_STATE_UNAVAILABLE:
+        return "SERVICE UNAVAILABLE";
       default:
         break;
     }

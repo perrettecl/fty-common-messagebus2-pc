@@ -35,8 +35,9 @@ namespace fty::messagebus::mqttv5
     MsgBusMqttPublishSubscribe(const std::string& endpoint = DEFAULT_MQTT_END_POINT, const std::string& clientName = utils::getClientId("MqttPubSub"))
       : MsgBusMqttWrapper(endpoint, clientName){};
 
-    void subscribe(const std::string& topic, MessageListener messageListener) override;
-    void publish(const std::string& topic, const std::string& message) override;
+    DeliveryState subscribe(const std::string& topic, MessageListener messageListener) override;
+    DeliveryState unsubscribe(const std::string& topic) override;
+    DeliveryState publish(const std::string& topic, const std::string& message) override;
   };
 
 } // namespace fty::messagebus::mqttv5

@@ -48,9 +48,9 @@ namespace fty::messagebus::mlm
     fty::messagebus::ComState connect() override;
 
     // Async topic
-    void publish(const std::string& topic, const MlmMessage& message) override;
-    void subscribe(const std::string& topic, MessageListener messageListener) override;
-    void unsubscribe(const std::string& topic, MessageListener messageListener) override;
+    DeliveryState publish(const std::string& topic, const MlmMessage& message) override;
+    DeliveryState subscribe(const std::string& topic, MessageListener messageListener) override;
+    DeliveryState unsubscribe(const std::string& topic, MessageListener messageListener) override;
 
     // Async queue
     void sendRequest(const std::string& requestQueue, const MlmMessage& message) override;

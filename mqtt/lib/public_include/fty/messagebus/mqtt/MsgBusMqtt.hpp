@@ -52,9 +52,9 @@ namespace fty::messagebus::mqttv5
     [[nodiscard]] fty::messagebus::ComState connect() override;
 
     // Pub/Sub pattern
-    void publish(const std::string& topic, const MqttMessage& message) override;
-    void subscribe(const std::string& topic, MessageListener messageListener) override;
-    void unsubscribe(const std::string& topic, MessageListener messageListener = {}) override;
+    DeliveryState publish(const std::string& topic, const MqttMessage& message) override;
+    DeliveryState subscribe(const std::string& topic, MessageListener messageListener) override;
+    DeliveryState unsubscribe(const std::string& topic, MessageListener messageListener = {}) override;
 
     // Req/Rep pattern
     void sendRequest(const std::string& requestQueue, const MqttMessage& message) override;

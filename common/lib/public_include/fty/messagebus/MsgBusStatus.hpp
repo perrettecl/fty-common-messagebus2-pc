@@ -45,7 +45,8 @@ namespace fty::messagebus
     DELI_STATE_NOT_SUPPORTED = 4,
     DELI_STATE_PENDING = 5,
     DELI_STATE_BUSY = 6,
-    DELI_STATE_ABORTED = 7
+    DELI_STATE_ABORTED = 7,
+    DELI_STATE_UNAVAILABLE = 9,
   };
   std::string to_string(const DeliveryState& state);
 
