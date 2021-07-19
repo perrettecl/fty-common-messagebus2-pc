@@ -29,7 +29,6 @@ etn_target(exe ${PROJECT_NAME}-async-reply PRIVATE
   USES_PUBLIC
     ${PROJECT_NAME_UNDERSCORE}
     ${SAMPLE_DTO_LIB_NAME}
-    fty-messagebus-mqtt
   FLAGS
     "-fmax-errors=1"
 )
@@ -43,7 +42,6 @@ etn_target(exe ${PROJECT_NAME}-send-request PRIVATE
   USES_PUBLIC
     ${PROJECT_NAME_UNDERSCORE}
     ${SAMPLE_DTO_LIB_NAME}
-    fty-messagebus-mqtt
   FLAGS
     "-fmax-errors=1"
 )

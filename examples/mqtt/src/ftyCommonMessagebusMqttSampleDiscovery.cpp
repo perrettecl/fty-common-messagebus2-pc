@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_common_messagebus_mqtt_example - description
+    ftyCommonMessagebusMqttSampleDiscovery - description
 
     Copyright (C) 2014 - 2021 Eaton
 
@@ -27,23 +27,18 @@
 */
 
 #include "FtyCommonMqttTestDef.hpp"
-#include <fty/messagebus/MsgBusException.hpp>
-#include <fty/messagebus/MsgBusFactory.hpp>
-#include <fty/messagebus/utils/MsgBusHelper.hpp>
 
-#include <chrono>
+#include <FtyCommonMessageBusDto.hpp>
+#include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqttPublishSubscribe.hpp>
+
 #include <csignal>
 #include <fty_log.h>
 #include <iostream>
-#include <thread>
 
 namespace
 {
-  using namespace fty::messagebus;
   using namespace fty::messagebus::mqttv5;
-  using namespace fty::messagebus::mqttv5::test;
-  using Message = fty::messagebus::mqttv5::MqttMessage;
-  using MessageBus = fty::messagebus::IMessageBus<Message>;
 
   static bool _continue = true;
 
@@ -62,8 +57,9 @@ int main(int /*argc*/, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  auto mqttClient = MessageBusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, "mqtt-discovery-client");
-  mqttClient->connect();
+  // auto mqttClient = MessageBusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, "mqtt-discovery-client");
+  // mqttClient->connect();
+  auto MsgBusMqtt = MsgBusMqttPublishSubscribe();
 
   while (_continue)
   {

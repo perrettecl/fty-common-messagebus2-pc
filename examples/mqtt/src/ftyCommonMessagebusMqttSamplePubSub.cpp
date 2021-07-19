@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_common_messagebus_mqtt_example - description
+    ftyCommonMessagebusMqttSamplePubSub - description
 
     Copyright (C) 2014 - 2021 Eaton
 
@@ -26,23 +26,18 @@
 @end
 */
 
+#include "FtyCommonMqttTestDef.hpp"
+
 #include <FtyCommonMessageBusDto.hpp>
-#include <FtyCommonMqttTestDef.hpp>
-#include <fty/messagebus/MsgBusException.hpp>
 #include <fty/messagebus/mqtt/MsgBusMqttPublishSubscribe.hpp>
 
-
-#include <chrono>
 #include <csignal>
 #include <fty_log.h>
 #include <iostream>
-#include <thread>
 
 namespace
 {
-  using namespace fty::messagebus;
   using namespace fty::messagebus::mqttv5;
-  using namespace fty::messagebus::mqttv5::test;
   using Message = fty::messagebus::mqttv5::MqttMessage;
 
   static bool _continue = true;
@@ -79,10 +74,10 @@ int main(int /*argc*/, char** argv)
   std::signal(SIGTERM, signalHandler);
 
   auto pubSub = MsgBusMqttPublishSubscribe();
-  pubSub.subscribe(SAMPLE_TOPIC, messageListener);
+  pubSub.subscribe(test::SAMPLE_TOPIC, messageListener);
 
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
-  pubSub.publish(SAMPLE_TOPIC, FooBar("event", "hello").serialize());
+  pubSub.publish(test::SAMPLE_TOPIC, FooBar("event", "hello").serialize());
 
   while (_continue)
   {

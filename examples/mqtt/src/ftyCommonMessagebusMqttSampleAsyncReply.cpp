@@ -28,7 +28,6 @@
 
 #include "FtyCommonMqttTestDef.hpp"
 #include <FtyCommonMqttTestMathDto.h>
-#include <fty/messagebus/MsgBusException.hpp>
 #include <fty/messagebus/mqtt/MsgBusMqttRequestReply.hpp>
 
 #include <csignal>
@@ -38,14 +37,12 @@
 namespace
 {
   using namespace fty::messagebus;
-  using namespace fty::messagebus::mqttv5;
-  using namespace fty::messagebus::mqttv5::test;
   using namespace fty::messagebus::test;
   using Message = fty::messagebus::mqttv5::MqttMessage;
   using MessageBus = fty::messagebus::IMessageBus<Message>;
 
   std::unique_ptr<MessageBus> replyer;
-  auto reqRep = MqttRequestReply();
+  auto reqRep = mqttv5::MqttRequestReply();
   static bool _continue = true;
 
   static void signalHandler(int signal)
@@ -63,7 +60,7 @@ namespace
       log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
     }
 
-    MathOperation mathQuery = MathOperation(message.userData());
+    auto mathQuery = MathOperation(message.userData());
     auto mathResultResult = MathResult();
 
     if (mathQuery.operation == "add")
@@ -93,7 +90,7 @@ int main(int /*argc*/, char** argv)
   // Install a signal handler
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
-  reqRep.waitRequest(SAMPLE_QUEUE, replyerMessageListener);
+  reqRep.waitRequest(mqttv5::test::SAMPLE_QUEUE, replyerMessageListener);
 
   while (_continue)
   {

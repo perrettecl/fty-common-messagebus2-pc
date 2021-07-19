@@ -26,9 +26,7 @@
 @end
 */
 
-#include "FtyCommonMqttTestDef.hpp"
 #include <FtyCommonMqttTestMathDto.h>
-#include <fty/messagebus/MsgBusException.hpp>
 #include <fty/messagebus/mqtt/MsgBusMqttRequestReply.hpp>
 
 #include <csignal>
@@ -38,8 +36,6 @@
 namespace
 {
   using namespace fty::messagebus;
-  using namespace fty::messagebus::mqttv5;
-  using namespace fty::messagebus::mqttv5::test;
   using namespace fty::messagebus::test;
   using Message = fty::messagebus::mqttv5::MqttMessage;
 
@@ -79,7 +75,7 @@ int main(int argc, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  auto reqRep = MqttRequestReply();
+  auto reqRep = mqttv5::MqttRequestReply();
 
   auto query = MathOperation(argv[3], std::stoi(argv[4]), std::stoi(argv[5]));
 
