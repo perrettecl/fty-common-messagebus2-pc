@@ -27,25 +27,26 @@
 namespace fty::messagebus::test
 {
   using UserData = std::list<std::string>;
-}
 
-struct FooBar
-{
-  std::string foo;
-  std::string bar;
-  FooBar() = default;
-  FooBar(const std::string& _foo, const std::string& _bar)
-    : foo(_foo)
-    , bar(_bar)
+  struct FooBar
   {
-  }
-  FooBar(const std::string& input)
-  {
-    deserialize(input);
-  }
-  auto serialize() -> const std::string;
-  void deserialize(const std::string& input);
-};
+    std::string foo;
+    std::string bar;
+    FooBar() = default;
+    FooBar(const std::string& _foo, const std::string& _bar)
+      : foo(_foo)
+      , bar(_bar)
+    {
+    }
+    FooBar(const std::string& input)
+    {
+      deserialize(input);
+    }
+    auto serialize() -> const std::string;
+    void deserialize(const std::string& input);
+  };
 
-void operator<<(messagebus::UserData& data, const FooBar& object);
-void operator>>(messagebus::UserData& payload, FooBar& object);
+  void operator<<(UserData& data, const FooBar& object);
+  void operator>>(UserData& payload, FooBar& object);
+
+} // namespace fty::messagebus::test

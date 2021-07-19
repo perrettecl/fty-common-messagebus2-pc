@@ -27,8 +27,6 @@
 
 namespace fty::messagebus::test
 {
-  using UserData = std::list<std::string>;
-
   struct MathOperation
   {
     std::string operation;

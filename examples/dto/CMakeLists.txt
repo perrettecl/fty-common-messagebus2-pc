@@ -8,10 +8,12 @@ find_package(nlohmann_json 3.2.0 REQUIRED)
 ##############################################################################################################
 
 etn_target(shared ${PROJECT_NAME} PRIVATE
-  SOURCES
-    src/*.cpp
   PUBLIC_INCLUDE_DIR
     public_include
+  PUBLIC_HEADERS
+    *.hpp
+  SOURCES
+    src/*.cpp
   USES_PUBLIC
     ${PROJECT_NAME_UNDERSCORE}
     nlohmann_json::nlohmann_json

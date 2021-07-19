@@ -26,9 +26,8 @@
 @end
 */
 
-#include "FtyCommonMqttTestDef.hpp"
+#include "fty/messagebus/mqtt/test/FtyCommonMqttTestDef.hpp"
 
-#include <FtyCommonMessageBusDto.hpp>
 #include <fty/messagebus/MsgBusFactory.hpp>
 #include <fty/messagebus/mqtt/MsgBusMqttPublishSubscribe.hpp>
 

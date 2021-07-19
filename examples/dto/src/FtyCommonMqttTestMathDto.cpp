@@ -26,15 +26,14 @@
 @end
 */
 
-#include "FtyCommonMqttTestMathDto.h"
+#include "fty/messagebus/test/FtyCommonMqttTestMathDto.hpp"
 
 #include <nlohmann/json.hpp>
 #include <ostream>
 
-using json = nlohmann::json;
-
 namespace fty::messagebus::test
 {
+  using json = nlohmann::json;
 
   auto MathOperation::serialize() -> const std::string
   {

@@ -25,10 +25,11 @@
 @discuss
 @end
 */
-#include "FtyCommonMqttTestDef.hpp"
-#include <FtyCommonMqttTestMathDto.h>
+#include "fty/messagebus/mqtt/test/FtyCommonMqttTestDef.hpp"
+
 #include <fty/messagebus/MsgBusException.hpp>
 #include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/test/FtyCommonMqttTestMathDto.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 #include <mqtt/async_client.h>
@@ -165,7 +166,6 @@ namespace
     message.metaData().emplace(FROM, std::to_string(rand));
     message.metaData().emplace(REPLY_TO, replyTo);
     message.metaData().emplace(CORRELATION_ID, correlationId);
-
 
     correlationIdSniffer.emplace(correlationId, std::to_string(rand));
     messageBus->receive(replyTo, responseListener);

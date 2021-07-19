@@ -26,10 +26,11 @@
 @end
 */
 
-#include "FtyCommonMqttTestDef.hpp"
-#include <FtyCommonMqttTestMathDto.h>
+#include "fty/messagebus/mqtt/test/FtyCommonMqttTestDef.hpp"
+
 #include <fty/messagebus/MsgBusException.hpp>
 #include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/test/FtyCommonMqttTestMathDto.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 #include <mqtt/async_client.h>

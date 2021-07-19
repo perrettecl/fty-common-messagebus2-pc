@@ -26,9 +26,9 @@
 @end
 */
 
-#include "FtyCommonMqttTestDef.hpp"
+#include "fty/messagebus/mqtt/test/FtyCommonMqttTestDef.hpp"
 
-#include <FtyCommonMessageBusDto.hpp>
+#include <fty/messagebus/test/FtyCommonMessageBusDto.hpp>
 #include <fty/messagebus/mqtt/MsgBusMqttPublishSubscribe.hpp>
 
 #include <csignal>
@@ -38,6 +38,7 @@
 namespace
 {
   using namespace fty::messagebus::mqttv5;
+  using namespace fty::messagebus::test;
   using Message = fty::messagebus::mqttv5::MqttMessage;
 
   static bool _continue = true;
