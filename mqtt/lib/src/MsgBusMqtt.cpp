@@ -55,7 +55,7 @@ namespace fty::messagebus::mqttv5
     // Cleaning all async clients
     if (isServiceAvailable())
     {
-      log_debug("Cleaning: %s", m_clientName.c_str());
+      log_debug("Cleaning for: %s", m_clientName.c_str());
       sendServiceStatus(DISCONNECTED_MSG);
       m_client->disable_callbacks();
       m_client->stop_consuming();
@@ -63,7 +63,7 @@ namespace fty::messagebus::mqttv5
     }
     else
     {
-      log_error("Cleaning: %s", m_clientName.c_str());
+      log_error("Cleaning error for: %s", m_clientName.c_str());
     }
   }
 
@@ -72,7 +72,7 @@ namespace fty::messagebus::mqttv5
     auto status = ComState::COM_STATE_NO_CONTACT;
     mqtt::create_options opts(MQTTVERSION_5);
 
-    m_client = std::make_shared<mqtt::async_client>(m_endpoint, utils::getClientId("etn"), opts);
+    m_client = std::make_shared<mqtt::async_client>(m_endpoint, utils::getClientId("fty"), opts);
 
     // Connection options
     auto connOpts = mqtt::connect_options_builder()
@@ -146,6 +146,7 @@ namespace fty::messagebus::mqttv5
                       .finalize();
       // Publish it
       delivState = m_client->publish(pubMsg)->wait_for(TIMEOUT) ? DeliveryState::DELI_STATE_ACCEPTED : DeliveryState::DELI_STATE_REJECTED;
+      log_debug("Message published (%s)", to_string(delivState).c_str());
     }
     return delivState;
   }
@@ -162,6 +163,7 @@ namespace fty::messagebus::mqttv5
         cb.onMessageArrived(msg);
       });
       delivState = m_client->subscribe(topic, QOS)->wait_for(TIMEOUT) ? DeliveryState::DELI_STATE_ACCEPTED : DeliveryState::DELI_STATE_REJECTED;
+      log_debug("Subscribed (%s)", to_string(delivState).c_str());
     }
     return delivState;
   }
@@ -196,9 +198,8 @@ namespace fty::messagebus::mqttv5
           log_error("Missing mqtt properties for Req/Rep (i.e. CORRELATION_DATA or RESPONSE_TOPIC");
         }
       });
-
-      log_debug("Waiting to receive msg from: %s", queue.c_str());
       delivState = m_client->subscribe(queue, QOS)->wait_for(TIMEOUT) ? DeliveryState::DELI_STATE_ACCEPTED : DeliveryState::DELI_STATE_REJECTED;
+      log_debug("Waiting to receive msg from: %s ()", queue.c_str(), to_string(delivState).c_str());
     }
     return delivState;
   }
@@ -223,7 +224,7 @@ namespace fty::messagebus::mqttv5
                       .finalize();
 
       delivState = m_client->publish(reqMsg)->wait_for(TIMEOUT) ? DeliveryState::DELI_STATE_ACCEPTED : DeliveryState::DELI_STATE_REJECTED;
-      log_debug("Request sent");
+      log_debug("Request sent (%s)", to_string(delivState).c_str());
     }
     return delivState;
   }
@@ -256,7 +257,7 @@ namespace fty::messagebus::mqttv5
                         .finalize();
 
       delivState = m_client->publish(replyMsg)->wait_for(TIMEOUT) ? DeliveryState::DELI_STATE_ACCEPTED : DeliveryState::DELI_STATE_REJECTED;
-      log_debug("Reply sent");
+      log_debug("Reply sent (%s)", to_string(delivState).c_str());
     }
     return delivState;
   }
@@ -290,10 +291,8 @@ namespace fty::messagebus::mqttv5
                  .qos(mqtt::ReasonCode::GRANTED_QOS_2)
                  .retained(true)
                  .finalize();
-    mqtt::delivery_token_ptr pubtok = m_client->publish(msg);
-    bool status = pubtok->wait_for(TIMEOUT);
-
-    log_info("DISCOVERY %s => %s [%d]", m_clientName.c_str(), message.c_str(), status);
+    bool status = m_client->publish(msg)->wait_for(TIMEOUT);
+    log_info("Service status %s => %s [%d]", m_clientName.c_str(), message.c_str(), status);
   }
 
 } // namespace fty::messagebus::mqttv5
