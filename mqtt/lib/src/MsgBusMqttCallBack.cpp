@@ -113,14 +113,15 @@ namespace fty::messagebus::mqttv5
   {
     if (auto it{m_subscriptions.find(topic)}; it == m_subscriptions.end())
     {
-      m_subscriptions.emplace(topic, messageListener);
-      log_trace("m_subscriptions emplaced: %s %d", topic.c_str());
+      auto ret = m_subscriptions.emplace(topic, messageListener);
+      log_trace("Subscriptions emplaced: %s %s", topic.c_str(), ret.second ? "true" : "false");
     }
   }
 
   void CallBack::eraseSubscriptions(const std::string& topic)
   {
-    m_subscriptions.erase(topic);
+    auto eraseNbr = m_subscriptions.erase(topic);
+    log_trace("Subscriptions erased: %s %s", topic.c_str(), eraseNbr ? "true" : "false");
   }
 
   // Callback called when a mqtt message arrives.
@@ -135,15 +136,15 @@ namespace fty::messagebus::mqttv5
       try
       {
         // Delegate to the pool worker
-        m_poolWorkers->offload([this, clientPointer, topic](MessageListener listener, const MqttMessage& mqttMsg)
-        {
+        m_poolWorkers->offload([this, clientPointer, topic](MessageListener listener, const MqttMessage& mqttMsg) {
           listener(mqttMsg);
           // Unsubscribe only reply
-          // if (clientPointer && mqttMsg.metaData().find(SUBJECT)->second == ANSWER_USER_PROPERTY)
-          // {
-          //   clientPointer->unsubscribe(topic);
-          //   this->eraseSubscriptions(topic);
-          // }
+          auto iterator = mqttMsg.metaData().find(SUBJECT);
+          if (clientPointer && (iterator != mqttMsg.metaData().end() && iterator->second == ANSWER_USER_PROPERTY))
+          {
+            clientPointer->unsubscribe(topic);
+            this->eraseSubscriptions(topic);
+          }
         },(it->second), MqttMessage{metaData, msg->get_payload_str()});
       }
       catch (const std::exception& e)
