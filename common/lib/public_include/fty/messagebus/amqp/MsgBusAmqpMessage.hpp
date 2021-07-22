@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_common_messagebus_mqtt_message - class description
+    fty_common_messagebus_message - class description
 
     Copyright (C) 2014 - 2020 Eaton
 
@@ -19,20 +19,21 @@
     =========================================================================
 */
 
-/*
-@header
-    fty_common_messagebus_mqtt_message -
-@discuss
-@end
-*/
+#pragma once
 
-#include "fty/messagebus/amqp/MsgBusAmqpMessage.hpp"
+#include "fty/messagebus/IMessage.hpp"
 
 namespace fty::messagebus::amqp
 {
-  AmqpMessage::AmqpMessage(const MetaData& metaData, const UserData& userData)
+  // Json representation
+  using UserData = std::string;
+
+  class AmqpMessage final : public IMessage<UserData>
   {
-    m_metadata = metaData;
-    m_data = userData;
-  }
+  public:
+    AmqpMessage() = default;
+    AmqpMessage(const MetaData& metaData, const UserData& userData = {});
+    ~AmqpMessage() = default;
+  };
+
 } // namespace fty::messagebus::amqp

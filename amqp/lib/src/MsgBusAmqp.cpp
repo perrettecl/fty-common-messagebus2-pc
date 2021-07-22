@@ -26,9 +26,8 @@
 @end
 */
 
-#include "fty/messagebus/mqtt/MsgBusAmqp.hpp"
+#include "fty/messagebus/amqp/MsgBusAmqp.hpp"
 #include "fty/messagebus/MsgBusException.hpp"
-#include "fty/messagebus/mqtt/MsgBusMqttUtils.hpp"
 #include "fty/messagebus/utils/MsgBusHelper.hpp"
 
 #include <fty_log.h>
@@ -50,7 +49,7 @@ namespace fty::messagebus::amqp
 
   ComState MessageBusAmqp::connect()
   {
-    return DeliveryState::DELI_STATE_NOT_SUPPORTED;
+    return ComState::COM_STATE_UNKNOWN;
   }
 
   bool MessageBusAmqp::isServiceAvailable()
@@ -63,35 +62,35 @@ namespace fty::messagebus::amqp
     return serviceAvailable;
   }
 
-  DeliveryState MessageBusAmqp::publish(const std::string& topic, const Message& message)
+  DeliveryState MessageBusAmqp::publish(const std::string& /*topic*/, const Message& /*message*/)
   {
     auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
 
     return delivState;
   }
 
-  DeliveryState MessageBusAmqp::subscribe(const std::string& topic, MessageListener messageListener)
+  DeliveryState MessageBusAmqp::subscribe(const std::string& /*topic*/, MessageListener /*messageListener*/)
   {
     auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
 
     return delivState;
   }
 
-  DeliveryState MessageBusAmqp::unsubscribe(const std::string& topic, MessageListener /*messageListener*/)
+  DeliveryState MessageBusAmqp::unsubscribe(const std::string& /*topic*/, MessageListener /*messageListener*/)
   {
     auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
 
     return delivState;
   }
 
-  DeliveryState MessageBusAmqp::receive(const std::string& queue, MessageListener messageListener)
+  DeliveryState MessageBusAmqp::receive(const std::string& /*queue*/, MessageListener /*messageListener*/)
   {
     auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
 
     return delivState;
   }
 
-  DeliveryState MessageBusAmqp::sendRequest(const std::string& requestQueue, const Message& message)
+  DeliveryState MessageBusAmqp::sendRequest(const std::string& /*requestQueue*/, const Message& /*message*/)
   {
     auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
 
@@ -101,18 +100,21 @@ namespace fty::messagebus::amqp
   DeliveryState MessageBusAmqp::sendRequest(const std::string& requestQueue, const Message& message, MessageListener messageListener)
   {
     auto delivState = receive(requestQueue, messageListener);
-
+    if (delivState == DELI_STATE_ACCEPTED)
+    {
+      delivState = sendRequest(requestQueue, message);
+    }
     return delivState;
   }
 
-  DeliveryState MessageBusAmqp::sendReply(const std::string& replyQueue, const Message& message)
+  DeliveryState MessageBusAmqp::sendReply(const std::string& /*replyQueue*/, const Message& /*message*/)
   {
     auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
 
     return delivState;
   }
 
-  Opt<Message> MessageBusAmqp::request(const std::string& requestQueue, const Message& message, int receiveTimeOut)
+  Opt<Message> MessageBusAmqp::request(const std::string& /*requestQueue*/, const Message& /*message*/, int /*receiveTimeOut*/)
   {
     auto replyMsg = Opt<Message>{};
 

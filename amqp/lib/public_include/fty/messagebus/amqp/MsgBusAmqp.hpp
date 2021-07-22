@@ -21,9 +21,20 @@
 
 #pragma once
 
+#include <fty/messagebus/IMessageBus.hpp>
+#include <fty/messagebus/MsgBusStatus.hpp>
+#include <fty/messagebus/amqp/MsgBusAmqpMessage.hpp>
+
+#include <thread>
+
 namespace fty::messagebus::amqp
 {
-  class MessageBusAmqp final : public IMessageBus<AmqpMessage>
+  // TODO specialize the ClientPointer
+  using ClientPointer = std::shared_ptr<std::string>;
+  using MessageListener = fty::messagebus::MessageListener<AmqpMessage>;
+  using Message = fty::messagebus::amqp::AmqpMessage;
+
+  class MessageBusAmqp final : public IMessageBus<Message>
   {
   public:
     MessageBusAmqp() = delete;
@@ -37,18 +48,18 @@ namespace fty::messagebus::amqp
     [[nodiscard]] fty::messagebus::ComState connect() override;
 
     // Pub/Sub pattern
-    DeliveryState publish(const std::string& topic, const AmqpMessage& message) override;
+    DeliveryState publish(const std::string& topic, const Message& message) override;
     DeliveryState subscribe(const std::string& topic, MessageListener messageListener) override;
     DeliveryState unsubscribe(const std::string& topic, MessageListener messageListener = {}) override;
 
     // Req/Rep pattern
-    DeliveryState sendRequest(const std::string& requestQueue, const AmqpMessage& message) override;
-    DeliveryState sendRequest(const std::string& requestQueue, const AmqpMessage& message, MessageListener messageListener) override;
-    DeliveryState sendReply(const std::string& replyQueue, const AmqpMessage& message) override;
+    DeliveryState sendRequest(const std::string& requestQueue, const Message& message) override;
+    DeliveryState sendRequest(const std::string& requestQueue, const Message& message, MessageListener messageListener) override;
+    DeliveryState sendReply(const std::string& replyQueue, const Message& message) override;
     DeliveryState receive(const std::string& queue, MessageListener messageListener) override;
 
     // Sync queue
-    Opt<MqttMessage> request(const std::string& requestQueue, const AmqpMessage& message, int receiveTimeOut) override;
+    Opt<Message> request(const std::string& requestQueue, const Message& message, int receiveTimeOut) override;
 
   private:
     ClientPointer m_client;
