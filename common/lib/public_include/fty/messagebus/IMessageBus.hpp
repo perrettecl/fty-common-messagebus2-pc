@@ -125,7 +125,7 @@ namespace fty::messagebus
      *
      * @throw MessageBusException any exceptions
      */
-    virtual void receive(const std::string& queue, MessageListener<MessageType> messageListener) = 0;
+    virtual DeliveryState receive(const std::string& queue, MessageListener<MessageType> messageListener) = 0;
 
     /**
      * @brief Send request to a queue and wait to receive response

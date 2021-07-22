@@ -56,7 +56,7 @@ namespace fty::messagebus::mlm
     DeliveryState sendRequest(const std::string& requestQueue, const MlmMessage& message) override;
     DeliveryState sendRequest(const std::string& requestQueue, const MlmMessage& message, MessageListener messageListener) override;
     DeliveryState sendReply(const std::string& replyQueue, const MlmMessage& message) override;
-    void receive(const std::string& queue, MessageListener messageListener) override;
+    DeliveryState receive(const std::string& queue, MessageListener messageListener) override;
 
     // Sync queue
     Opt<MlmMessage> request(const std::string& requestQueue, const MlmMessage& message, int receiveTimeOut) override;

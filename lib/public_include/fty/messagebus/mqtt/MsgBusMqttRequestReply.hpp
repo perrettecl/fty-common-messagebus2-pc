@@ -32,10 +32,10 @@ namespace fty::messagebus::mqttv5
     MqttRequestReply(const std::string& endpoint = DEFAULT_MQTT_END_POINT, const std::string& clientName = utils::getClientId("MqttRequestReply"))
       : MsgBusMqttWrapper(endpoint, clientName){};
 
-    void sendRequest(const std::string& requestQueue, const std::string& message, MessageListener messageListener) override;
+    DeliveryState sendRequest(const std::string& requestQueue, const std::string& message, MessageListener messageListener) override;
     Opt<Message> sendRequest(const std::string& requestQueue, const std::string& message, int timeOut) override;
-    void waitRequest(const std::string& requestQueue, MessageListener messageListener) override;
-    void sendReply(const std::string& response, const Message& message) override;
+    DeliveryState waitRequest(const std::string& requestQueue, MessageListener messageListener) override;
+    DeliveryState sendReply(const std::string& response, const Message& message) override;
 
   private:
     Message buildMessage(const std::string& queue, const std::string& request);

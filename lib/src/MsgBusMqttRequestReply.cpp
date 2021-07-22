@@ -23,11 +23,11 @@
 
 namespace fty::messagebus::mqttv5
 {
-  void MqttRequestReply::sendRequest(const std::string& requestQueue, const std::string& request, MessageListener messageListener)
+  DeliveryState MqttRequestReply::sendRequest(const std::string& requestQueue, const std::string& request, MessageListener messageListener)
   {
     auto message = buildMessage(requestQueue, request);
     m_msgBus->receive(message.metaData().find(REPLY_TO)->second, messageListener);
-    m_msgBus->sendRequest(PREFIX_REQUEST_QUEUE + requestQueue, message);
+    return m_msgBus->sendRequest(PREFIX_REQUEST_QUEUE + requestQueue, message);
   }
 
   Opt<Message> MqttRequestReply::sendRequest(const std::string& requestQueue, const std::string& request, int timeOut)
@@ -35,7 +35,7 @@ namespace fty::messagebus::mqttv5
     return m_msgBus->request(PREFIX_REQUEST_QUEUE + requestQueue, buildMessage(requestQueue, request), timeOut);
   }
 
-  void MqttRequestReply::sendReply(const std::string& response, const Message& message)
+  DeliveryState MqttRequestReply::sendReply(const std::string& response, const Message& message)
   {
     Message responseMsg;
     responseMsg.userData() = response;
@@ -45,12 +45,12 @@ namespace fty::messagebus::mqttv5
     responseMsg.metaData().emplace(REPLY_TO, message.metaData().find(REPLY_TO)->second);
     responseMsg.metaData().emplace(CORRELATION_ID, message.metaData().find(CORRELATION_ID)->second);
 
-    m_msgBus->sendReply(message.metaData().find(REPLY_TO)->second, responseMsg);
+    return m_msgBus->sendReply(message.metaData().find(REPLY_TO)->second, responseMsg);
   }
 
-  void MqttRequestReply::waitRequest(const std::string& requestQueue, MessageListener messageListener)
+  DeliveryState MqttRequestReply::waitRequest(const std::string& requestQueue, MessageListener messageListener)
   {
-    m_msgBus->receive(PREFIX_REQUEST_QUEUE + requestQueue, messageListener);
+    return m_msgBus->receive(PREFIX_REQUEST_QUEUE + requestQueue, messageListener);
   }
 
   Message MqttRequestReply::buildMessage(const std::string& queue, const std::string& request)

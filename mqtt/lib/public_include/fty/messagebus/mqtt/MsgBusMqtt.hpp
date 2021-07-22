@@ -60,7 +60,7 @@ namespace fty::messagebus::mqttv5
     DeliveryState sendRequest(const std::string& requestQueue, const MqttMessage& message) override;
     DeliveryState sendRequest(const std::string& requestQueue, const MqttMessage& message, MessageListener messageListener) override;
     DeliveryState sendReply(const std::string& replyQueue, const MqttMessage& message) override;
-    void receive(const std::string& queue, MessageListener messageListener) override;
+    DeliveryState receive(const std::string& queue, MessageListener messageListener) override;
 
     // Sync queue
     Opt<MqttMessage> request(const std::string& requestQueue, const MqttMessage& message, int receiveTimeOut) override;

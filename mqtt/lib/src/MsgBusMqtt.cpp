@@ -178,8 +178,9 @@ namespace fty::messagebus::mqttv5
     return delivState;
   }
 
-  void MessageBusMqtt::receive(const std::string& queue, MessageListener messageListener)
+  DeliveryState MessageBusMqtt::receive(const std::string& queue, MessageListener messageListener)
   {
+    auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
     if (isServiceAvailable())
     {
       cb.setSubscriptions(queue, messageListener);
@@ -197,8 +198,9 @@ namespace fty::messagebus::mqttv5
       });
 
       log_debug("Waiting to receive msg from: %s", queue.c_str());
-      m_client->subscribe(queue, QOS)->wait_for(TIMEOUT);
+      delivState = m_client->subscribe(queue, QOS)->wait_for(TIMEOUT) ? DeliveryState::DELI_STATE_ACCEPTED : DeliveryState::DELI_STATE_REJECTED;
     }
+    return delivState;
   }
 
   DeliveryState MessageBusMqtt::sendRequest(const std::string& requestQueue, const Message& message)
@@ -228,8 +230,12 @@ namespace fty::messagebus::mqttv5
 
   DeliveryState MessageBusMqtt::sendRequest(const std::string& requestQueue, const Message& message, MessageListener messageListener)
   {
-    receive(requestQueue, messageListener);
-    return sendRequest(requestQueue, message);
+    auto delivState = receive(requestQueue, messageListener);
+    if (delivState == DELI_STATE_ACCEPTED)
+    {
+      delivState = sendRequest(requestQueue, message);
+    }
+    return delivState;
   }
 
   DeliveryState MessageBusMqtt::sendReply(const std::string& replyQueue, const Message& message)

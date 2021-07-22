@@ -254,15 +254,18 @@ namespace fty::messagebus::mlm
     return delivState;
   }
 
-  void MessageBusMalamute::receive(const std::string& queue, MessageListener messageListener)
+  DeliveryState MessageBusMalamute::receive(const std::string& queue, MessageListener messageListener)
   {
+    auto delivState = DeliveryState::DELI_STATE_ACCEPTED;
     auto iterator = m_subscriptions.find(queue);
     if (iterator != m_subscriptions.end())
     {
+      delivState = DeliveryState::DELI_STATE_REJECTED;
       throw MessageBusException("Already have queue map to listener");
     }
     m_subscriptions.emplace(queue, messageListener);
     log_trace("%s - receive from queue '%s'", m_clientName.c_str(), queue.c_str());
+    return delivState;
   }
 
   Opt<MlmMessage> MessageBusMalamute::request(const std::string& requestQueue, const MlmMessage& message, int receiveTimeOut)
