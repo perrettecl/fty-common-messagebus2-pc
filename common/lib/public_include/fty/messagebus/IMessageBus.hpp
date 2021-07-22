@@ -94,7 +94,7 @@ namespace fty::messagebus
      *
      * @throw MessageBusException any exceptions
      */
-    virtual void sendRequest(const std::string& requestQueue, const MessageType& message) = 0;
+    virtual DeliveryState sendRequest(const std::string& requestQueue, const MessageType& message) = 0;
 
     /**
      * @brief Send request to a queue and receive response to a specific listener
@@ -105,7 +105,7 @@ namespace fty::messagebus
      *
      * @throw MessageBusException any exceptions
      */
-    virtual void sendRequest(const std::string& requestQueue, const MessageType& message, MessageListener<MessageType> messageListener) = 0;
+    virtual DeliveryState sendRequest(const std::string& requestQueue, const MessageType& message, MessageListener<MessageType> messageListener) = 0;
 
     /**
      * @brief Send a reply to a queue
@@ -115,7 +115,7 @@ namespace fty::messagebus
      *
      * @throw MessageBusException any exceptions
      */
-    virtual void sendReply(const std::string& replyQueue, const MessageType& message) = 0;
+    virtual DeliveryState sendReply(const std::string& replyQueue, const MessageType& message) = 0;
 
     /**
      * @brief Receive message from queue

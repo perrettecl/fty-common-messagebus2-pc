@@ -189,7 +189,7 @@ namespace fty::messagebus::mlm
     return delivState;
   }
 
-  void MessageBusMalamute::sendRequest(const std::string& requestQueue, const MlmMessage& message)
+  DeliveryState MessageBusMalamute::sendRequest(const std::string& requestQueue, const MlmMessage& message)
   {
     std::string to = requestQueue.c_str();
     std::string subject = requestQueue.c_str();
@@ -218,9 +218,10 @@ namespace fty::messagebus::mlm
 
     //Todo: Check error code after sendto
     mlm_client_sendto(m_client, to.c_str(), subject.c_str(), nullptr, 200, &msg);
+    return DeliveryState::DELI_STATE_ACCEPTED;
   }
 
-  void MessageBusMalamute::sendRequest(const std::string& requestQueue, const MlmMessage& message, MessageListener messageListener)
+  DeliveryState MessageBusMalamute::sendRequest(const std::string& requestQueue, const MlmMessage& message, MessageListener messageListener)
   {
     auto iterator = message.metaData().find(REPLY_TO);
     if (iterator == message.metaData().end() || iterator->second == "")
@@ -229,14 +230,16 @@ namespace fty::messagebus::mlm
     }
     std::string queue(iterator->second);
     receive(queue, messageListener);
-    sendRequest(requestQueue, message);
+    return sendRequest(requestQueue, message);
   }
 
-  void MessageBusMalamute::sendReply(const std::string& replyQueue, const MlmMessage& message)
+  DeliveryState MessageBusMalamute::sendReply(const std::string& replyQueue, const MlmMessage& message)
   {
+    auto delivState = DeliveryState::DELI_STATE_ACCEPTED;
     auto iterator = message.metaData().find(CORRELATION_ID);
     if (iterator == message.metaData().end() || iterator->second == "")
     {
+      delivState = DeliveryState::DELI_STATE_REJECTED;
       throw MessageBusException("Reply must have a correlation id.");
     }
     iterator = message.metaData().find(TO);
@@ -248,6 +251,7 @@ namespace fty::messagebus::mlm
 
     //Todo: Check error code after sendto
     mlm_client_sendto(m_client, iterator->second.c_str(), replyQueue.c_str(), nullptr, 200, &msg);
+    return delivState;
   }
 
   void MessageBusMalamute::receive(const std::string& queue, MessageListener messageListener)

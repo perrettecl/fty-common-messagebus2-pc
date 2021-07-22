@@ -201,15 +201,16 @@ namespace fty::messagebus::mqttv5
     }
   }
 
-  void MessageBusMqtt::sendRequest(const std::string& requestQueue, const Message& message)
+  DeliveryState MessageBusMqtt::sendRequest(const std::string& requestQueue, const Message& message)
   {
+    auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
     if (isServiceAvailable())
     {
       // Adding all meta data inside mqtt properties
       auto props = getMqttPropertiesFromMetaData(message.metaData());
 
       auto replyTo = mqtt::get<std::string>(props, mqtt::property::RESPONSE_TOPIC);
-      log_debug("Send request to: %s and wait to reply queue %s", requestQueue.c_str(), replyTo.c_str());
+      log_debug("Sending request to: %s and wait to reply queue %s", requestQueue.c_str(), replyTo.c_str());
 
       auto reqMsg = mqtt::message_ptr_builder()
                       .topic(requestQueue)
@@ -219,25 +220,27 @@ namespace fty::messagebus::mqttv5
                       .retained(RETAINED)
                       .finalize();
 
-      m_client->publish(reqMsg)->wait_for(TIMEOUT);
+      delivState = m_client->publish(reqMsg)->wait_for(TIMEOUT) ? DeliveryState::DELI_STATE_ACCEPTED : DeliveryState::DELI_STATE_REJECTED;
       log_debug("Request sent");
     }
+    return delivState;
   }
 
-  void MessageBusMqtt::sendRequest(const std::string& requestQueue, const Message& message, MessageListener messageListener)
+  DeliveryState MessageBusMqtt::sendRequest(const std::string& requestQueue, const Message& message, MessageListener messageListener)
   {
     receive(requestQueue, messageListener);
-    sendRequest(requestQueue, message);
+    return sendRequest(requestQueue, message);
   }
 
-  void MessageBusMqtt::sendReply(const std::string& replyQueue, const Message& message)
+  DeliveryState MessageBusMqtt::sendReply(const std::string& replyQueue, const Message& message)
   {
+    auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
     if (isServiceAvailable())
     {
       // Adding all meta data inside mqtt properties
       auto props = getMqttPropertiesFromMetaData(message.metaData());
 
-      log_debug("Send reply to: %s", (mqtt::get<std::string>(props, mqtt::property::RESPONSE_TOPIC)).c_str());
+      log_debug("Sending reply to: %s", (mqtt::get<std::string>(props, mqtt::property::RESPONSE_TOPIC)).c_str());
       auto replyMsg = mqtt::message_ptr_builder()
                         .topic(replyQueue)
                         .payload(message.userData())
@@ -246,8 +249,10 @@ namespace fty::messagebus::mqttv5
                         .retained(RETAINED)
                         .finalize();
 
-      m_client->publish(replyMsg)->wait_for(TIMEOUT);
+      delivState = m_client->publish(replyMsg)->wait_for(TIMEOUT) ? DeliveryState::DELI_STATE_ACCEPTED : DeliveryState::DELI_STATE_REJECTED;
+      log_debug("Reply sent");
     }
+    return delivState;
   }
 
   Opt<Message> MessageBusMqtt::request(const std::string& requestQueue, const Message& message, int receiveTimeOut)

@@ -57,9 +57,9 @@ namespace fty::messagebus::mqttv5
     DeliveryState unsubscribe(const std::string& topic, MessageListener messageListener = {}) override;
 
     // Req/Rep pattern
-    void sendRequest(const std::string& requestQueue, const MqttMessage& message) override;
-    void sendRequest(const std::string& requestQueue, const MqttMessage& message, MessageListener messageListener) override;
-    void sendReply(const std::string& replyQueue, const MqttMessage& message) override;
+    DeliveryState sendRequest(const std::string& requestQueue, const MqttMessage& message) override;
+    DeliveryState sendRequest(const std::string& requestQueue, const MqttMessage& message, MessageListener messageListener) override;
+    DeliveryState sendReply(const std::string& replyQueue, const MqttMessage& message) override;
     void receive(const std::string& queue, MessageListener messageListener) override;
 
     // Sync queue
