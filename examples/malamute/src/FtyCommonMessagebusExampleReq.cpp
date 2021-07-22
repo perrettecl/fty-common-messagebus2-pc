@@ -26,10 +26,10 @@
     \author Clement Perrette <clementperrette@eaton.com>
 */
 
-#include "FtyCommonMlmTestDef.hpp"
-#include <FtyCommonMessageBusDto.hpp>
+#include "fty/messagebus/mlm/test/FtyCommonMlmTestDef.hpp"
 #include <fty/messagebus/MsgBusException.hpp>
 #include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/test/FtyCommonMessageBusDto.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 #include <czmq.h>
@@ -38,7 +38,7 @@
 namespace
 {
   using namespace fty::messagebus;
-  using namespace fty::messagebus::mlm;
+  using namespace fty::messagebus::test;
   using namespace fty::messagebus::mlm::test;
   using Message = fty::messagebus::mlm::MlmMessage;
   using MessageBus = fty::messagebus::IMessageBus<Message>;
@@ -102,17 +102,24 @@ int main(int argc, char** argv)
     try
     {
       auto resp = requester->request("doAction.queue.query", message, 5);
-      log_info("Response:");
-      for (const auto& pair : resp.metaData())
+      if (resp.has_value())
       {
-        log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
+        log_info("Response:");
+        for (const auto& pair : resp.value().metaData())
+        {
+          log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
+        }
+        auto data = resp.value().userData();
+        FooBar fooBar;
+        data >> fooBar;
+        log_info("  * foo    : '%s'", fooBar.foo.c_str());
+        log_info("  * bar    : '%s'", fooBar.bar.c_str());
+        rcv++;
       }
-      auto data = resp.userData();
-      FooBar fooBar;
-      data >> fooBar;
-      log_info("  * foo    : '%s'", fooBar.foo.c_str());
-      log_info("  * bar    : '%s'", fooBar.bar.c_str());
-      rcv++;
+      else
+      {
+        log_info("Timeout reached");
+      }
     }
     catch (MessageBusException& ex)
     {

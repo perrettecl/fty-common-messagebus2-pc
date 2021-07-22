@@ -26,10 +26,10 @@
 @end
 */
 
-#include "FtyCommonMlmTestDef.hpp"
-#include <FtyCommonMessageBusDto.hpp>
+#include "fty/messagebus/mlm/test/FtyCommonMlmTestDef.hpp"
 #include <fty/messagebus/MsgBusException.hpp>
 #include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/test/FtyCommonMessageBusDto.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 #include <fty_log.h>
@@ -38,7 +38,7 @@
 namespace
 {
   using namespace fty::messagebus;
-  using namespace fty::messagebus::mlm;
+  using namespace fty::messagebus::test;
   using namespace fty::messagebus::mlm::test;
   using Message = fty::messagebus::mlm::MlmMessage;
   using MessageBus = fty::messagebus::IMessageBus<Message>;
@@ -46,7 +46,7 @@ namespace
   std::unique_ptr<MessageBus> receiver;
   std::unique_ptr<MessageBus> publisher;
 
-  void messageListener(MlmMessage message)
+  void messageListener(Message message)
   {
     log_info("messageListener:");
     auto metadata = message.metaData();
@@ -61,7 +61,7 @@ namespace
     log_info("  * bar    : '%s'", fooBar.bar.c_str());
   }
 
-  void queryListener(MlmMessage message)
+  void queryListener(Message message)
   {
     log_info("queryListener:");
     for (const auto& pair : message.metaData())
@@ -76,7 +76,7 @@ namespace
 
     if (message.metaData().size() != 0)
     {
-      MlmMessage response;
+      Message response;
       MetaData metadata;
       auto fooBarr = FooBar("status", "ok");
       UserData data2;
@@ -97,7 +97,7 @@ namespace
     }
   }
 
-  void responseListener(const MlmMessage& message)
+  void responseListener(const Message& message)
   {
     log_info("responseListener:");
     for (const auto& pair : message.metaData())
@@ -111,7 +111,7 @@ namespace
     log_info("  * bar    : '%s'", fooBar.bar.c_str());
   }
 
-  void responseListener2(const MlmMessage& message)
+  void responseListener2(const Message& message)
   {
     log_info("Specific responseListener:");
     for (const auto& pair : message.metaData())
@@ -143,7 +143,7 @@ int main(int /*argc*/, char** argv)
   std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // PUBLISH
-  MlmMessage message;
+  Message message;
   auto hello = FooBar("event", "hello");
   message.userData() << hello;
   message.metaData().clear();
@@ -164,7 +164,7 @@ int main(int /*argc*/, char** argv)
   }
 
   // REQUEST
-  MlmMessage message2;
+  Message message2;
   auto query1 = FooBar("doAction", "actionNothing");
   message2.userData() << query1;
   message2.metaData().clear();
@@ -177,7 +177,7 @@ int main(int /*argc*/, char** argv)
   std::this_thread::sleep_for(std::chrono::seconds(5));
 
   // REQUEST 2
-  MlmMessage message6;
+  Message message6;
   FooBar query4 = FooBar("doAction", "actionNothing2");
   message6.userData() << query4;
   message6.metaData().clear();
@@ -190,7 +190,7 @@ int main(int /*argc*/, char** argv)
   std::this_thread::sleep_for(std::chrono::seconds(5));
 
   // REQUEST WITHOUT METADATA
-  MlmMessage message3;
+  Message message3;
   auto query2 = FooBar("doAction2", "actionNothing");
   message3.userData() << query2;
   message3.metaData().clear();
@@ -198,7 +198,7 @@ int main(int /*argc*/, char** argv)
   std::this_thread::sleep_for(std::chrono::seconds(5));
 
   // SYNC REQUEST
-  MlmMessage message5;
+  Message message5;
   auto query3 = FooBar("doAction3", "wait");
   message5.userData() << query3;
   message5.metaData().clear();
@@ -215,19 +215,26 @@ int main(int /*argc*/, char** argv)
   }
   message5.metaData().emplace(CORRELATION_ID, utils::generateUuid());
   auto resp = publisher->request("doAction.queue.query", message5, 15);
-  log_info("Response sync:");
-  for (const auto& pair : resp.metaData())
+  if (resp.has_value())
   {
-    log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
+    log_info("Response sync:");
+    for (const auto& pair : resp.value().metaData())
+    {
+      log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
+    }
+    auto data = resp.value().userData();
+    FooBar fooBar;
+    data >> fooBar;
+    log_info("  * foo    : '%s'", fooBar.foo.c_str());
+    log_info("  * bar    : '%s'", fooBar.bar.c_str());
   }
-  auto data = resp.userData();
-  FooBar fooBar;
-  data >> fooBar;
-  log_info("  * foo    : '%s'", fooBar.foo.c_str());
-  log_info("  * bar    : '%s'", fooBar.bar.c_str());
+  else
+  {
+    log_info("Timeout reached");
+  }
 
   // PUBLISH WITHOUT METADATA
-  MlmMessage message4;
+  Message message4;
   auto bye = FooBar("event", "bye");
   message4.userData() << bye;
   message4.metaData().clear();
