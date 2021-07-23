@@ -1,6 +1,6 @@
 project(fty-messagebus-utils
         VERSION ${PROJECT_VERSION}
-        DESCRIPTION "fty messagebus utils interface"
+        DESCRIPTION "fty messagebus static library"
 )
 
 etn_target(static ${PROJECT_NAME} PRIVATE
@@ -8,4 +8,6 @@ etn_target(static ${PROJECT_NAME} PRIVATE
     public_include
   SOURCES
     src/*.cpp
+  USES_PUBLIC
+    Threads::Threads
 )

@@ -8,7 +8,7 @@ project(fty-messagebus-amqp
 # find_package(PahoMqttCpp REQUIRED)
 ##############################################################################################################
 
-etn_target(static ${PROJECT_NAME} PRIVATE
+etn_target(shared ${PROJECT_NAME} PUBLIC
   INCLUDE_DIRS
     private_include
   PUBLIC_INCLUDE_DIR
@@ -22,7 +22,6 @@ etn_target(static ${PROJECT_NAME} PRIVATE
   USES_PUBLIC
     fty-messagebus-common
     fty_common_logging
-    pthread
   FLAGS
     "-fmax-errors=2"
 )

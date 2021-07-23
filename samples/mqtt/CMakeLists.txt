@@ -55,6 +55,7 @@ etn_target(exe ${PROJECT_NAME}-stress-lib PRIVATE
   USES_PUBLIC
     ${PROJECT_NAME_UNDERSCORE}
     ${SAMPLE_DTO_LIB_NAME}
+    Threads::Threads
   FLAGS
     "-fmax-errors=1"
 )

@@ -8,7 +8,7 @@ project(fty-messagebus-mlm
 
 ##############################################################################################################
 
-etn_target(static ${PROJECT_NAME} PRIVATE
+etn_target(shared ${PROJECT_NAME} PUBLIC
   INCLUDE_DIRS
     private_include
   PUBLIC_INCLUDE_DIR
@@ -23,4 +23,6 @@ etn_target(static ${PROJECT_NAME} PRIVATE
     fty-messagebus-common
     fty_common_logging
     fty_common_mlm
+    czmq
+    mlm
 )

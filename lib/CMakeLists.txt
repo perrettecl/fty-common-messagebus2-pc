@@ -18,10 +18,4 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
   USES_PUBLIC
     fty-messagebus-common
     fty_common_logging
-    czmq
-    mlm
-    pthread
-    paho-mqttpp3
-    paho-mqtt3as
-    paho-mqtt3c
 )

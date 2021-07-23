@@ -6,6 +6,11 @@ project(fty-common-messagebus-evol-project
     DESCRIPTION "fty common messagebus evolution"
 )
 
+##############################################################################################################
+find_package(fty-cmake PATHS ${CMAKE_BINARY_DIR}/fty-cmake REQUIRED)
+find_package(Threads REQUIRED)
+##############################################################################################################
+
 macro(relative_option parent_option new_option_name text)
   if (${parent_option})
     option(${new_option_name} ${text} ON)
@@ -24,10 +29,6 @@ option(                            BUILD_TESTING               "Build tests"    
 option(                            BUILD_DOC                   "Build documentation"   OFF)
 
 set(PROJECT_NAME_UNDERSCORE fty_common_messagebus_evo)
-
-##############################################################################################################
-find_package(fty-cmake PATHS ${CMAKE_BINARY_DIR}/fty-cmake REQUIRED)
-##############################################################################################################
 
 # Modules, interfaces, etc.
 add_subdirectory(${PROJECT_SOURCE_DIR}/utils)
