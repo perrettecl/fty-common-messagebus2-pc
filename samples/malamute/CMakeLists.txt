@@ -4,9 +4,9 @@ project(${PROJECT_NAME}-mlm
         LANGUAGES CXX
 )
 
-etn_target(exe ${PROJECT_NAME}-example PRIVATE
+etn_target(exe ${PROJECT_NAME}-sample PRIVATE
   SOURCES
-    src/FtyCommonMessagebusExample.cpp
+    src/*MlmSample.cpp
   INCLUDE_DIRS
     private_include
   USES_PRIVATE
@@ -15,9 +15,9 @@ etn_target(exe ${PROJECT_NAME}-example PRIVATE
 
 )
 
-etn_target(exe ${PROJECT_NAME}-example2 PRIVATE
+etn_target(exe ${PROJECT_NAME}-sample2 PRIVATE
   SOURCES
-    src/FtyCommonMessagebusExample2.cpp
+    src/*MlmSample2.cpp
   INCLUDE_DIRS
     private_include
   USES_PRIVATE
@@ -27,7 +27,7 @@ etn_target(exe ${PROJECT_NAME}-example2 PRIVATE
 
 etn_target(exe ${PROJECT_NAME}-rep PRIVATE
   SOURCES
-    src/FtyCommonMessagebusExampleRep.cpp
+    src/*MlmSampleRep.cpp
   INCLUDE_DIRS
     private_include
   USES_PRIVATE
@@ -37,7 +37,7 @@ etn_target(exe ${PROJECT_NAME}-rep PRIVATE
 
 etn_target(exe ${PROJECT_NAME}-rep2 PRIVATE
   SOURCES
-    src/FtyCommonMessagebusExampleRep2.cpp
+    src/*MlmSampleRep2.cpp
   INCLUDE_DIRS
     private_include
   USES_PRIVATE
@@ -47,7 +47,7 @@ etn_target(exe ${PROJECT_NAME}-rep2 PRIVATE
 
 etn_target(exe ${PROJECT_NAME}-req PRIVATE
   SOURCES
-    src/FtyCommonMessagebusExampleReq.cpp
+    src/*MlmSampleReq.cpp
   INCLUDE_DIRS
     private_include
   USES_PRIVATE

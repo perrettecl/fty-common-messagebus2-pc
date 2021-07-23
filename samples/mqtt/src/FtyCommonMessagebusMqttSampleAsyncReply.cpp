@@ -1,5 +1,5 @@
 /*  =========================================================================
-    ftyCommonMessagebusMqttSamplesReqRep - description
+    FtyCommonMessagebusMqttSampleAsyncReply.cpp - description
 
     Copyright (C) 2014 - 2021 Eaton
 
@@ -21,14 +21,15 @@
 
 /*
 @header
-    ftyCommonMessagebusMqttSamplesReqRep -
+    FtyCommonMessagebusMqttSampleAsyncReply.cpp -
 @discuss
 @end
 */
 
-#include "fty/messagebus/test/FtyCommonMqttTestMathDto.hpp"
+#include "fty/messagebus/mqtt/test/FtyCommonMqttTestDef.hpp"
 
 #include <fty/messagebus/mqtt/MsgBusMqttRequestReply.hpp>
+#include <fty/messagebus/test/FtyCommonMqttTestMathDto.hpp>
 
 #include <csignal>
 #include <fty_log.h>
@@ -39,9 +40,11 @@ namespace
   using namespace fty::messagebus;
   using namespace fty::messagebus::test;
   using Message = fty::messagebus::mqttv5::MqttMessage;
+  using MessageBus = fty::messagebus::IMessageBus<Message>;
 
+  std::unique_ptr<MessageBus> replyer;
+  auto reqRep = mqttv5::MqttRequestReply();
   static bool _continue = true;
-  static auto constexpr SYNC_REQUEST_TIMEOUT = 5;
 
   static void signalHandler(int signal)
   {
@@ -49,55 +52,46 @@ namespace
     _continue = false;
   }
 
-  void responseMessageListener(const Message& message)
+  void replyerMessageListener(const Message& message)
   {
-    log_info("Response arrived");
-    auto mathresult = MathResult(message.userData());
-    log_info("  * status: '%s', result: %d, error: '%s'", mathresult.status.c_str(), mathresult.result, mathresult.error.c_str());
+    log_info("Replyer messageListener");
 
-    _continue = false;
+    for (const auto& pair : message.metaData())
+    {
+      log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
+    }
+
+    auto mathQuery = MathOperation(message.userData());
+    auto mathResultResult = MathResult();
+
+    if (mathQuery.operation == "add")
+    {
+      mathResultResult.result = mathQuery.param_1 + mathQuery.param_2;
+    }
+    else if (mathQuery.operation == "mult")
+    {
+      mathResultResult.result = mathQuery.param_1 * mathQuery.param_2;
+    }
+    else
+    {
+      mathResultResult.status = MathResult::STATUS_KO;
+      mathResultResult.error = "Unsuported operation";
+    }
+
+    reqRep.sendReply(mathResultResult.serialize(), message);
+    //_continue = false;
   }
 
 } // namespace
 
-int main(int argc, char** argv)
+int main(int /*argc*/, char** argv)
 {
-  if (argc != 6)
-  {
-    std::cout << "USAGE: " << argv[0] << " <reqQueue> <async|sync> <add|mult> <num1> <num2>" << std::endl;
-    return EXIT_FAILURE;
-  }
-
   log_info("%s - starting...", argv[0]);
-
-  auto requestQueue = std::string{argv[1]};
 
   // Install a signal handler
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
-
-  auto reqRep = mqttv5::MqttRequestReply();
-
-  auto query = MathOperation(argv[3], std::stoi(argv[4]), std::stoi(argv[5]));
-
-  if (strcmp(argv[2], "async") == 0)
-  {
-    reqRep.sendRequest(requestQueue, query.serialize(), responseMessageListener);
-  }
-  else
-  {
-    _continue = false;
-
-    Opt<Message> replyMsg = reqRep.sendRequest(requestQueue, query.serialize(), SYNC_REQUEST_TIMEOUT);
-    if (replyMsg.has_value())
-    {
-      responseMessageListener(replyMsg.value());
-    }
-    else
-    {
-      log_error("Time out reached: (%ds)", SYNC_REQUEST_TIMEOUT);
-    }
-  }
+  reqRep.waitRequest(mqttv5::test::SAMPLE_QUEUE, replyerMessageListener);
 
   while (_continue)
   {

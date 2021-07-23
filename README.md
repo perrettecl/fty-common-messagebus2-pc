@@ -9,16 +9,29 @@
 * [googletest](https://github.com/google/googletest)
 
 ## Description
-This project is developped on the purpose to provide somme common methods to address Request/Reply, and Publish/Subscribe patterns above malamute or Mqtt message bus.
+This project is developped on the purpose to provide somme common methods to address Request/Reply, and Publish/Subscribe patterns above AMQP, Malamute or Mqtt message bus.
 
 ## How to build
 
-To build fty-common-messagebus-evol project run:
+To build fty-```cmake common-messagebus-evol project run:
 
 ```cmake
-cmake -B build -DENABLE_EXAMPLES=ON|OFF -DBUILD_TESTING=ON|OFF
+cmake -B build -DBUILD_ALL=ON
 cmake --build build
 ```
+
+#### Build options
+
+| Option                       | description                                  | acceptable value      | default value           |
+|------------------------------|----------------------------------------------|-----------------------|-------------------------|
+| BUILD_ALL_ADD_ON             | Build all addons                             | ON\|OFF               | ON                      |
+| BUILD_AMQP                   | Enable AMQP addon                            | ON\|OFF               | ON                      |
+| BUILD_MALAMUTE               | Enable Malamute addon                        | ON\|OFF               | ON                      |
+| BUILD_MQTT                   | Enable Mqtt addon                            | ON\|OFF               | ON                      |
+| BUILD_SAMPLES                | Enable samples build                         | ON\|OFF               | OFF                     |
+| BUILD_TESTING                | Add test compilation                         | ON\|OFF               | ON                      |
+| BUILD_DOC                    | Build documentation                          | ON\|OFF               | OFF                     |
+
 
 ## How to use the dependency in your project
 
@@ -37,16 +50,25 @@ etn_target(${PROJECT_NAME}
 
 ## Howto
 
-See all samples in examples folder.
+See all samples in samples folder.
 
 ### Mqtt samples
 
-* [PubSub](examples/mqtt/src/ftyCommonMessagebusMqttSamplePubSub.cpp)
-* [WaitRequest](examples/mqtt/src/ftyCommonMessagebusMqttSampleAsyncReply.cpp)
-* [SendRequest](examples/mqtt/src/ftyCommonMessagebusMqttSampleSendRequest.cpp)
+* [PubSub](samples/mqtt/src/FtyCommonMessagebusMqttSamplePubSub.cpp)
+* [WaitRequest](samples/mqtt/src/FtyCommonMessagebusMqttSampleAsyncReply.cpp)
+* [SendRequest](samples/mqtt/src/FtyCommonMessagebusMqttSampleSendRequest.cpp)
 
-### Malamute
+### Amqp samples
 
+* [PubSub](samples/amqp/src/FtyCommonMessagebusAmqpSamplePubSub.cpp)
+* [WaitRequest](samples/amqp/src/FtyCommonMessagebusAmqpSampleAsyncReply.cpp)
+* [SendRequest](samples/amqp/src/FtyCommonMessagebusAmqpSampleSendRequest.cpp)
+
+### Malamute samples
+
+* [PubSub](samples/malamute/src/FtyCommonMessagebusMlmSample.cpp)
+* [WaitRequest](samples/malamute/src/FtyCommonMessagebusMlmSampleRep.cpp)
+* [SendRequest](samples/malamute/src/FtyCommonMessagebusMlmSampleReq.cpp)
 
 ## Change log
 

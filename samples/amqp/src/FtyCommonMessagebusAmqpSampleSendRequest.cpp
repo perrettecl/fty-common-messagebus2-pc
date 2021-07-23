@@ -1,5 +1,5 @@
 /*  =========================================================================
-    ftyCommonMessagebusMqttSampleDiscovery - description
+    ftyCommonMessagebusAmqpSampleSendRequest - description
 
     Copyright (C) 2014 - 2021 Eaton
 
@@ -21,44 +21,64 @@
 
 /*
 @header
-    fty_common_messagebus_mqtt_example -
+    ftyCommonMessagebusAmqpSampleSendRequest -
 @discuss
 @end
 */
 
-#include "fty/messagebus/mqtt/test/FtyCommonMqttTestDef.hpp"
-
-#include <fty/messagebus/MsgBusFactory.hpp>
-#include <fty/messagebus/mqtt/MsgBusMqttPublishSubscribe.hpp>
+#include "fty/messagebus/amqp/test/FtyCommonAmqpTestDef.hpp"
+#include <fty/messagebus/test/FtyCommonMqttTestMathDto.hpp>
 
 #include <csignal>
 #include <fty_log.h>
 #include <iostream>
+#include <thread>
 
 namespace
 {
-  using namespace fty::messagebus::mqttv5;
-
   static bool _continue = true;
+  static auto constexpr SYNC_REQUEST_TIMEOUT = 5;
 
   static void signalHandler(int signal)
   {
     std::cout << "Signal " << signal << " received\n";
     _continue = false;
   }
+
 } // namespace
 
-int main(int /*argc*/, char** argv)
+int main(int argc, char** argv)
 {
+  if (argc != 6)
+  {
+    std::cout << "USAGE: " << argv[0] << " <reqQueue> <async|sync> <add|mult> <num1> <num2>" << std::endl;
+    return EXIT_FAILURE;
+  }
+
   log_info("%s - starting...", argv[0]);
+
+  auto requestQueue = std::string{argv[1]};
 
   // Install a signal handler
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  // auto mqttClient = MessageBusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, "mqtt-discovery-client");
-  // mqttClient->connect();
-  auto MsgBusMqtt = MsgBusMqttPublishSubscribe();
+  if (strcmp(argv[2], "async") == 0)
+  {
+
+  }
+  else
+  {
+    _continue = false;
+
+    if (true)
+    {
+    }
+    else
+    {
+      log_error("Time out reached: (%ds)", SYNC_REQUEST_TIMEOUT);
+    }
+  }
 
   while (_continue)
   {

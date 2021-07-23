@@ -6,13 +6,21 @@ project(fty-common-messagebus-evol-project
     DESCRIPTION "fty common messagebus evolution"
 )
 
-option(BUILD_AMQP "Build AMQP implementation" OFF)
-option(BUILD_MALAMUTE "Build Malamute implementation" ON)
-option(BUILD_MQTT "Build MQTT implementation" ON)
+macro(relative_option parent_option new_option_name text)
+  if (${parent_option})
+    option(${new_option_name} ${text} ON)
+  else()
+    option(${new_option_name} ${text} OFF)
+  endif()
+endmacro()
 
-option(BUILD_EXAMPLES "Build samples" OFF)
-option(BUILD_TESTING "Build tests" OFF)
-option(BUILD_DOC "Build documentation" OFF)
+relative_option(${BUILD_ALL}       BUILD_AMQP                  "Build AMQP addon")
+relative_option(${BUILD_ALL}       BUILD_MALAMUTE              "Build Malamute addon")
+relative_option(${BUILD_ALL}       BUILD_MQTT                  "Build MQTT addon")
+
+option(BUILD_SAMPLES      "Build samples"                  OFF)
+option(BUILD_TESTING      "Build tests"                    OFF)
+option(BUILD_DOC          "Build documentation"            OFF)
 
 set(PROJECT_NAME_UNDERSCORE fty_common_messagebus_evol)
 
@@ -23,17 +31,7 @@ find_package(fty-cmake PATHS ${CMAKE_BINARY_DIR}/fty-cmake REQUIRED)
 # Modules, interfaces, etc.
 add_subdirectory(${PROJECT_SOURCE_DIR}/utils)
 add_subdirectory(${PROJECT_SOURCE_DIR}/common)
-
-# Implementation modules.
-if(BUILD_MQTT)
-  add_subdirectory(${PROJECT_SOURCE_DIR}/mqtt)
-endif()
-if(BUILD_AMQP)
-  add_subdirectory(${PROJECT_SOURCE_DIR}/amqp)
-endif()
-if(BUILD_MALAMUTE)
-  add_subdirectory(${PROJECT_SOURCE_DIR}/malamute)
-endif()
+add_subdirectory(${PROJECT_SOURCE_DIR}/addons)
 
 # Library
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib)
@@ -41,8 +39,8 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/lib)
 add_subdirectory(${PROJECT_SOURCE_DIR}/tools)
 
 # Examples
-if(BUILD_EXAMPLES)
-  add_subdirectory(examples)
+if(BUILD_SAMPLES)
+  add_subdirectory(samples)
 endif()
 
 ##############################################################################################################

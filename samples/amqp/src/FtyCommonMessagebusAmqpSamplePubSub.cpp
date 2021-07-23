@@ -1,5 +1,5 @@
 /*  =========================================================================
-    ftyCommonMessagebusMqttSamplePubSub - description
+    ftyCommonMessagebusAmqpSamplePubSub - description
 
     Copyright (C) 2014 - 2021 Eaton
 
@@ -21,26 +21,21 @@
 
 /*
 @header
-    fty_common_messagebus_mqtt_example -
+    ftyCommonMessagebusAmqpSamplePubSub -
 @discuss
 @end
 */
 
-#include "fty/messagebus/mqtt/test/FtyCommonMqttTestDef.hpp"
-
-#include <fty/messagebus/test/FtyCommonMessageBusDto.hpp>
-#include <fty/messagebus/mqtt/MsgBusMqttPublishSubscribe.hpp>
+#include "fty/messagebus/amqp/test/FtyCommonAmqpTestDef.hpp"
+#include <fty/messagebus/test/FtyCommonMqttTestMathDto.hpp>
 
 #include <csignal>
 #include <fty_log.h>
 #include <iostream>
+#include <thread>
 
 namespace
 {
-  using namespace fty::messagebus::mqttv5;
-  using namespace fty::messagebus::test;
-  using Message = fty::messagebus::mqttv5::MqttMessage;
-
   static bool _continue = true;
 
   static void signalHandler(int signal)
@@ -49,21 +44,6 @@ namespace
     _continue = false;
   }
 
-  void messageListener(Message message)
-  {
-    log_info("messageListener");
-    auto metadata = message.metaData();
-    for (const auto& pair : message.metaData())
-    {
-      log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
-    }
-
-    auto fooBar = FooBar(message.userData());
-    log_info("  * foo    : '%s'", fooBar.foo.c_str());
-    log_info("  * bar    : '%s'", fooBar.bar.c_str());
-
-    _continue = false;
-  }
 } // namespace
 
 int main(int /*argc*/, char** argv)
@@ -73,12 +53,6 @@ int main(int /*argc*/, char** argv)
   // Install a signal handler
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
-
-  auto pubSub = MsgBusMqttPublishSubscribe();
-  pubSub.subscribe(test::SAMPLE_TOPIC, messageListener);
-
-  std::this_thread::sleep_for(std::chrono::milliseconds(10));
-  pubSub.publish(test::SAMPLE_TOPIC, FooBar("event", "hello").serialize());
 
   while (_continue)
   {

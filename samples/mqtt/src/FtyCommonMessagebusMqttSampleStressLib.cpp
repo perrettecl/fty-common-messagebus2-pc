@@ -1,5 +1,5 @@
 /*  =========================================================================
-    ftyCommonMessagebusMqttSampleRep.cpp - description
+    FtyCommonMessagebusMqttSampleStressLib.cpp - description
 
     Copyright (C) 2014 - 2021 Eaton
 
@@ -21,7 +21,7 @@
 
 /*
 @header
-    ftyCommonMessagebusMqttSampleMultithred.cpp -
+    FtyCommonMessagebusMqttSampleStressLib.cpp -
 @discuss
 @end
 */
