@@ -4,6 +4,7 @@ project(fty-common-messagebus-evol
 )
 
 ##############################################################################################################
+
 etn_target(shared ${PROJECT_NAME_UNDERSCORE}
   PUBLIC_INCLUDE_DIR
     public_include
@@ -13,9 +14,34 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
     src/*.cpp
   USES_PRIVATE
     fty-messagebus-utils
-    fty-messagebus-malamute
-    fty-messagebus-mqtt
   USES_PUBLIC
     fty-messagebus-common
     fty_common_logging
+  FLAGS
+    "-fmax-errors=1"
 )
+
+# target_compile_definitions(${PROJECT_NAME_UNDERSCORE} PRIVATE BUILD_AMQP)
+# target_compile_definitions(${PROJECT_NAME_UNDERSCORE} PRIVATE BUILD_MALAMUTE)
+# target_compile_definitions(${PROJECT_NAME_UNDERSCORE} PRIVATE BUILD_MQTT)
+
+if(BUILD_AMQP)
+  target_link_libraries(${PROJECT_NAME_UNDERSCORE}
+    PRIVATE
+      fty-messagebus-amqp
+  )
+endif()
+
+if(BUILD_MALAMUTE)
+  target_link_libraries(${PROJECT_NAME_UNDERSCORE}
+    PRIVATE
+      fty-messagebus-malamute
+  )
+endif()
+
+if(BUILD_MQTT)
+  target_link_libraries(${PROJECT_NAME_UNDERSCORE}
+    PRIVATE
+      fty-messagebus-mqtt
+  )
+endif()

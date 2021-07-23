@@ -13,10 +13,16 @@ add_subdirectory(dto)
 ################################################################################
 
 # AMQP samples
-add_subdirectory(amqp)
+if(BUILD_AMQP)
+  add_subdirectory(amqp)
+endif()
 
 # Malamute samples
-add_subdirectory(malamute)
+if(BUILD_MALAMUTE)
+  add_subdirectory(malamute)
+endif()
 
 # Mqtt samples
-add_subdirectory(mqtt)
+if(BUILD_MQTT)
+  add_subdirectory(mqtt)
+endif()
