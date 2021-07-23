@@ -1,4 +1,4 @@
-# fty-common-messagebus-evol
+# fty-common-messagebus2
 
 ## Dependencies
 * [fty-cmake](https://github.com/42ity/fty-cmake/)
@@ -13,7 +13,7 @@ This project is developped on the purpose to provide somme common methods to add
 
 ## How to build
 
-To build fty-```cmake common-messagebus-evol project run:
+To build fty-```cmake common-messagebus2 project run:
 
 ```cmake
 cmake -B build -DBUILD_ALL=ON
@@ -43,7 +43,7 @@ etn_target(${PROJECT_NAME}
     .....
   USES_PUBLIC
     .....
-    fty_common_messagebus_evol
+    fty_common_messagebus2
     .....
 )
 ```
