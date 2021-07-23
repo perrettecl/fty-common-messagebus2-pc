@@ -13,7 +13,7 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
     src/*.cpp
   USES_PRIVATE
     fty-messagebus-utils
-    fty-messagebus-mlm
+    fty-messagebus-malamute
     fty-messagebus-mqtt
   USES_PUBLIC
     fty-messagebus-common

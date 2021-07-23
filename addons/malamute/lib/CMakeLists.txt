@@ -1,5 +1,5 @@
 
-project(fty-messagebus-mlm
+project(fty-messagebus-malamute
   VERSION ${PROJECT_VERSION}
   DESCRIPTION "fty messagebus malamute library"
 )
