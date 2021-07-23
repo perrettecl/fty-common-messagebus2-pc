@@ -17,10 +17,10 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-Source:         fty-common-messagebus-evol
+Source:         fty-common-messagebus2
 Section:        net
 Priority:       optional
-Maintainer:     fty-common-messagebus-evol Developers <eatonipcopensource@eaton.com>
+Maintainer:     fty-common-messagebus2 Developers <eatonipcopensource@eaton.com>
 Standards-Version: 4.0.1.0
 Build-Depends: debhelper (>= 9),
     cmake (>=3.0),
@@ -39,14 +39,27 @@ Build-Depends: debhelper (>= 9),
     asciidoc-base | asciidoc, xmlto,
     dh-autoreconf
 
-Package: libfty-common-messagebus-evol1
+Package: libfty-common-messagebus2-mqtt
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: fty-common-messagebus-evol shared library
- This package contains shared library for fty-common-messagebus-evol:
- provides message bus for agents
+Description: fty-common-messagebus2-mqtt shared library
 
-Package: libfty-common-messagebus-evol-dev
+Package: libfty-common-messagebus2-amqp
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: fty-common-messagebus2-amqp shared library
+
+Package: libfty-common-messagebus2-malamute
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: fty-common-messagebus2-malamute shared library
+
+Package: libfty-common-messagebus2
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: fty-common-messagebus2 shared library
+
+Package: libfty-common-messagebus2-dev
 Architecture: any
 Section: libdevel
 Depends:
@@ -59,7 +72,5 @@ Depends:
     libczmq-dev (>= 3.0.2),
     libmlm-dev (>= 1.0.0),
     libfty-common-logging-dev,
-    libfty-common-messagebus-evol1 (= ${binary:Version})
-Description: fty-common-messagebus-evol development tools
- This package contains development files for fty-common-messagebus-evol:
- provides message bus for agents
+    libfty-common-messagebus2 (= ${binary:Version})
+Description: fty-common-messagebus2 development tools
