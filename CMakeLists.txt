@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.13)
 cmake_policy(VERSION 3.13)
 
-project(fty-common-messagebus-evol-project
+project(fty-common-messagebus2-project
     VERSION 1.0.0
-    DESCRIPTION "fty common messagebus evolution"
+    DESCRIPTION "fty common messagebus2"
 )
 
 ##############################################################################################################
@@ -28,7 +28,7 @@ option(                            BUILD_SAMPLES               "Build samples"  
 option(                            BUILD_TESTING               "Build tests"           OFF)
 option(                            BUILD_DOC                   "Build documentation"   OFF)
 
-set(PROJECT_NAME_UNDERSCORE fty_common_messagebus_evo)
+set(PROJECT_NAME_UNDERSCORE fty_common_messagebus2)
 
 # Modules, interfaces, etc.
 add_subdirectory(${PROJECT_SOURCE_DIR}/utils)
