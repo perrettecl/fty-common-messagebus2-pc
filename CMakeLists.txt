@@ -38,7 +38,9 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/addons)
 # Library
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib)
 # Tools
-add_subdirectory(${PROJECT_SOURCE_DIR}/tools)
+if(BUILD_MALAMUTE)
+  add_subdirectory(${PROJECT_SOURCE_DIR}/tools)
+endif()
 
 # Examples
 if(BUILD_SAMPLES)

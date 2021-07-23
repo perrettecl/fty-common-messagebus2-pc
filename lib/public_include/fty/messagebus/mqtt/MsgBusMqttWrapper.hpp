@@ -21,11 +21,10 @@
 
 #pragma once
 
-#include <fty/messagebus/IMessageBus.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqtt.hpp>
+
 #include <fty/messagebus/MsgBusFactory.hpp>
 #include <fty/messagebus/MsgBusException.hpp>
-#include <fty/messagebus/mqtt/MsgBusMqttDef.hpp>
-#include <fty/messagebus/mqtt/MsgBusMqttMessage.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 #include <thread>
@@ -35,14 +34,14 @@ namespace fty::messagebus::mqttv5
 
   using Message = fty::messagebus::mqttv5::MqttMessage;
   using MessageListener = fty::messagebus::MessageListener<Message>;
-  using MsgBusPointer = std::unique_ptr<fty::messagebus::IMessageBus<Message>>;
+  using MsgBusPointer = std::unique_ptr<MessageBusMqtt>;
 
   class MsgBusMqttWrapper
   {
   public:
     MsgBusMqttWrapper(const std::string& endpoint, const std::string& clientName)
       : m_clientName(clientName)
-      , m_msgBus{fty::messagebus::MessageBusFactory::createMqttMsgBus(endpoint, clientName)}
+      , m_msgBus{fty::messagebus::MessageBusFactory<MessageBusMqtt>::createMsgBus(endpoint, clientName)}
     {
       auto state = m_msgBus->connect();
       if (state != fty::messagebus::COM_STATE_OK)

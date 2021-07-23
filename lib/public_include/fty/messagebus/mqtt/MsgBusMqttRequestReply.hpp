@@ -23,6 +23,7 @@
 
 #include "fty/messagebus/mqtt/MsgBusMqttWrapper.hpp"
 #include <fty/messagebus/RequestReply.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqttDef.hpp>
 
 namespace fty::messagebus::mqttv5
 {

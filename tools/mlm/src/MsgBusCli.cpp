@@ -28,7 +28,6 @@
 
 #include "fty/messagebus/MsgBusFactory.hpp"
 #include "fty/messagebus/mlm/MsgBusMalamute.hpp"
-#include "fty/messagebus/mlm/MsgBusMlmMessage.hpp"
 #include "fty/messagebus/utils/MsgBusHelper.hpp"
 
 #include <condition_variable>
@@ -45,7 +44,7 @@
 using namespace fty::messagebus;
 using namespace fty::messagebus::mlm;
 using Message = fty::messagebus::mlm::MlmMessage;
-using MessageBus = fty::messagebus::IMessageBus<Message>;
+using MessageBus = MessageBusMalamute;
 
 volatile bool g_exit = false;
 std::condition_variable g_cv;
@@ -94,7 +93,7 @@ const std::map<std::string, progAction> actions = {
 };
 
 const std::map<std::string, std::function<std::unique_ptr<MessageBus>()>> busTypes = {
-  {"malamute", []() -> std::unique_ptr<MessageBus> { return MessageBusFactory::createMlmMsgBus(endpoint, clientName); }},
+  {"malamute", []() -> std::unique_ptr<MessageBus> { return MessageBusFactory<MessageBusMalamute>::createMsgBus(endpoint, clientName); }},
 };
 
 void dumpMessage(const MlmMessage& msg)

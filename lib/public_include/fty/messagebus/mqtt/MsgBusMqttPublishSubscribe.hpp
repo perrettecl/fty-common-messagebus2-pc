@@ -23,6 +23,7 @@
 
 #include "fty/messagebus/mqtt/MsgBusMqttWrapper.hpp"
 #include <fty/messagebus/PublishSubscribe.hpp>
+#include <fty/messagebus/mqtt/MsgBusMqttDef.hpp>
 
 #include <string>
 #include <thread>
