@@ -14,15 +14,16 @@ macro(relative_option parent_option new_option_name text)
   endif()
 endmacro()
 
-relative_option(${BUILD_ALL}       BUILD_AMQP                  "Build AMQP addon")
-relative_option(${BUILD_ALL}       BUILD_MALAMUTE              "Build Malamute addon")
-relative_option(${BUILD_ALL}       BUILD_MQTT                  "Build MQTT addon")
+option(                            BUILD_ALL                   "Build all addons"       ON)
+relative_option(${BUILD_ALL}       BUILD_AMQP                  "Build AMQP addon"         )
+relative_option(${BUILD_ALL}       BUILD_MALAMUTE              "Build Malamute addon"     )
+relative_option(${BUILD_ALL}       BUILD_MQTT                  "Build MQTT addon"         )
 
-option(BUILD_SAMPLES      "Build samples"                  OFF)
-option(BUILD_TESTING      "Build tests"                    OFF)
-option(BUILD_DOC          "Build documentation"            OFF)
+option(                            BUILD_SAMPLES               "Build samples"         OFF)
+option(                            BUILD_TESTING               "Build tests"           OFF)
+option(                            BUILD_DOC                   "Build documentation"   OFF)
 
-set(PROJECT_NAME_UNDERSCORE fty_common_messagebus_evol)
+set(PROJECT_NAME_UNDERSCORE fty_common_messagebus_evo)
 
 ##############################################################################################################
 find_package(fty-cmake PATHS ${CMAKE_BINARY_DIR}/fty-cmake REQUIRED)
