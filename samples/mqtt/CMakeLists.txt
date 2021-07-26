@@ -47,32 +47,32 @@ etn_target(exe ${PROJECT_NAME}-send-request PRIVATE
 )
 
 # Stress lib sample
-etn_target(exe ${PROJECT_NAME}-stress-lib PRIVATE
-  SOURCES
-    src/*SampleStressLib.cpp
-  INCLUDE_DIRS
-    private_include
-  USES_PUBLIC
-    ${PROJECT_NAME_UNDERSCORE}
-    ${SAMPLE_DTO_LIB_NAME}
-    Threads::Threads
-  FLAGS
-    "-fmax-errors=1"
-)
+# etn_target(exe ${PROJECT_NAME}-stress-lib PRIVATE
+#   SOURCES
+#     src/*SampleStressLib.cpp
+#   INCLUDE_DIRS
+#     private_include
+#   USES_PUBLIC
+#     ${PROJECT_NAME_UNDERSCORE}
+#     ${SAMPLE_DTO_LIB_NAME}
+#     Threads::Threads
+#   FLAGS
+#     "-fmax-errors=1"
+# )
 
 # Req/Rep multi threaded
-etn_target(exe ${PROJECT_NAME}-multi-thread-req-rep PRIVATE
-  SOURCES
-    src/*SampleMultiThreadReqRep.cpp
-  INCLUDE_DIRS
-    private_include
-  USES_PUBLIC
-    ${PROJECT_NAME_UNDERSCORE}
-    ${SAMPLE_DTO_LIB_NAME}
-    Threads::Threads
-  FLAGS
-    "-fmax-errors=1"
-)
+# etn_target(exe ${PROJECT_NAME}-multi-thread-req-rep PRIVATE
+#   SOURCES
+#     src/*SampleMultiThreadReqRep.cpp
+#   INCLUDE_DIRS
+#     private_include
+#   USES_PUBLIC
+#     ${PROJECT_NAME_UNDERSCORE}
+#     ${SAMPLE_DTO_LIB_NAME}
+#     Threads::Threads
+#   FLAGS
+#     "-fmax-errors=1"
+# )
 
 # Discovery topic
 etn_target(exe ${PROJECT_NAME}-discovery PRIVATE

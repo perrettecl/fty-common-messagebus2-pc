@@ -13,12 +13,24 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
   SOURCES
     src/*.cpp
   USES_PRIVATE
-    fty-messagebus-utils
+    # fty-messagebus-utils
   USES_PUBLIC
+    fty-messagebus-utils
     fty-messagebus-common
     fty_common_logging
   FLAGS
-    "-fmax-errors=1"
+    "-Wno-unused-parameter"
+)
+
+etn_target(exe test PRIVATE
+  SOURCES
+    src/main.cpp
+  INCLUDE_DIRS
+    private_include
+  USES_PRIVATE
+    ${PROJECT_NAME_UNDERSCORE}
+  FLAGS
+    "-Wno-unused-parameter"
 )
 
 # target_compile_definitions(${PROJECT_NAME_UNDERSCORE} PRIVATE BUILD_AMQP)
@@ -27,21 +39,21 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
 
 if(BUILD_AMQP)
   target_link_libraries(${PROJECT_NAME_UNDERSCORE}
-    PRIVATE
+    PUBLIC
       fty-messagebus-amqp
   )
 endif()
 
 if(BUILD_MALAMUTE)
   target_link_libraries(${PROJECT_NAME_UNDERSCORE}
-    PRIVATE
+    PUBLIC
       fty-messagebus-malamute
   )
 endif()
 
 if(BUILD_MQTT)
   target_link_libraries(${PROJECT_NAME_UNDERSCORE}
-    PRIVATE
+    PUBLIC
       fty-messagebus-mqtt
   )
 endif()
