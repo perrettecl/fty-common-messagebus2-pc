@@ -22,6 +22,17 @@
 #include "fty/messagebus/MsgBusMqtt.hpp"
 #include <fty/messagebus/MsgBusException.hpp>
 
+namespace
+{
+  // Topic
+  static const std::string PREFIX_TOPIC = "/etn/t";
+
+  // Queues
+  static const std::string PREFIX_QUEUE = "/etn/q/";
+  static const std::string PREFIX_REQUEST_QUEUE = PREFIX_QUEUE + "request";
+  static const std::string PREFIX_REPLY_QUEUE = PREFIX_QUEUE + "reply";
+}
+
 namespace fty::messagebus
 {
   static constexpr auto MQTT_IMPL = "Message bus above MQTT implementation";

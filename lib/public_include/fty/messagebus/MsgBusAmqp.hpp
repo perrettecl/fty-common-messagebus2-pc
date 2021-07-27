@@ -31,7 +31,7 @@ namespace fty::messagebus
 {
   using AmqpMessage = fty::messagebus::MsgBusMessage;
 
-  class MsgBusAmqp : public ContainerInterface<AmqpMessage>
+  class MsgBusAmqp : public IMessageBusWrapper<AmqpMessage>
   {
   public:
     MsgBusAmqp() = default;

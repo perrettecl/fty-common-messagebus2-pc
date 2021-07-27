@@ -31,38 +31,38 @@ namespace fty::messagebus
     return AMQP_IMPL;
   }
 
-  DeliveryState MsgBusAmqp::subscribe(const std::string& topic, MessageListener<AmqpMessage> messageListener)
+  DeliveryState MsgBusAmqp::subscribe(const std::string& /*topic*/, MessageListener<AmqpMessage> /*messageListener*/)
   {
     return DeliveryState::DELI_STATE_UNAVAILABLE;
   }
 
-  DeliveryState MsgBusAmqp::unsubscribe(const std::string& topic)
+  DeliveryState MsgBusAmqp::unsubscribe(const std::string& /*topic*/)
   {
     return DeliveryState::DELI_STATE_UNAVAILABLE;
   }
 
-  DeliveryState MsgBusAmqp::publish(const std::string& topic, const std::string& message)
+  DeliveryState MsgBusAmqp::publish(const std::string& /*topic*/, const std::string& /*message*/)
   {
     return DeliveryState::DELI_STATE_UNAVAILABLE;
   }
 
-  DeliveryState MsgBusAmqp::sendRequest(const std::string& requestQueue, const std::string& message, MessageListener<AmqpMessage> messageListener)
+  DeliveryState MsgBusAmqp::sendRequest(const std::string& /*requestQueue*/, const std::string& /*message*/, MessageListener<AmqpMessage> /*messageListener*/)
   {
     return DeliveryState::DELI_STATE_UNAVAILABLE;
   }
 
-  Opt<AmqpMessage> MsgBusAmqp::sendRequest(const std::string& requestQueue, const std::string& message, int timeOut)
+  Opt<AmqpMessage> MsgBusAmqp::sendRequest(const std::string& /*requestQueue*/, const std::string& /*message*/, int /*timeOut*/)
   {
     Opt<AmqpMessage> val{};
     return val;
   }
 
-  DeliveryState MsgBusAmqp::waitRequest(const std::string& requestQueue, MessageListener<AmqpMessage> messageListener)
+  DeliveryState MsgBusAmqp::waitRequest(const std::string& /*requestQueue*/, MessageListener<AmqpMessage> /*messageListener*/)
   {
     return DeliveryState::DELI_STATE_UNAVAILABLE;
   }
 
-  DeliveryState MsgBusAmqp::sendReply(const std::string& response, const AmqpMessage& message)
+  DeliveryState MsgBusAmqp::sendReply(const std::string& /*response*/, const AmqpMessage& /*message*/)
   {
     return DeliveryState::DELI_STATE_UNAVAILABLE;
   }

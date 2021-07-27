@@ -26,10 +26,10 @@
 @end
 */
 
-#include "fty/messagebus/mqtt/test/FtyCommonMqttTestDef.hpp"
+#include <fty/messagebus/test/FtyCommonTestDef.hpp>
 
-#include <fty/messagebus/test/FtyCommonMessageBusDto.hpp>
 #include <fty/messagebus/MsgBusMqtt.hpp>
+#include <fty/messagebus/test/FtyCommonMessageBusDto.hpp>
 
 #include <csignal>
 #include <fty_log.h>
@@ -37,7 +37,6 @@
 
 namespace
 {
-  using namespace fty::messagebus;
   using namespace fty::messagebus::test;
   using Message = fty::messagebus::mqttv5::MqttMessage;
 
@@ -74,11 +73,11 @@ int main(int /*argc*/, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  auto pubSub = MsgBusMqtt();
-  pubSub.subscribe(fty::messagebus::mqttv5::test::SAMPLE_TOPIC, messageListener);
+  auto pubSub = fty::messagebus::MsgBusMqtt();
+  pubSub.subscribe(SAMPLE_TOPIC, messageListener);
 
   std::this_thread::sleep_for(std::chrono::milliseconds(10));
-  pubSub.publish(fty::messagebus::mqttv5::test::SAMPLE_TOPIC, FooBar("event", "hello").serialize());
+  pubSub.publish(SAMPLE_TOPIC, FooBar("event", "hello").serialize());
 
   while (_continue)
   {

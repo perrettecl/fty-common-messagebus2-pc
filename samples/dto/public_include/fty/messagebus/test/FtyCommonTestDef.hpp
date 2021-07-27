@@ -1,5 +1,5 @@
 /*  =========================================================================
-    MsgBusMqttPublishSubscribe - class description
+    FtyCommonMqttTestDef.hpp - class description
 
     Copyright (C) 2014 - 2021 Eaton
 
@@ -21,24 +21,14 @@
 
 #pragma once
 
-#include "fty/messagebus/mqtt/MsgBusMqttWrapper.hpp"
-#include <fty/messagebus/PublishSubscribe.hpp>
-#include <fty/messagebus/mqtt/MsgBusMqttDef.hpp>
-
 #include <string>
-#include <thread>
 
-namespace fty::messagebus::mqttv5
+namespace fty::messagebus::test
 {
-  class [[nodiscard]] MsgBusMqttPublishSubscribe final : public fty::messagebus::mqttv5::MsgBusMqttWrapper, fty::messagebus::PublishSubscribe<Message>
-  {
-  public:
-    MsgBusMqttPublishSubscribe(const std::string& endpoint = DEFAULT_MQTT_END_POINT, const std::string& clientName = utils::getClientId("MqttPubSub"))
-      : MsgBusMqttWrapper(endpoint, clientName){};
+  // Topic
+  static auto constexpr SAMPLE_TOPIC{"/metric/sample"};
 
-    DeliveryState subscribe(const std::string& topic, MessageListener messageListener) override;
-    DeliveryState unsubscribe(const std::string& topic) override;
-    DeliveryState publish(const std::string& topic, const std::string& message) override;
-  };
+  // Queues
+  static auto constexpr SAMPLE_QUEUE{"/maths/operator"};
 
-} // namespace fty::messagebus::mqttv5
+} // namespace fty::messagebus::test

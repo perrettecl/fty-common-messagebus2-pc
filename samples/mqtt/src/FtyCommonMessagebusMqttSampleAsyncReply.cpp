@@ -26,9 +26,9 @@
 @end
 */
 
-#include "fty/messagebus/mqtt/test/FtyCommonMqttTestDef.hpp"
 #include <fty/messagebus/MsgBusMqtt.hpp>
-#include <fty/messagebus/test/FtyCommonMqttTestMathDto.hpp>
+#include <fty/messagebus/test/FtyCommonMathDto.hpp>
+#include <fty/messagebus/test/FtyCommonTestDef.hpp>
 
 #include <csignal>
 #include <fty_log.h>
@@ -36,13 +36,11 @@
 
 namespace
 {
-  using namespace fty::messagebus;
   using namespace fty::messagebus::test;
   using Message = fty::messagebus::mqttv5::MqttMessage;
-  using MessageBus = fty::messagebus::IMessageBus<Message>;
 
-  std::unique_ptr<MessageBus> replyer;
-  auto reqRep = MsgBusMqtt();
+  auto replyer = fty::messagebus::MsgBusMqtt();
+  auto reqRep = fty::messagebus::MsgBusMqtt();
   static bool _continue = true;
 
   static void signalHandler(int signal)
@@ -90,7 +88,7 @@ int main(int /*argc*/, char** argv)
   // Install a signal handler
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
-  reqRep.waitRequest(mqttv5::test::SAMPLE_QUEUE, replyerMessageListener);
+  reqRep.waitRequest(SAMPLE_QUEUE, replyerMessageListener);
 
   while (_continue)
   {

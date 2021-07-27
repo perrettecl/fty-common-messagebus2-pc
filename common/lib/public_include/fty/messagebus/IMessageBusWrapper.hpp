@@ -22,6 +22,7 @@
 #pragma once
 
 #include "fty/messagebus/MsgBusStatus.hpp"
+#include "fty/messagebus/IMessageBus.hpp"
 
 #include <functional>
 #include <memory>
@@ -30,18 +31,12 @@
 
 namespace fty::messagebus
 {
-  template<typename T>
-  using Opt = std::optional<T>;
-
   template <typename MessageType>
-  using MessageListener = std::function<void(MessageType)>;
-
-  template <typename MessageType>
-  class ContainerInterface
+  class IMessageBusWrapper
   {
   public:
-    ContainerInterface() = default;
-    virtual ~ContainerInterface() = default;
+    IMessageBusWrapper() = default;
+    virtual ~IMessageBusWrapper() = default;
     virtual std::string identify() const = 0;
 
     virtual DeliveryState subscribe(const std::string& topic, MessageListener<MessageType> messageListener) = 0;

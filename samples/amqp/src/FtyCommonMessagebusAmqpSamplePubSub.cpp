@@ -26,8 +26,8 @@
 @end
 */
 
-#include "fty/messagebus/amqp/test/FtyCommonAmqpTestDef.hpp"
-#include <fty/messagebus/test/FtyCommonMqttTestMathDto.hpp>
+#include <fty/messagebus/test/FtyCommonTestDef.hpp>
+#include <fty/messagebus/test/FtyCommonMathDto.hpp>
 
 #include <csignal>
 #include <fty_log.h>

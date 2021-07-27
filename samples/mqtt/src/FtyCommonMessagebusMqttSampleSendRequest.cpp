@@ -26,8 +26,7 @@
 @end
 */
 
-#include "fty/messagebus/test/FtyCommonMqttTestMathDto.hpp"
-
+#include "fty/messagebus/test/FtyCommonMathDto.hpp"
 #include <fty/messagebus/MsgBusMqtt.hpp>
 
 #include <csignal>

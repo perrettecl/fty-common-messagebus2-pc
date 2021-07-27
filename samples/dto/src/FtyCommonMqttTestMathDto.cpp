@@ -26,7 +26,7 @@
 @end
 */
 
-#include "fty/messagebus/test/FtyCommonMqttTestMathDto.hpp"
+#include "fty/messagebus/test/FtyCommonMathDto.hpp"
 
 #include <nlohmann/json.hpp>
 #include <ostream>

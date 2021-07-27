@@ -31,22 +31,16 @@
 
 namespace fty::messagebus
 {
-
   // Default mqtt end point
   static auto constexpr DEFAULT_MQTT_END_POINT{"tcp://localhost:1883"};
   static auto constexpr SECURE_MQTT_END_POINT{"tcp://localhost:8883"};
+}
 
-  // Topic
-  static const std::string PREFIX_TOPIC = "/etn/t";
-
-  // Queues
-  static const std::string PREFIX_QUEUE = "/etn/q/";
-  static const std::string PREFIX_REQUEST_QUEUE = PREFIX_QUEUE + "request";
-  static const std::string PREFIX_REPLY_QUEUE = PREFIX_QUEUE + "reply";
-
+namespace fty::messagebus
+{
   using MqttMessage = fty::messagebus::mqttv5::MqttMessage;
 
-  class MsgBusMqtt : public ContainerInterface<MqttMessage>
+  class MsgBusMqtt : public IMessageBusWrapper<MqttMessage>
   {
   public:
     MsgBusMqtt(const std::string& endpoint = DEFAULT_MQTT_END_POINT, const std::string& clientName = utils::getClientId("MsgBusMqtt"));
