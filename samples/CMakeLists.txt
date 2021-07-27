@@ -14,7 +14,7 @@ add_subdirectory(dto)
 
 # AMQP samples
 if(BUILD_AMQP)
-  # add_subdirectory(amqp)
+  add_subdirectory(amqp)
 endif()
 
 # Malamute samples

@@ -26,8 +26,9 @@
 @end
 */
 
-#include <fty/messagebus/test/FtyCommonTestDef.hpp>
+#include <fty/messagebus/MsgBusAmqp.hpp>
 #include <fty/messagebus/test/FtyCommonMathDto.hpp>
+#include <fty/messagebus/test/FtyCommonTestDef.hpp>
 
 #include <csignal>
 #include <fty_log.h>
@@ -65,7 +66,6 @@ int main(int argc, char** argv)
 
   if (strcmp(argv[2], "async") == 0)
   {
-
   }
   else
   {
