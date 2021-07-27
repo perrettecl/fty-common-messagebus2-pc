@@ -29,7 +29,7 @@
 #include "fty/messagebus/mlm/test/FtyCommonMlmTestDef.hpp"
 #include <fty/messagebus/MsgBusException.hpp>
 #include <fty/messagebus/MsgBusFactory.hpp>
-#include <fty/messagebus/test/FtyCommonMessageBusDto.hpp>
+#include <fty/messagebus/test/FtyCommonFooBarDto.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 #include <fty_log.h>

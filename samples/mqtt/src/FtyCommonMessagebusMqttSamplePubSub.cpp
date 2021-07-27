@@ -29,7 +29,7 @@
 #include <fty/messagebus/test/FtyCommonTestDef.hpp>
 
 #include <fty/messagebus/MsgBusMqtt.hpp>
-#include <fty/messagebus/test/FtyCommonMessageBusDto.hpp>
+#include <fty/messagebus/test/FtyCommonFooBarDto.hpp>
 
 #include <csignal>
 #include <fty_log.h>
