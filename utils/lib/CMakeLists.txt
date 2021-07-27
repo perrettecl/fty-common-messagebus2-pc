@@ -6,6 +6,8 @@ project(fty-messagebus-utils
 etn_target(static ${PROJECT_NAME} PUBLIC
   PUBLIC_INCLUDE_DIR
     public_include
+  PUBLIC_HEADERS
+    *.hpp
   SOURCES
     src/*.cpp
   USES_PUBLIC
