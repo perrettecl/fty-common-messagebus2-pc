@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <fty/messagebus/ContainerInterface.hpp>
+#include <fty/messagebus/IMessageBusWrapper.hpp>
 #include <fty/messagebus/MsgBusFactory.hpp>
 #include <fty/messagebus/mqtt/MsgBusMqtt.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
