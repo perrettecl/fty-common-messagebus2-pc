@@ -27,8 +27,7 @@
 */
 
 #include "fty/messagebus/mqtt/test/FtyCommonMqttTestDef.hpp"
-
-#include <fty/messagebus/mqtt/MsgBusMqttRequestReply.hpp>
+#include <fty/messagebus/MsgBusMqtt.hpp>
 #include <fty/messagebus/test/FtyCommonMqttTestMathDto.hpp>
 
 #include <csignal>
@@ -43,7 +42,7 @@ namespace
   using MessageBus = fty::messagebus::IMessageBus<Message>;
 
   std::unique_ptr<MessageBus> replyer;
-  auto reqRep = mqttv5::MqttRequestReply();
+  auto reqRep = MsgBusMqtt();
   static bool _continue = true;
 
   static void signalHandler(int signal)

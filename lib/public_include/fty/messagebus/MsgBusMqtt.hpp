@@ -64,5 +64,7 @@ namespace fty::messagebus
   private:
     std::string m_clientName{};
     std::unique_ptr<mqttv5::MessageBusMqtt> m_msgBus;
+
+    MqttMessage buildMessage(const std::string& queue, const std::string& msg);
   };
 } // namespace fty::messagebus

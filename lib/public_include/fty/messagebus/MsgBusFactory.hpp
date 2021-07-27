@@ -45,27 +45,7 @@ namespace fty::messagebus
     static std::unique_ptr<MessageType> createMsgBus(const std::string& _endpoint, const std::string& _clientName)
     {
       return std::make_unique<MessageType>(_endpoint, _clientName);
-    }
-
-    /**
-   * @brief Malamute implementation
-   *
-   * @param _endpoint Message bus end point
-   * @param clientName prefix for client Name
-   *
-   * @return client Name
-   */
-    //static std::unique_ptr<IMessageBus<mlm::MlmMessage>> createMlmMsgBus(const std::string& _endpoint, const std::string& _clientName);
-
-    /**
-   * @brief Mqtt implementation
-   *
-   * @param _endpoint Mqtt end point
-   * @param _clientName prefix for client Name
-   *
-   * @return IMessageBus
-   */
-    //static std::unique_ptr<IMessageBus<mqttv5::MqttMessage>> createMqttMsgBus(const std::string& _endpoint, const std::string& _clientName);
+    };
   };
 
 } // namespace fty::messagebus

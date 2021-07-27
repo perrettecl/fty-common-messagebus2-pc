@@ -28,7 +28,7 @@
 
 #include "fty/messagebus/test/FtyCommonMqttTestMathDto.hpp"
 
-#include <fty/messagebus/mqtt/MsgBusMqttRequestReply.hpp>
+#include <fty/messagebus/MsgBusMqtt.hpp>
 
 #include <csignal>
 #include <fty_log.h>
@@ -76,7 +76,7 @@ int main(int argc, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  auto reqRep = mqttv5::MqttRequestReply();
+  auto reqRep = MsgBusMqtt();
 
   auto query = MathOperation(argv[3], std::stoi(argv[4]), std::stoi(argv[5]));
 

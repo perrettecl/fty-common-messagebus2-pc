@@ -26,10 +26,7 @@
 @end
 */
 
-#include "fty/messagebus/mqtt/test/FtyCommonMqttTestDef.hpp"
-
-#include <fty/messagebus/MsgBusFactory.hpp>
-#include <fty/messagebus/mqtt/MsgBusMqttPublishSubscribe.hpp>
+#include <fty/messagebus/MsgBusMqtt.hpp>
 
 #include <csignal>
 #include <fty_log.h>
@@ -37,8 +34,6 @@
 
 namespace
 {
-  using namespace fty::messagebus::mqttv5;
-
   static bool _continue = true;
 
   static void signalHandler(int signal)
@@ -56,9 +51,7 @@ int main(int /*argc*/, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  // auto mqttClient = MessageBusFactory::createMqttMsgBus(DEFAULT_MQTT_END_POINT, "mqtt-discovery-client");
-  // mqttClient->connect();
-  auto MsgBusMqtt = MsgBusMqttPublishSubscribe();
+  auto msgBus = fty::messagebus::MsgBusMqtt();
 
   while (_continue)
   {
