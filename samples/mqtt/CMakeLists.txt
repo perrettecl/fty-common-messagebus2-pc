@@ -11,8 +11,6 @@ find_package(Threads REQUIRED)
 etn_target(exe ${PROJECT_NAME}-pub-sub PRIVATE
   SOURCES
     src/*PubSub.cpp
-  INCLUDE_DIRS
-    private_include
   USES_PRIVATE
     ${PROJECT_NAME_UNDERSCORE}
     ${SAMPLE_DTO_LIB_NAME}
@@ -24,8 +22,6 @@ etn_target(exe ${PROJECT_NAME}-pub-sub PRIVATE
 etn_target(exe ${PROJECT_NAME}-async-reply PRIVATE
   SOURCES
     src/*SampleAsyncReply.cpp
-  INCLUDE_DIRS
-    private_include
   USES_PUBLIC
     ${PROJECT_NAME_UNDERSCORE}
     ${SAMPLE_DTO_LIB_NAME}
@@ -37,8 +33,6 @@ etn_target(exe ${PROJECT_NAME}-async-reply PRIVATE
 etn_target(exe ${PROJECT_NAME}-send-request PRIVATE
   SOURCES
     src/*SampleSendRequest.cpp
-  INCLUDE_DIRS
-     private_include
   USES_PUBLIC
     ${PROJECT_NAME_UNDERSCORE}
     ${SAMPLE_DTO_LIB_NAME}
