@@ -29,6 +29,9 @@
 
 namespace fty::messagebus::amqp
 {
+  // Default mqtt end point
+  static auto constexpr DEFAULT_AMQP_END_POINT{"????"};
+
   // TODO specialize the ClientPointer
   using ClientPointer = std::shared_ptr<std::string>;
   using MessageListener = fty::messagebus::MessageListener<AmqpMessage>;

@@ -1,7 +1,7 @@
 /*  =========================================================================
-    MsgBusMqtt.hpp - class description
+    MsgBusMqtt.cpp - class description
 
-    Copyright (C) 2014 - 2020 Eaton
+    Copyright (C) 2014 - 2021 Eaton
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,8 +20,6 @@
 */
 
 #include "fty/messagebus/MsgBusMqtt.hpp"
-#include <fty/messagebus/MsgBusException.hpp>
-#include <fty/messagebus/MsgBusFactory.hpp>
 
 namespace
 {
@@ -42,14 +40,8 @@ namespace fty::messagebus
   static constexpr auto MQTT_IMPL = "Message bus above MQTT implementation";
 
   MsgBusMqtt::MsgBusMqtt(const std::string& endpoint, const std::string& clientName)
-    : m_clientName(clientName)
-    , m_msgBus{fty::messagebus::MessageBusFactory<mqttv5::MessageBusMqtt>::createMsgBus(endpoint, clientName)}
+    : IMessageBusWrapper(endpoint, clientName)
   {
-    auto state = m_msgBus->connect();
-    if (state != fty::messagebus::COM_STATE_OK)
-    {
-      throw MessageBusException("Mqtt server connection error");
-    }
   }
 
   std::string MsgBusMqtt::identify() const

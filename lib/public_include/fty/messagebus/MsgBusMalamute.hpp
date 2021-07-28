@@ -25,15 +25,12 @@
 #include <fty/messagebus/mlm/MsgBusMalamute.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
 
-#include <memory>
-#include <string>
-
 namespace fty::messagebus
 {
-  class MsgBusMalamute : public IMessageBusWrapper<mlm::MlmMessage, mlm::UserData>
+  class MsgBusMalamute : public IMessageBusWrapper<mlm::MessageBusMalamute, mlm::MlmMessage, mlm::UserData>
   {
   public:
-    MsgBusMalamute(const std::string& endpoint = fty::messagebus::mlm::DEFAULT_MLM_END_POINT, const std::string& clientName = utils::getClientId("MsgBusMqtt"));
+    MsgBusMalamute(const std::string& endpoint = fty::messagebus::mlm::DEFAULT_MLM_END_POINT, const std::string& clientName = utils::getClientId("MsgBusMalamute"));
     std::string identify() const override;
 
     DeliveryState subscribe(const std::string& topic, MessageListener<mlm::MlmMessage> messageListener) override;
@@ -46,9 +43,7 @@ namespace fty::messagebus
     DeliveryState sendReply(const mlm::UserData& response, const mlm::MlmMessage& message) override;
 
   protected:
-    std::string m_clientName{};
-    std::unique_ptr<mlm::MessageBusMalamute> m_msgBus;
 
-    mlm::MlmMessage buildMessage(const std::string& queue, const mlm::UserData& msg);
+    mlm::MlmMessage buildMessage(const std::string& queue, const mlm::UserData& msg) override ;
   };
 } // namespace fty::messagebus

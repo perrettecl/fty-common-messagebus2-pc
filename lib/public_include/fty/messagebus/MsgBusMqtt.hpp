@@ -25,12 +25,9 @@
 #include <fty/messagebus/mqtt/MsgBusMqtt.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
 
-#include <memory>
-#include <string>
-
 namespace fty::messagebus
 {
-  class MsgBusMqtt : public IMessageBusWrapper<mqttv5::MqttMessage, mqttv5::UserData>
+  class MsgBusMqtt : public IMessageBusWrapper<mqttv5::MessageBusMqtt, mqttv5::MqttMessage, mqttv5::UserData>
   {
   public:
     MsgBusMqtt(const std::string& endpoint = mqttv5::DEFAULT_MQTT_END_POINT, const std::string& clientName = utils::getClientId("MsgBusMqtt"));
@@ -46,9 +43,7 @@ namespace fty::messagebus
     DeliveryState sendReply(const mqttv5::UserData& response, const mqttv5::MqttMessage& message) override;
 
   protected:
-    std::string m_clientName{};
-    std::unique_ptr<mqttv5::MessageBusMqtt> m_msgBus;
 
-    mqttv5::MqttMessage buildMessage(const std::string& queue, const mqttv5::UserData& msg);
+    mqttv5::MqttMessage buildMessage(const std::string& queue, const mqttv5::UserData& msg) override;
   };
 } // namespace fty::messagebus

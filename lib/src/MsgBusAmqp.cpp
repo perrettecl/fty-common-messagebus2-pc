@@ -1,7 +1,7 @@
 /*  =========================================================================
-    MsgBusAmqp.hpp - class description
+    MsgBusAmqp.cpp - class description
 
-    Copyright (C) 2014 - 2020 Eaton
+    Copyright (C) 2014 - 2021 Eaton
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
     =========================================================================
 */
 
-#include "fty/messagebus/MsgBusAmqp.hpp"
+#include <fty/messagebus/MsgBusAmqp.hpp>
 
 namespace fty::messagebus
 {
@@ -28,6 +28,11 @@ namespace fty::messagebus
   using UserData = fty::messagebus::amqp::UserData;
 
   static constexpr auto AMQP_IMPL = "Message bus above Amqp implementation";
+
+  MsgBusAmqp::MsgBusAmqp(const std::string& endpoint, const std::string& clientName)
+    : IMessageBusWrapper(endpoint, clientName)
+  {
+  }
 
   std::string MsgBusAmqp::identify() const
   {

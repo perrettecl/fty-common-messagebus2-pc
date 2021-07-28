@@ -31,7 +31,7 @@
 
 namespace fty::messagebus::mlm
 {
-  // Default mqtt end point
+  // Default malamute end point
   static auto constexpr DEFAULT_MLM_END_POINT{"ipc://@/malamute"};
 
   using MessageListener = fty::messagebus::MessageListener<MlmMessage>;

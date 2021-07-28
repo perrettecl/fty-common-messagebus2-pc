@@ -22,33 +22,29 @@
 #pragma once
 
 #include <fty/messagebus/IMessageBusWrapper.hpp>
-#include <fty/messagebus/amqp/MsgBusAmqpMessage.hpp>
 #include <fty/messagebus/amqp/MsgBusAmqp.hpp>
-
-#include <memory>
-#include <string>
+#include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 namespace fty::messagebus
 {
-  class MsgBusAmqp : public IMessageBusWrapper<amqp::AmqpMessage, amqp::UserData>
+  class MsgBusAmqp : public IMessageBusWrapper<amqp::MessageBusAmqp, amqp::AmqpMessage, amqp::UserData>
   {
   public:
-    MsgBusAmqp() = default;
+    MsgBusAmqp(const std::string& endpoint = fty::messagebus::amqp::DEFAULT_AMQP_END_POINT, const std::string& clientName = utils::getClientId("MsgBusAmqp"));
+
     std::string identify() const override;
 
-    DeliveryState subscribe(const std::string& topic, MessageListener<amqp::AmqpMessage> messageListener) override ;
-    DeliveryState unsubscribe(const std::string& topic) override ;
+    DeliveryState subscribe(const std::string& topic, MessageListener<amqp::AmqpMessage> messageListener) override;
+    DeliveryState unsubscribe(const std::string& topic) override;
     DeliveryState publish(const std::string& topic, const amqp::UserData& msg) override;
 
     DeliveryState sendRequest(const std::string& requestQueue, const amqp::UserData& msg, MessageListener<amqp::AmqpMessage> messageListener) override;
     Opt<amqp::AmqpMessage> sendRequest(const std::string& requestQueue, const amqp::UserData& msg, int timeOut) override;
     DeliveryState waitRequest(const std::string& requestQueue, MessageListener<amqp::AmqpMessage> messageListener) override;
     DeliveryState sendReply(const amqp::UserData& response, const amqp::AmqpMessage& message) override;
+
   protected:
-    std::string m_clientName{};
-    std::unique_ptr<amqp::MessageBusAmqp> m_msgBus;
 
-    amqp::AmqpMessage buildMessage(const std::string& queue, const amqp::UserData& msg);
-
+    amqp::AmqpMessage buildMessage(const std::string& queue, const amqp::UserData& msg) override;
   };
 } // namespace fty::messagebus

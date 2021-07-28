@@ -23,6 +23,8 @@
 
 #include "fty/messagebus/IMessageBus.hpp"
 #include "fty/messagebus/MsgBusStatus.hpp"
+#include <fty/messagebus/MsgBusException.hpp>
+#include <fty/messagebus/MsgBusFactory.hpp>
 
 #include <functional>
 #include <memory>
@@ -31,29 +33,46 @@
 
 namespace fty::messagebus
 {
-  template <typename MessageType,
-            typename T>
+  template <typename MessageBusType,
+            typename MessageType,
+            typename UserDataType>
   class IMessageBusWrapper
   {
   public:
     IMessageBusWrapper() = default;
+    IMessageBusWrapper(const std::string& endpoint, const std::string& clientName)
+      : m_endpoint(clientName)
+      , m_clientName(endpoint)
+      , m_msgBus{fty::messagebus::MessageBusFactory<MessageBusType>::createMsgBus(endpoint, clientName)}
+    {
+      auto state = m_msgBus->connect();
+      if (state != fty::messagebus::COM_STATE_OK)
+      {
+        throw MessageBusException("Mqtt server connection error");
+      }
+    };
     virtual ~IMessageBusWrapper() = default;
+
+    // Witch implementation
     virtual std::string identify() const = 0;
 
+    // Publish/Subcribe  pattern
     virtual DeliveryState subscribe(const std::string& topic, MessageListener<MessageType> messageListener) = 0;
     virtual DeliveryState unsubscribe(const std::string& topic) = 0;
-    virtual DeliveryState publish(const std::string& topic, const T& msg) = 0;
+    virtual DeliveryState publish(const std::string& topic, const UserDataType& msg) = 0;
 
-    virtual DeliveryState sendRequest(const std::string& requestQueue, const T& msg, MessageListener<MessageType> messageListener) = 0;
-    virtual Opt<MessageType> sendRequest(const std::string& requestQueue, const T& msg, int timeOut) = 0;
+    // Request/Reply  pattern
+    virtual DeliveryState sendRequest(const std::string& requestQueue, const UserDataType& msg, MessageListener<MessageType> messageListener) = 0;
+    virtual Opt<MessageType> sendRequest(const std::string& requestQueue, const UserDataType& msg, int timeOut) = 0;
     virtual DeliveryState waitRequest(const std::string& requestQueue, MessageListener<MessageType> messageListener) = 0;
-    virtual DeliveryState sendReply(const T& response, const MessageType& message) = 0;
+    virtual DeliveryState sendReply(const UserDataType& response, const MessageType& message) = 0;
 
   protected:
-    //std::string m_clientName{};
-    //std::unique_ptr<mqttv5::MessageBusMqtt> m_msgBus;
+    std::string m_endpoint{};
+    std::string m_clientName{};
+    std::unique_ptr<MessageBusType> m_msgBus;
 
-    MessageType buildMessage(const std::string& queue, const T& msg);
+    virtual MessageType buildMessage(const std::string& queue, const UserDataType& msg) = 0;
   };
 
 } // namespace fty::messagebus
