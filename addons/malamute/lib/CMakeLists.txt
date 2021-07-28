@@ -1,7 +1,7 @@
 
-project(fty-messagebus-malamute
+project(fty_messagebus2_malamute
   VERSION ${PROJECT_VERSION}
-  DESCRIPTION "fty messagebus malamute library"
+  DESCRIPTION "fty messagebus2 malamute library"
 )
 
 ##############################################################################################################

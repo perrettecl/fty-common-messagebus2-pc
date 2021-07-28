@@ -1,7 +1,7 @@
 
-project(fty-messagebus-mqtt
+project(fty_messagebus2_mqtt
   VERSION ${PROJECT_VERSION}
-  DESCRIPTION "fty messagebus mqtt library"
+  DESCRIPTION "fty messagebus2 mqtt library"
 )
 
 ##############################################################################################################

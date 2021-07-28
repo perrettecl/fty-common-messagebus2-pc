@@ -1,7 +1,7 @@
 
-project(fty-messagebus-amqp
+project(fty_messagebus2_amqp
   VERSION ${PROJECT_VERSION}
-  DESCRIPTION "fty messagebus amqp library"
+  DESCRIPTION "fty messagebus2 amqp library"
 )
 
 ##############################################################################################################

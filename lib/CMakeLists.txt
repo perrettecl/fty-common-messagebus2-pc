@@ -25,20 +25,20 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
 if(BUILD_AMQP)
   target_link_libraries(${PROJECT_NAME_UNDERSCORE}
     PUBLIC
-      fty-messagebus-amqp
+      fty_messagebus2_amqp
   )
 endif()
 
 if(BUILD_MALAMUTE)
   target_link_libraries(${PROJECT_NAME_UNDERSCORE}
     PUBLIC
-      fty-messagebus-malamute
+      fty_messagebus2_malamute
   )
 endif()
 
 if(BUILD_MQTT)
   target_link_libraries(${PROJECT_NAME_UNDERSCORE}
     PUBLIC
-      fty-messagebus-mqtt
+      fty_messagebus2_mqtt
   )
 endif()
