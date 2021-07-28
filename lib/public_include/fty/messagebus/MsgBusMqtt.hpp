@@ -30,7 +30,7 @@ namespace fty::messagebus
   class MsgBusMqtt : public MsgBusWrapper<mqttv5::MessageBusMqtt, mqttv5::MqttMessage, mqttv5::UserData>
   {
   public:
-    MsgBusMqtt(const std::string& endpoint = mqttv5::DEFAULT_MQTT_END_POINT, const std::string& clientName = utils::getClientId("MsgBusMqtt"));
+    MsgBusMqtt(const ClientName& clientName = utils::getClientId("MsgBusMqtt"), const Endpoint& endpoint = mqttv5::DEFAULT_MQTT_END_POINT);
     std::string identify() const override;
 
     DeliveryState subscribe(const std::string& topic, MessageListener<mqttv5::MqttMessage> messageListener) override;

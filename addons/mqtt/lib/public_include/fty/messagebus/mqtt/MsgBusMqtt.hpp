@@ -50,9 +50,9 @@ namespace fty::messagebus::mqttv5
   public:
     MessageBusMqtt() = delete;
 
-    MessageBusMqtt(const std::string& endpoint, const std::string& clientName)
-      : m_endpoint(endpoint)
-      , m_clientName(clientName){};
+    MessageBusMqtt(const  std::string& clientName, const  std::string& endpoint)
+      :  m_clientName(clientName)
+      ,  m_endpoint(endpoint){};
 
     ~MessageBusMqtt() override;
 
@@ -73,10 +73,10 @@ namespace fty::messagebus::mqttv5
     Opt<Message> request(const std::string& requestQueue, const Message& message, int receiveTimeOut) override;
 
   private:
-    ClientPointer m_client;
-
-    std::string m_endpoint{};
     std::string m_clientName{};
+    std::string m_endpoint{};
+
+    ClientPointer m_client;
 
     // Call back
     CallBack cb;

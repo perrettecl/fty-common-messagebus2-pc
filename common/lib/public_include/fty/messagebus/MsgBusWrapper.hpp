@@ -33,6 +33,9 @@
 
 namespace fty::messagebus
 {
+  using ClientName = std::string;
+  using Endpoint = std::string;
+
   template <typename MessageBusType,
             typename MessageType,
             typename UserDataType>
@@ -40,10 +43,10 @@ namespace fty::messagebus
   {
   public:
     MsgBusWrapper() = default;
-    MsgBusWrapper(const std::string& endpoint, const std::string& clientName)
-      : m_endpoint(clientName)
-      , m_clientName(endpoint)
-      , m_msgBus{fty::messagebus::MessageBusFactory<MessageBusType>::createMsgBus(endpoint, clientName)}
+    MsgBusWrapper(const ClientName& clientName, const Endpoint& endpoint)
+      : m_clientName(clientName)
+      , m_endpoint(endpoint)
+      , m_msgBus{fty::messagebus::MessageBusFactory<MessageBusType>::createMsgBus(clientName, endpoint)}
     {
       auto state = m_msgBus->connect();
       if (state != fty::messagebus::COM_STATE_OK)
@@ -51,6 +54,7 @@ namespace fty::messagebus
         throw MessageBusException("Mqtt server connection error");
       }
     };
+
     virtual ~MsgBusWrapper() = default;
 
     // Witch implementation
@@ -68,8 +72,8 @@ namespace fty::messagebus
     virtual DeliveryState sendReply(const UserDataType& response, const MessageType& message) = 0;
 
   protected:
-    std::string m_endpoint{};
     std::string m_clientName{};
+    std::string m_endpoint{};
     std::unique_ptr<MessageBusType> m_msgBus;
 
     virtual MessageType buildMessage(const std::string& queue, const UserDataType& msg) = 0;

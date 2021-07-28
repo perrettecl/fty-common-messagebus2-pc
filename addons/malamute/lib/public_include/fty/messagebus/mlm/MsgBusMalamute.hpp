@@ -21,7 +21,6 @@
 
 #pragma once
 
-
 #include "fty/messagebus/IMessageBus.hpp"
 #include "fty/messagebus/MsgBusException.hpp"
 #include "fty/messagebus/mlm/MsgBusMlmMessage.hpp"
@@ -42,7 +41,9 @@ namespace fty::messagebus::mlm
   class MessageBusMalamute final : public IMessageBus<MlmMessage>
   {
   public:
-    MessageBusMalamute(const std::string& endpoint, const std::string& clientName);
+    MessageBusMalamute() = delete;
+    MessageBusMalamute(const std::string& clientName, const std::string& endpoint);
+
     ~MessageBusMalamute() override;
 
     fty::messagebus::ComState connect() override;

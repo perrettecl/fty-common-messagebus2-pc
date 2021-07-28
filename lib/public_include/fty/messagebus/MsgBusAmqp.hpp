@@ -30,7 +30,7 @@ namespace fty::messagebus
   class MsgBusAmqp : public MsgBusWrapper<amqp::MessageBusAmqp, amqp::AmqpMessage, amqp::UserData>
   {
   public:
-    MsgBusAmqp(const std::string& endpoint = fty::messagebus::amqp::DEFAULT_AMQP_END_POINT, const std::string& clientName = utils::getClientId("MsgBusAmqp"));
+    MsgBusAmqp(const ClientName& clientName = utils::getClientId("MsgBusAmqp"), const Endpoint& endpoint = fty::messagebus::amqp::DEFAULT_AMQP_END_POINT);
 
     std::string identify() const override;
 

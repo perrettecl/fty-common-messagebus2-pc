@@ -88,7 +88,7 @@ namespace fty::messagebus::mlm
     return msg;
   }
 
-  MessageBusMalamute::MessageBusMalamute(const std::string& endpoint, const std::string& clientName)
+  MessageBusMalamute::MessageBusMalamute(const std::string& clientName, const std::string& endpoint)
   {
     m_clientName = clientName;
     m_endpoint = endpoint;

@@ -42,9 +42,9 @@ namespace fty::messagebus::amqp
   public:
     MessageBusAmqp() = delete;
 
-    MessageBusAmqp(const std::string& endpoint, const std::string& clientName)
-      : m_endpoint(endpoint)
-      , m_clientName(clientName){};
+    MessageBusAmqp(const std::string& clientName, const std::string& endpoint)
+      : m_clientName(clientName)
+      , m_endpoint(endpoint){};
 
     ~MessageBusAmqp() override;
 
@@ -65,10 +65,10 @@ namespace fty::messagebus::amqp
     Opt<Message> request(const std::string& requestQueue, const Message& message, int receiveTimeOut) override;
 
   private:
-    ClientPointer m_client;
-
-    std::string m_endpoint{};
     std::string m_clientName{};
+    std::string m_endpoint{};
+
+    ClientPointer m_client;
 
     bool isServiceAvailable();
   };

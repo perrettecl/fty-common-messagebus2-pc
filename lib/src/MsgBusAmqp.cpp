@@ -29,8 +29,8 @@ namespace fty::messagebus
 
   static constexpr auto AMQP_IMPL = "Message bus above Amqp implementation";
 
-  MsgBusAmqp::MsgBusAmqp(const std::string& endpoint, const std::string& clientName)
-    : MsgBusWrapper(endpoint, clientName)
+  MsgBusAmqp::MsgBusAmqp(const ClientName& clientName, const Endpoint& endpoint)
+    : MsgBusWrapper(clientName, endpoint)
   {
   }
 

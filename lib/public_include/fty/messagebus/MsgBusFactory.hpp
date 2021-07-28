@@ -37,14 +37,14 @@ namespace fty::messagebus
     /**
     * @brief Create a Message bus
     *
-    * @param _endpoint Message bus end point
+    * @param endpoint Message bus end point
     * @param clientName prefix for client Name
     *
     * @return std::unique_ptr<MessageType>
     */
-    static std::unique_ptr<MessageType> createMsgBus(const std::string& _endpoint, const std::string& _clientName)
+    static std::unique_ptr<MessageType> createMsgBus(const std::string& clientName, const std::string& endpoint)
     {
-      return std::make_unique<MessageType>(_endpoint, _clientName);
+      return std::make_unique<MessageType>(clientName, endpoint);
     };
   };
 

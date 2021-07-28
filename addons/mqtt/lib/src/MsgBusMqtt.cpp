@@ -72,7 +72,7 @@ namespace fty::messagebus::mqttv5
     auto status = ComState::COM_STATE_NO_CONTACT;
     mqtt::create_options opts(MQTTVERSION_5);
 
-    m_client = std::make_shared<mqtt::async_client>(m_endpoint, utils::getClientId("fty"), opts);
+    m_client = std::make_shared<mqtt::async_client>(m_endpoint, utils::getClientId(m_clientName), opts);
 
     // Connection options
     auto connOpts = mqtt::connect_options_builder()
