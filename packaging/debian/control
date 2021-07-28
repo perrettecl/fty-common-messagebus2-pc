@@ -39,21 +39,6 @@ Build-Depends: debhelper (>= 9),
     asciidoc-base | asciidoc, xmlto,
     dh-autoreconf
 
-Package: libfty-common-messagebus2-mqtt
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: fty-common-messagebus2-mqtt shared library
-
-Package: libfty-common-messagebus2-amqp
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: fty-common-messagebus2-amqp shared library
-
-Package: libfty-common-messagebus2-malamute
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: fty-common-messagebus2-malamute shared library
-
 Package: libfty-common-messagebus2
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
