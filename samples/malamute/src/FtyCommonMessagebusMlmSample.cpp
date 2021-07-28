@@ -1,7 +1,7 @@
 /*  =========================================================================
-    fty_common_messagebus_example - description
+    FtyCommonMessagebusMlmSample - description
 
-    Copyright (C) 2014 - 2020 Eaton
+    Copyright (C) 2014 - 2021 Eaton
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,18 +19,10 @@
     =========================================================================
 */
 
-/*
-@header
-    fty_common_messagebus_example -
-@discuss
-@end
-*/
+#include <fty/messagebus/test/FtyCommonTestDef.hpp>
 
-#include "fty/messagebus/mlm/test/FtyCommonMlmTestDef.hpp"
-#include <fty/messagebus/MsgBusException.hpp>
-#include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/MsgBusMalamute.hpp>
 #include <fty/messagebus/test/FtyCommonFooBarDto.hpp>
-#include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 #include <fty_log.h>
 #include <thread>
@@ -39,12 +31,10 @@ namespace
 {
   using namespace fty::messagebus;
   using namespace fty::messagebus::test;
-  using namespace fty::messagebus::mlm::test;
   using Message = fty::messagebus::mlm::MlmMessage;
-  using MessageBus = fty::messagebus::IMessageBus<Message>;
 
-  std::unique_ptr<MessageBus> receiver;
-  std::unique_ptr<MessageBus> publisher;
+  auto receiver = fty::messagebus::MsgBusMalamute();
+  auto publisher = fty::messagebus::MsgBusMalamute();
 
   void messageListener(Message message)
   {
@@ -128,35 +118,38 @@ namespace
 
 int main(int /*argc*/, char** argv)
 {
-  log_info(argv[0]);
+  log_info("%s - starting...", argv[0]);
 
-  receiver = MessageBusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, "receiver");
-  receiver->connect();
-  receiver->subscribe("discovery", messageListener);
-  receiver->receive("doAction.queue.query", queryListener);
+  // receiver = MessageBusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, "receiver");
+  // receiver->connect();
+  receiver.subscribe("discovery", messageListener);
+  receiver.waitRequest("doAction.queue.query", queryListener);
   // old mailbox mecanism
-  receiver->receive("receiver", queryListener);
+  receiver.waitRequest("receiver", queryListener);
 
-  publisher = MessageBusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, "publisher");
-  publisher->connect();
-  publisher->receive("doAction.queue.response", responseListener);
+  // publisher = MessageBusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, "publisher");
+  // publisher->connect();
+  publisher-waitRequest("doAction.queue.response", responseListener);
   std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // PUBLISH
-  Message message;
+  //Message message;
   auto hello = FooBar("event", "hello");
-  message.userData() << hello;
-  message.metaData().clear();
-  message.metaData().emplace("mykey", "myvalue");
-  message.metaData().emplace(FROM, "publisher");
-  message.metaData().emplace(SUBJECT, "discovery");
-  publisher->publish("discovery", message);
+  UserData userdata;
+  userData << hello;
+  //message.userData() << hello;
+  // message.metaData().clear();
+  // message.metaData().emplace("mykey", "myvalue");
+  // message.metaData().emplace(FROM, "publisher");
+  // message.metaData().emplace(SUBJECT, "discovery");
+
+  publisher.publish("discovery", userData);
   std::this_thread::sleep_for(std::chrono::seconds(5));
 
   // PUBLISH EXCEPTION
   try
   {
-    publisher->publish("discovery2", message);
+    publisher.publish("discovery2", userData);
   }
   catch (MessageBusException& ex)
   {
@@ -166,14 +159,16 @@ int main(int /*argc*/, char** argv)
   // REQUEST
   Message message2;
   auto query1 = FooBar("doAction", "actionNothing");
-  message2.userData() << query1;
-  message2.metaData().clear();
-  message2.metaData().emplace(CORRELATION_ID, utils::generateUuid());
-  message2.metaData().emplace(SUBJECT, "doAction");
-  message2.metaData().emplace(FROM, "publisher");
-  message2.metaData().emplace(TO, "receiver");
-  message2.metaData().emplace(REPLY_TO, "doAction.queue.response");
-  publisher->sendRequest("doAction.queue.query", message2);
+  UserData userdataQuery1;
+  userdataQuery1 << query1;
+  // message2.userData() << query1;
+  // message2.metaData().clear();
+  // message2.metaData().emplace(CORRELATION_ID, utils::generateUuid());
+  // message2.metaData().emplace(SUBJECT, "doAction");
+  // message2.metaData().emplace(FROM, "publisher");
+  // message2.metaData().emplace(TO, "receiver");
+  // message2.metaData().emplace(REPLY_TO, "doAction.queue.response");
+  publisher.sendRequest("doAction.queue.query", query1);
   std::this_thread::sleep_for(std::chrono::seconds(5));
 
   // REQUEST 2

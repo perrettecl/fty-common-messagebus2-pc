@@ -22,29 +22,33 @@
 #pragma once
 
 #include <fty/messagebus/IMessageBusWrapper.hpp>
-#include <fty/messagebus/MsgBusMessage.hpp>
+#include <fty/messagebus/amqp/MsgBusAmqpMessage.hpp>
+#include <fty/messagebus/amqp/MsgBusAmqp.hpp>
 
 #include <memory>
 #include <string>
 
 namespace fty::messagebus
 {
-  using AmqpMessage = fty::messagebus::MsgBusMessage;
-
-  class MsgBusAmqp : public IMessageBusWrapper<AmqpMessage>
+  class MsgBusAmqp : public IMessageBusWrapper<amqp::AmqpMessage, amqp::UserData>
   {
   public:
     MsgBusAmqp() = default;
     std::string identify() const override;
 
-    DeliveryState subscribe(const std::string& topic, MessageListener<AmqpMessage> messageListener) override ;
+    DeliveryState subscribe(const std::string& topic, MessageListener<amqp::AmqpMessage> messageListener) override ;
     DeliveryState unsubscribe(const std::string& topic) override ;
-    DeliveryState publish(const std::string& topic, const std::string& message) override;
+    DeliveryState publish(const std::string& topic, const amqp::UserData& msg) override;
 
-    DeliveryState sendRequest(const std::string& requestQueue, const std::string& message, MessageListener<AmqpMessage> messageListener) override;
-    Opt<AmqpMessage> sendRequest(const std::string& requestQueue, const std::string& message, int timeOut) override;
-    DeliveryState waitRequest(const std::string& requestQueue, MessageListener<AmqpMessage> messageListener) override;
-    DeliveryState sendReply(const std::string& response, const AmqpMessage& message) override;
+    DeliveryState sendRequest(const std::string& requestQueue, const amqp::UserData& msg, MessageListener<amqp::AmqpMessage> messageListener) override;
+    Opt<amqp::AmqpMessage> sendRequest(const std::string& requestQueue, const amqp::UserData& msg, int timeOut) override;
+    DeliveryState waitRequest(const std::string& requestQueue, MessageListener<amqp::AmqpMessage> messageListener) override;
+    DeliveryState sendReply(const amqp::UserData& response, const amqp::AmqpMessage& message) override;
+  protected:
+    std::string m_clientName{};
+    std::unique_ptr<amqp::MessageBusAmqp> m_msgBus;
+
+    amqp::AmqpMessage buildMessage(const std::string& queue, const amqp::UserData& msg);
 
   };
 } // namespace fty::messagebus

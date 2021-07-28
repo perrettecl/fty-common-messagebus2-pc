@@ -1,5 +1,5 @@
 /*  =========================================================================
-    fty_common_messagebus_example_rep - Provides message bus for agents
+    FtyCommonMessagebusMlmSampleRep.cpp - Provides message bus for agents
 
     Copyright (C) 2019 - 2020 Eaton
 
@@ -19,32 +19,28 @@
     =========================================================================
 */
 
-/*! \file   fty_common_messagebus_example_rep.cc
-    @brief  Provides message bus for agents - example
-    \author Jean-Baptiste Boric <Jean-BaptisteBORIC@Eaton.com>
-    \author Xavier Millieret <XavierMillieret@eaton.com>
-    \author Clement Perrette <clementperrette@eaton.com>
-*/
-
-#include "fty/messagebus/mlm/test/FtyCommonMlmTestDef.hpp"
-#include <fty/messagebus/MsgBusException.hpp>
-#include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/MsgBusMalamute.hpp>
 #include <fty/messagebus/test/FtyCommonFooBarDto.hpp>
-#include <fty/messagebus/utils/MsgBusHelper.hpp>
+#include <fty/messagebus/test/FtyCommonTestDef.hpp>
 
-#include <czmq.h>
+#include <csignal>
 #include <fty_log.h>
-#include <thread>
+#include <iostream>
 
 namespace
 {
   using namespace fty::messagebus;
   using namespace fty::messagebus::test;
-  using namespace fty::messagebus::mlm::test;
   using Message = fty::messagebus::mlm::MlmMessage;
-  using MessageBus = fty::messagebus::IMessageBus<Message>;
 
-  std::unique_ptr<MessageBus> receiver;
+  auto receiver = fty::messagebus::MsgBusMalamute();
+  static bool _continue = true;
+
+  static void signalHandler(int signal)
+  {
+    std::cout << "Signal " << signal << " received\n";
+    _continue = false;
+  }
 
   void queryListener(const Message& message)
   {
@@ -61,52 +57,33 @@ namespace
 
     if (message.metaData().size() != 0)
     {
-      Message response;
-      MetaData metadata;
       FooBar fooBarr = FooBar("status::ok", fooBar.bar.c_str());
-      UserData data2;
-      data2 << fooBarr;
-      response.userData() = data2;
-      response.metaData().emplace(SUBJECT, "response");
-      response.metaData().emplace(TO, message.metaData().find(FROM)->second);
-      response.metaData().emplace(CORRELATION_ID, message.metaData().find(CORRELATION_ID)->second);
-      receiver->sendReply(message.metaData().find(REPLY_TO)->second, response);
+      UserData userData;
+      userData << fooBarr;
+      receiver.sendReply(userData, message);
     }
     else
     {
       log_info("Old format, skip query...");
     }
   }
-
-  volatile bool _continue = true;
-
-  void my_handler(int s)
-  {
-    printf("Caught signal %d\n", s);
-    _continue = false;
-  }
 } // namespace
 
 int main(int /*argc*/, char** argv)
 {
-  log_info(argv[0]);
+  log_info("%s - starting...", argv[0]);
 
-  struct sigaction sigIntHandler;
-  sigIntHandler.sa_handler = my_handler;
-  sigemptyset(&sigIntHandler.sa_mask);
-  sigIntHandler.sa_flags = 0;
-  sigaction(SIGINT, &sigIntHandler, NULL);
+  std::signal(SIGINT, signalHandler);
+  std::signal(SIGTERM, signalHandler);
 
-  receiver = MessageBusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, "receiver");
-  receiver->connect();
-  receiver->receive("doAction.queue.query", queryListener);
+  receiver.waitRequest("doAction.queue.query", queryListener);
 
-  do
+  while (_continue)
   {
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-  } while (_continue == true);
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  }
 
-  log_info(argv[0]);
+  log_info("%s - end", argv[0]);
 
   return EXIT_SUCCESS;
 }

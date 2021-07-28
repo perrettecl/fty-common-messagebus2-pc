@@ -21,17 +21,18 @@
 
 #pragma once
 
-#include "fty/messagebus/MsgBusStatus.hpp"
 #include "fty/messagebus/IMessageBus.hpp"
+#include "fty/messagebus/MsgBusStatus.hpp"
 
 #include <functional>
 #include <memory>
-#include <string>
 #include <optional>
+#include <string>
 
 namespace fty::messagebus
 {
-  template <typename MessageType>
+  template <typename MessageType,
+            typename T>
   class IMessageBusWrapper
   {
   public:
@@ -41,12 +42,18 @@ namespace fty::messagebus
 
     virtual DeliveryState subscribe(const std::string& topic, MessageListener<MessageType> messageListener) = 0;
     virtual DeliveryState unsubscribe(const std::string& topic) = 0;
-    virtual DeliveryState publish(const std::string& topic, const std::string& message) = 0;
+    virtual DeliveryState publish(const std::string& topic, const T& msg) = 0;
 
-    virtual DeliveryState sendRequest(const std::string& requestQueue, const std::string& message, MessageListener<MessageType> messageListener) = 0;
-    virtual Opt<MessageType> sendRequest(const std::string& requestQueue, const std::string& message, int timeOut) = 0;
+    virtual DeliveryState sendRequest(const std::string& requestQueue, const T& msg, MessageListener<MessageType> messageListener) = 0;
+    virtual Opt<MessageType> sendRequest(const std::string& requestQueue, const T& msg, int timeOut) = 0;
     virtual DeliveryState waitRequest(const std::string& requestQueue, MessageListener<MessageType> messageListener) = 0;
-    virtual DeliveryState sendReply(const std::string& response, const MessageType& message) = 0;
+    virtual DeliveryState sendReply(const T& response, const MessageType& message) = 0;
+
+  protected:
+    //std::string m_clientName{};
+    //std::unique_ptr<mqttv5::MessageBusMqtt> m_msgBus;
+
+    MessageType buildMessage(const std::string& queue, const T& msg);
   };
 
 } // namespace fty::messagebus

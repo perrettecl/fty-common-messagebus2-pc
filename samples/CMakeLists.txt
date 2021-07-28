@@ -19,7 +19,7 @@ endif()
 
 # Malamute samples
 if(BUILD_MALAMUTE)
-  # add_subdirectory(malamute)
+  add_subdirectory(malamute)
 endif()
 
 # Mqtt samples

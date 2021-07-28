@@ -1,5 +1,5 @@
 /*  =========================================================================
-    MsgBusMqtt.hpp - class description
+    MsgBusMalamute.hpp - class description
 
     Copyright (C) 2014 - 2020 Eaton
 
@@ -19,15 +19,12 @@
     =========================================================================
 */
 
-#include "fty/messagebus/MsgBusMqtt.hpp"
+#include "fty/messagebus/MsgBusMalamute.hpp"
 #include <fty/messagebus/MsgBusException.hpp>
 #include <fty/messagebus/MsgBusFactory.hpp>
 
 namespace
 {
-  using MqttMessage = fty::messagebus::mqttv5::MqttMessage;
-  using UserData = fty::messagebus::mqttv5::UserData;
-
   // Topic
   static const std::string PREFIX_TOPIC = "/etn/t";
 
@@ -39,37 +36,40 @@ namespace
 
 namespace fty::messagebus
 {
-  static constexpr auto MQTT_IMPL = "Message bus above MQTT implementation";
+  using MlmMessage = fty::messagebus::mlm::MlmMessage;
+  using UserData = fty::messagebus::mlm::UserData;
 
-  MsgBusMqtt::MsgBusMqtt(const std::string& endpoint, const std::string& clientName)
+  static constexpr auto MALAMUTE_IMPL = "Message bus above Malamute implementation";
+
+  MsgBusMalamute::MsgBusMalamute(const std::string& endpoint, const std::string& clientName)
     : m_clientName(clientName)
-    , m_msgBus{fty::messagebus::MessageBusFactory<mqttv5::MessageBusMqtt>::createMsgBus(endpoint, clientName)}
+    , m_msgBus{fty::messagebus::MessageBusFactory<mlm::MessageBusMalamute>::createMsgBus(endpoint, clientName)}
   {
     auto state = m_msgBus->connect();
     if (state != fty::messagebus::COM_STATE_OK)
     {
-      throw MessageBusException("Mqtt server connection error");
+      throw MessageBusException("Malamute server connection error");
     }
   }
 
-  std::string MsgBusMqtt::identify() const
+  std::string MsgBusMalamute::identify() const
   {
-    return MQTT_IMPL;
+    return MALAMUTE_IMPL;
   }
 
-  DeliveryState MsgBusMqtt::subscribe(const std::string& topic, MessageListener<MqttMessage> messageListener)
+  DeliveryState MsgBusMalamute::subscribe(const std::string& topic, MessageListener<MlmMessage> messageListener)
   {
     return m_msgBus->subscribe(PREFIX_TOPIC + topic, messageListener);
   }
 
-  DeliveryState MsgBusMqtt::unsubscribe(const std::string& topic)
+  DeliveryState MsgBusMalamute::unsubscribe(const std::string& topic)
   {
     return m_msgBus->unsubscribe(PREFIX_TOPIC + topic, nullptr);
   }
 
-  DeliveryState MsgBusMqtt::publish(const std::string& topic, const UserData& msg)
+  DeliveryState MsgBusMalamute::publish(const std::string& topic, const UserData& msg)
   {
-    MqttMessage message;
+    MlmMessage message;
     message.userData() = msg;
     message.metaData().clear();
     message.metaData().emplace(SUBJECT, PUBLISH_USER_PROPERTY);
@@ -78,26 +78,26 @@ namespace fty::messagebus
     return m_msgBus->publish(PREFIX_TOPIC + topic, message);
   }
 
-  DeliveryState MsgBusMqtt::sendRequest(const std::string& requestQueue, const std::string& request, MessageListener<MqttMessage> messageListener)
+  DeliveryState MsgBusMalamute::sendRequest(const std::string& requestQueue, const UserData& request, MessageListener<MlmMessage> messageListener)
   {
     auto message = buildMessage(requestQueue, request);
     m_msgBus->receive(message.metaData().find(REPLY_TO)->second, messageListener);
     return m_msgBus->sendRequest(PREFIX_REQUEST_QUEUE + requestQueue, message);
   }
 
-  Opt<MqttMessage> MsgBusMqtt::sendRequest(const std::string& requestQueue, const UserData& msg, int timeOut)
+  Opt<MlmMessage> MsgBusMalamute::sendRequest(const std::string& requestQueue, const UserData& msg, int timeOut)
   {
     return m_msgBus->request(PREFIX_REQUEST_QUEUE + requestQueue, buildMessage(requestQueue, msg), timeOut);
   }
 
-  DeliveryState MsgBusMqtt::waitRequest(const std::string& requestQueue, MessageListener<MqttMessage> messageListener)
+  DeliveryState MsgBusMalamute::waitRequest(const std::string& requestQueue, MessageListener<MlmMessage> messageListener)
   {
     return m_msgBus->receive(PREFIX_REQUEST_QUEUE + requestQueue, messageListener);
   }
 
-  DeliveryState MsgBusMqtt::sendReply(const UserData& response, const MqttMessage& message)
+  DeliveryState MsgBusMalamute::sendReply(const UserData& response, const MlmMessage& message)
   {
-    MqttMessage responseMsg;
+    MlmMessage responseMsg;
     responseMsg.userData() = response;
     responseMsg.metaData().emplace(STATUS, STATUS_OK);
     responseMsg.metaData().emplace(SUBJECT, ANSWER_USER_PROPERTY);
@@ -108,12 +108,12 @@ namespace fty::messagebus
     return m_msgBus->sendReply(message.metaData().find(REPLY_TO)->second, responseMsg);
   }
 
-  MqttMessage MsgBusMqtt::buildMessage(const std::string& queue, const UserData& msg)
+  MlmMessage MsgBusMalamute::buildMessage(const std::string& queue, const UserData& msg)
   {
     auto correlationId = utils::generateUuid();
     auto replyTo = PREFIX_REPLY_QUEUE + queue + '/' + correlationId;
 
-    MqttMessage message;
+    MlmMessage message;
     message.userData() = msg;
     message.metaData().clear();
     message.metaData().emplace(SUBJECT, QUERY_USER_PROPERTY);

@@ -1,7 +1,7 @@
 /*  =========================================================================
-    fty_common_messagebus_example_req - Provides message bus for agents
+    FtyCommonMessagebusMlmSampleReq.cpp - Provides message bus for agents
 
-    Copyright (C) 2019 - 2020 Eaton
+    Copyright (C) 2019 - 2021 Eaton
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,61 +19,45 @@
     =========================================================================
 */
 
-/*! \file   fty_common_messagebus_example_req.cc
-    @brief  Provides message bus for agents - example
-    \author Jean-Baptiste Boric <Jean-BaptisteBORIC@Eaton.com>
-    \author Xavier Millieret <XavierMillieret@eaton.com>
-    \author Clement Perrette <clementperrette@eaton.com>
-*/
-
-#include "fty/messagebus/mlm/test/FtyCommonMlmTestDef.hpp"
-#include <fty/messagebus/MsgBusException.hpp>
-#include <fty/messagebus/MsgBusFactory.hpp>
+#include <fty/messagebus/MsgBusMalamute.hpp>
 #include <fty/messagebus/test/FtyCommonFooBarDto.hpp>
-#include <fty/messagebus/utils/MsgBusHelper.hpp>
+#include <fty/messagebus/test/FtyCommonTestDef.hpp>
 
-#include <czmq.h>
+#include <csignal>
 #include <fty_log.h>
+#include <iostream>
 
 namespace
 {
   using namespace fty::messagebus;
   using namespace fty::messagebus::test;
-  using namespace fty::messagebus::mlm::test;
   using Message = fty::messagebus::mlm::MlmMessage;
-  using MessageBus = fty::messagebus::IMessageBus<Message>;
 
-  std::unique_ptr<MessageBus> requester;
+  auto requester = fty::messagebus::MsgBusMalamute();
+  static bool _continue = true;
 
-  bool _continue = true;
-
-  void my_handler(int s)
+  static void signalHandler(int signal)
   {
-    printf("Caught signal %d\n", s);
+    std::cout << "Signal " << signal << " received\n";
     _continue = false;
   }
+
 } // namespace
 
 int main(int argc, char** argv)
 {
   int total = 100;
-  log_info(argv[0]);
+  log_info("%s - starting...", argv[0]);
   if (argc > 1)
   {
     log_info("%s", argv[1]);
     total = atoi(argv[1]);
   }
 
-  struct sigaction sigIntHandler;
-  sigIntHandler.sa_handler = my_handler;
-  sigemptyset(&sigIntHandler.sa_mask);
-  sigIntHandler.sa_flags = 0;
-  sigaction(SIGINT, &sigIntHandler, NULL);
+  std::signal(SIGINT, signalHandler);
+  std::signal(SIGTERM, signalHandler);
 
   std::string clientName = utils::getClientId("requester");
-
-  requester = MessageBusFactory::createMlmMsgBus(DEFAULT_MLM_END_POINT, clientName);
-  requester->connect();
 
   int count = 0;
   int rcv = 0;
@@ -91,17 +75,12 @@ int main(int argc, char** argv)
     std::string str(buffer);
 
     // SYNC REQUEST
-    Message message;
     auto query = FooBar("doAction", std::to_string(count));
-    message.userData() << query;
-    message.metaData().clear();
-    message.metaData().emplace(SUBJECT, "query");
-    message.metaData().emplace(FROM, clientName);
-    message.metaData().emplace(TO, "receiver");
-    message.metaData().emplace(CORRELATION_ID, utils::generateUuid());
+    UserData userData;
+    userData << query;
     try
     {
-      auto resp = requester->request("doAction.queue.query", message, 5);
+      auto resp = requester.sendRequest("doAction.queue.query", userData, 5);
       if (resp.has_value())
       {
         log_info("Response:");
@@ -136,6 +115,7 @@ int main(int argc, char** argv)
   log_info(" loose  : %d", loose);
   log_info("**************************************************");
 
-  log_info(argv[0]);
+  log_info("%s - end", argv[0]);
+
   return EXIT_SUCCESS;
 }

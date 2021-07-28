@@ -24,6 +24,9 @@
 namespace fty::messagebus
 {
 
+  using AmqpMessage = fty::messagebus::amqp::AmqpMessage;
+  using UserData = fty::messagebus::amqp::UserData;
+
   static constexpr auto AMQP_IMPL = "Message bus above Amqp implementation";
 
   std::string MsgBusAmqp::identify() const
@@ -41,17 +44,17 @@ namespace fty::messagebus
     return DeliveryState::DELI_STATE_UNAVAILABLE;
   }
 
-  DeliveryState MsgBusAmqp::publish(const std::string& /*topic*/, const std::string& /*message*/)
+  DeliveryState MsgBusAmqp::publish(const std::string& /*topic*/, const UserData& /*msg*/)
   {
     return DeliveryState::DELI_STATE_UNAVAILABLE;
   }
 
-  DeliveryState MsgBusAmqp::sendRequest(const std::string& /*requestQueue*/, const std::string& /*message*/, MessageListener<AmqpMessage> /*messageListener*/)
+  DeliveryState MsgBusAmqp::sendRequest(const std::string& /*requestQueue*/, const UserData& /*msg*/, MessageListener<AmqpMessage> /*messageListener*/)
   {
     return DeliveryState::DELI_STATE_UNAVAILABLE;
   }
 
-  Opt<AmqpMessage> MsgBusAmqp::sendRequest(const std::string& /*requestQueue*/, const std::string& /*message*/, int /*timeOut*/)
+  Opt<AmqpMessage> MsgBusAmqp::sendRequest(const std::string& /*requestQueue*/, const UserData& /*msg*/, int /*timeOut*/)
   {
     Opt<AmqpMessage> val{};
     return val;
@@ -62,8 +65,15 @@ namespace fty::messagebus
     return DeliveryState::DELI_STATE_UNAVAILABLE;
   }
 
-  DeliveryState MsgBusAmqp::sendReply(const std::string& /*response*/, const AmqpMessage& /*message*/)
+  DeliveryState MsgBusAmqp::sendReply(const UserData& /*response*/, const AmqpMessage& /*message*/)
   {
     return DeliveryState::DELI_STATE_UNAVAILABLE;
+  }
+
+  AmqpMessage MsgBusAmqp::buildMessage(const std::string& /*queue*/, const UserData& msg)
+  {
+    AmqpMessage message;
+    message.userData() = msg;
+    return message;
   }
 } // namespace fty::messagebus

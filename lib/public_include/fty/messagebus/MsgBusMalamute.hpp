@@ -1,5 +1,5 @@
 /*  =========================================================================
-    MsgBusMqtt.hpp - class description
+    MsgBusMalamute.hpp - class description
 
     Copyright (C) 2014 - 2020 Eaton
 
@@ -22,7 +22,7 @@
 #pragma once
 
 #include <fty/messagebus/IMessageBusWrapper.hpp>
-#include <fty/messagebus/mqtt/MsgBusMqtt.hpp>
+#include <fty/messagebus/mlm/MsgBusMalamute.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 #include <memory>
@@ -30,25 +30,25 @@
 
 namespace fty::messagebus
 {
-  class MsgBusMqtt : public IMessageBusWrapper<mqttv5::MqttMessage, mqttv5::UserData>
+  class MsgBusMalamute : public IMessageBusWrapper<mlm::MlmMessage, mlm::UserData>
   {
   public:
-    MsgBusMqtt(const std::string& endpoint = mqttv5::DEFAULT_MQTT_END_POINT, const std::string& clientName = utils::getClientId("MsgBusMqtt"));
+    MsgBusMalamute(const std::string& endpoint = fty::messagebus::mlm::DEFAULT_MLM_END_POINT, const std::string& clientName = utils::getClientId("MsgBusMqtt"));
     std::string identify() const override;
 
-    DeliveryState subscribe(const std::string& topic, MessageListener<mqttv5::MqttMessage> messageListener) override;
+    DeliveryState subscribe(const std::string& topic, MessageListener<mlm::MlmMessage> messageListener) override;
     DeliveryState unsubscribe(const std::string& topic) override;
-    DeliveryState publish(const std::string& topic, const mqttv5::UserData& msg) override;
+    DeliveryState publish(const std::string& topic, const mlm::UserData& msg) override;
 
-    DeliveryState sendRequest(const std::string& requestQueue, const mqttv5::UserData& msg, MessageListener<mqttv5::MqttMessage> messageListener) override;
-    Opt<mqttv5::MqttMessage> sendRequest(const std::string& requestQueue, const mqttv5::UserData& msg, int timeOut) override;
-    DeliveryState waitRequest(const std::string& requestQueue, MessageListener<mqttv5::MqttMessage> messageListener) override;
-    DeliveryState sendReply(const mqttv5::UserData& response, const mqttv5::MqttMessage& message) override;
+    DeliveryState sendRequest(const std::string& requestQueue, const mlm::UserData& msg, MessageListener<mlm::MlmMessage> messageListener) override;
+    Opt<mlm::MlmMessage> sendRequest(const std::string& requestQueue, const mlm::UserData& msg, int timeOut) override;
+    DeliveryState waitRequest(const std::string& requestQueue, MessageListener<mlm::MlmMessage> messageListener) override;
+    DeliveryState sendReply(const mlm::UserData& response, const mlm::MlmMessage& message) override;
 
   protected:
     std::string m_clientName{};
-    std::unique_ptr<mqttv5::MessageBusMqtt> m_msgBus;
+    std::unique_ptr<mlm::MessageBusMalamute> m_msgBus;
 
-    mqttv5::MqttMessage buildMessage(const std::string& queue, const mqttv5::UserData& msg);
+    mlm::MlmMessage buildMessage(const std::string& queue, const mlm::UserData& msg);
   };
 } // namespace fty::messagebus
