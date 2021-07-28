@@ -40,7 +40,7 @@ namespace fty::messagebus
   static constexpr auto MALAMUTE_IMPL = "Message bus above Malamute implementation";
 
   MsgBusMalamute::MsgBusMalamute(const std::string& endpoint, const std::string& clientName)
-    : IMessageBusWrapper(endpoint, clientName)
+    : MsgBusWrapper(endpoint, clientName)
   {
   }
 

@@ -21,13 +21,13 @@
 
 #pragma once
 
-#include <fty/messagebus/IMessageBusWrapper.hpp>
+#include <fty/messagebus/MsgBusWrapper.hpp>
 #include <fty/messagebus/amqp/MsgBusAmqp.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 namespace fty::messagebus
 {
-  class MsgBusAmqp : public IMessageBusWrapper<amqp::MessageBusAmqp, amqp::AmqpMessage, amqp::UserData>
+  class MsgBusAmqp : public MsgBusWrapper<amqp::MessageBusAmqp, amqp::AmqpMessage, amqp::UserData>
   {
   public:
     MsgBusAmqp(const std::string& endpoint = fty::messagebus::amqp::DEFAULT_AMQP_END_POINT, const std::string& clientName = utils::getClientId("MsgBusAmqp"));

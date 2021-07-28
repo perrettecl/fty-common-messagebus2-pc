@@ -21,13 +21,13 @@
 
 #pragma once
 
-#include <fty/messagebus/IMessageBusWrapper.hpp>
+#include <fty/messagebus/MsgBusWrapper.hpp>
 #include <fty/messagebus/mlm/MsgBusMalamute.hpp>
 #include <fty/messagebus/utils/MsgBusHelper.hpp>
 
 namespace fty::messagebus
 {
-  class MsgBusMalamute : public IMessageBusWrapper<mlm::MessageBusMalamute, mlm::MlmMessage, mlm::UserData>
+  class MsgBusMalamute : public MsgBusWrapper<mlm::MessageBusMalamute, mlm::MlmMessage, mlm::UserData>
   {
   public:
     MsgBusMalamute(const std::string& endpoint = fty::messagebus::mlm::DEFAULT_MLM_END_POINT, const std::string& clientName = utils::getClientId("MsgBusMalamute"));

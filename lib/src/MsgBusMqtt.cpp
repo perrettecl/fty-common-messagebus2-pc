@@ -40,7 +40,7 @@ namespace fty::messagebus
   static constexpr auto MQTT_IMPL = "Message bus above MQTT implementation";
 
   MsgBusMqtt::MsgBusMqtt(const std::string& endpoint, const std::string& clientName)
-    : IMessageBusWrapper(endpoint, clientName)
+    : MsgBusWrapper(endpoint, clientName)
   {
   }
 

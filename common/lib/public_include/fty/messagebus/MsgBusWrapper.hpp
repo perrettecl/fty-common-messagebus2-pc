@@ -36,11 +36,11 @@ namespace fty::messagebus
   template <typename MessageBusType,
             typename MessageType,
             typename UserDataType>
-  class IMessageBusWrapper
+  class MsgBusWrapper
   {
   public:
-    IMessageBusWrapper() = default;
-    IMessageBusWrapper(const std::string& endpoint, const std::string& clientName)
+    MsgBusWrapper() = default;
+    MsgBusWrapper(const std::string& endpoint, const std::string& clientName)
       : m_endpoint(clientName)
       , m_clientName(endpoint)
       , m_msgBus{fty::messagebus::MessageBusFactory<MessageBusType>::createMsgBus(endpoint, clientName)}
@@ -51,7 +51,7 @@ namespace fty::messagebus
         throw MessageBusException("Mqtt server connection error");
       }
     };
-    virtual ~IMessageBusWrapper() = default;
+    virtual ~MsgBusWrapper() = default;
 
     // Witch implementation
     virtual std::string identify() const = 0;
