@@ -82,22 +82,22 @@ namespace fty::messagebus
     return m_msgBus->request(PREFIX_REQUEST_QUEUE + requestQueue, buildMessage(requestQueue, msg), timeOut);
   }
 
-  DeliveryState MsgBusMqtt::waitRequest(const std::string& requestQueue, MessageListener<MqttMessage> messageListener)
+  DeliveryState MsgBusMqtt::registerRequestListener(const std::string& requestQueue, MessageListener<MqttMessage> messageListener)
   {
     return m_msgBus->receive(PREFIX_REQUEST_QUEUE + requestQueue, messageListener);
   }
 
-  DeliveryState MsgBusMqtt::sendReply(const UserData& response, const MqttMessage& message)
+  DeliveryState MsgBusMqtt::sendRequestReply(const MqttMessage& inputRequest, const UserData& response)
   {
     MqttMessage responseMsg;
     responseMsg.userData() = response;
     responseMsg.metaData().emplace(STATUS, STATUS_OK);
     responseMsg.metaData().emplace(SUBJECT, ANSWER_USER_PROPERTY);
     responseMsg.metaData().emplace(FROM, m_clientName);
-    responseMsg.metaData().emplace(REPLY_TO, message.metaData().find(REPLY_TO)->second);
-    responseMsg.metaData().emplace(CORRELATION_ID, message.metaData().find(CORRELATION_ID)->second);
+    responseMsg.metaData().emplace(REPLY_TO, inputRequest.metaData().find(REPLY_TO)->second);
+    responseMsg.metaData().emplace(CORRELATION_ID, inputRequest.metaData().find(CORRELATION_ID)->second);
 
-    return m_msgBus->sendReply(message.metaData().find(REPLY_TO)->second, responseMsg);
+    return m_msgBus->sendReply(inputRequest.metaData().find(REPLY_TO)->second, responseMsg);
   }
 
   MqttMessage MsgBusMqtt::buildMessage(const std::string& queue, const UserData& msg)

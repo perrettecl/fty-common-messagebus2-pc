@@ -39,8 +39,8 @@ namespace fty::messagebus
 
     DeliveryState sendRequest(const std::string& requestQueue, const mlm::UserData& msg, MessageListener<mlm::MlmMessage> messageListener) override;
     Opt<mlm::MlmMessage> sendRequest(const std::string& requestQueue, const mlm::UserData& msg, int timeOut) override;
-    DeliveryState waitRequest(const std::string& requestQueue, MessageListener<mlm::MlmMessage> messageListener) override;
-    DeliveryState sendReply(const mlm::UserData& response, const mlm::MlmMessage& message) override;
+    DeliveryState registerRequestListener(const std::string& requestQueue, MessageListener<mlm::MlmMessage> messageListener) override;
+    DeliveryState sendRequestReply(const mlm::MlmMessage& inputRequest, const mlm::UserData& response) override;
 
   protected:
 

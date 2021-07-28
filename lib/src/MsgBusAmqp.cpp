@@ -65,12 +65,12 @@ namespace fty::messagebus
     return val;
   }
 
-  DeliveryState MsgBusAmqp::waitRequest(const std::string& /*requestQueue*/, MessageListener<AmqpMessage> /*messageListener*/)
+  DeliveryState MsgBusAmqp::registerRequestListener(const std::string& /*requestQueue*/, MessageListener<AmqpMessage> /*messageListener*/)
   {
     return DeliveryState::DELI_STATE_UNAVAILABLE;
   }
 
-  DeliveryState MsgBusAmqp::sendReply(const UserData& /*response*/, const AmqpMessage& /*message*/)
+  DeliveryState MsgBusAmqp::sendRequestReply(const AmqpMessage& /*inputRequest*/, const UserData& /*response*/)
   {
     return DeliveryState::DELI_STATE_UNAVAILABLE;
   }

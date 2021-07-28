@@ -75,7 +75,7 @@ namespace
       mathResultResult.error = "Unsuported operation";
     }
 
-    reqRep.sendReply(mathResultResult.serialize(), message);
+    reqRep.sendRequestReply(message, mathResultResult.serialize());
     //_continue = false;
   }
 
@@ -88,7 +88,7 @@ int main(int /*argc*/, char** argv)
   // Install a signal handler
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
-  reqRep.waitRequest(SAMPLE_QUEUE, replyerMessageListener);
+  reqRep.registerRequestListener(SAMPLE_QUEUE, replyerMessageListener);
 
   while (_continue)
   {

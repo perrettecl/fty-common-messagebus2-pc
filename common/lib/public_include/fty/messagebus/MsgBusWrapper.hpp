@@ -68,8 +68,8 @@ namespace fty::messagebus
     // Request/Reply  pattern
     virtual DeliveryState sendRequest(const std::string& requestQueue, const UserDataType& msg, MessageListener<MessageType> messageListener) = 0;
     virtual Opt<MessageType> sendRequest(const std::string& requestQueue, const UserDataType& msg, int timeOut) = 0;
-    virtual DeliveryState waitRequest(const std::string& requestQueue, MessageListener<MessageType> messageListener) = 0;
-    virtual DeliveryState sendReply(const UserDataType& response, const MessageType& message) = 0;
+    virtual DeliveryState registerRequestListener(const std::string& requestQueue, MessageListener<MessageType> messageListener) = 0;
+    virtual DeliveryState sendRequestReply(const MessageType& inputRequest, const UserDataType& response) = 0;
 
   protected:
     std::string m_clientName{};

@@ -60,7 +60,7 @@ namespace
       FooBar fooBarr = FooBar("status::ok", fooBar.bar.c_str());
       UserData userData;
       userData << fooBarr;
-      receiver.sendReply(userData, message);
+      receiver.sendRequestReply(message, userData);
     }
     else
     {
@@ -76,7 +76,7 @@ int main(int /*argc*/, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  receiver.waitRequest("doAction.queue.query", queryListener);
+  receiver.registerRequestListener("doAction.queue.query", queryListener);
 
   while (_continue)
   {

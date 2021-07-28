@@ -40,8 +40,8 @@ namespace fty::messagebus
 
     DeliveryState sendRequest(const std::string& requestQueue, const amqp::UserData& msg, MessageListener<amqp::AmqpMessage> messageListener) override;
     Opt<amqp::AmqpMessage> sendRequest(const std::string& requestQueue, const amqp::UserData& msg, int timeOut) override;
-    DeliveryState waitRequest(const std::string& requestQueue, MessageListener<amqp::AmqpMessage> messageListener) override;
-    DeliveryState sendReply(const amqp::UserData& response, const amqp::AmqpMessage& message) override;
+    DeliveryState registerRequestListener(const std::string& requestQueue, MessageListener<amqp::AmqpMessage> messageListener) override;
+    DeliveryState sendRequestReply(const amqp::AmqpMessage& inputRequest, const amqp::UserData& response) override;
 
   protected:
 
