@@ -51,13 +51,13 @@ namespace fty::messagebus
       auto state = m_msgBus->connect();
       if (state != fty::messagebus::COM_STATE_OK)
       {
-        throw MessageBusException("Mqtt server connection error");
+        throw MessageBusException("Messagebus server connection error");
       }
     };
 
     virtual ~MsgBusWrapper() = default;
 
-    // Witch implementation
+    // Which implementation
     virtual std::string identify() const = 0;
 
     // Publish/Subcribe  pattern

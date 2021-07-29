@@ -37,8 +37,8 @@ namespace fty::messagebus
     /**
     * @brief Create a Message bus
     *
-    * @param endpoint Message bus end point
     * @param clientName prefix for client Name
+    * @param endpoint Message bus end point
     *
     * @return std::unique_ptr<MessageType>
     */

@@ -34,6 +34,8 @@
 
 namespace fty::messagebus::amqp
 {
+  using Message = fty::messagebus::amqp::AmqpMessage;
+
   MessageBusAmqp::~MessageBusAmqp()
   {
     // Cleaning all async clients

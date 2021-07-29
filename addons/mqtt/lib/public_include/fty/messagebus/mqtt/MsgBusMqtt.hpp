@@ -26,9 +26,6 @@
 
 namespace fty::messagebus::mqttv5
 {
-
-  using Message = fty::messagebus::mqttv5::MqttMessage;
-
   // Default mqtt end point
   static auto constexpr DEFAULT_MQTT_END_POINT{"tcp://localhost:1883"};
   static auto constexpr SECURE_MQTT_END_POINT{"tcp://localhost:8883"};
@@ -45,7 +42,7 @@ namespace fty::messagebus::mqttv5
   static auto constexpr DISCONNECTED_MSG{"DISCONNECTED"};
   static auto constexpr DISAPPEARED_MSG{"DISAPPEARED"};
 
-  class MessageBusMqtt final : public IMessageBus<Message>
+  class MessageBusMqtt final : public IMessageBus<MqttMessage>
   {
   public:
     MessageBusMqtt() = delete;
@@ -59,18 +56,18 @@ namespace fty::messagebus::mqttv5
     [[nodiscard]] fty::messagebus::ComState connect() override;
 
     // Pub/Sub pattern
-    DeliveryState publish(const std::string& topic, const Message& message) override;
+    DeliveryState publish(const std::string& topic, const MqttMessage& message) override;
     DeliveryState subscribe(const std::string& topic, MessageListener messageListener) override;
     DeliveryState unsubscribe(const std::string& topic, MessageListener messageListener = {}) override;
 
     // Req/Rep pattern
-    DeliveryState sendRequest(const std::string& requestQueue, const Message& message) override;
-    DeliveryState sendRequest(const std::string& requestQueue, const Message& message, MessageListener messageListener) override;
-    DeliveryState sendReply(const std::string& replyQueue, const Message& message) override;
+    DeliveryState sendRequest(const std::string& requestQueue, const MqttMessage& message) override;
+    DeliveryState sendRequest(const std::string& requestQueue, const MqttMessage& message, MessageListener messageListener) override;
+    DeliveryState sendReply(const std::string& replyQueue, const MqttMessage& message) override;
     DeliveryState receive(const std::string& queue, MessageListener messageListener) override;
 
     // Sync queue
-    Opt<Message> request(const std::string& requestQueue, const Message& message, int receiveTimeOut) override;
+    Opt<MqttMessage> request(const std::string& requestQueue, const MqttMessage& message, int receiveTimeOut) override;
 
   private:
     std::string m_clientName{};
