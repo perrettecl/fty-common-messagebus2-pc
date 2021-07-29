@@ -66,9 +66,9 @@ See all samples in samples folder.
 
 ### Malamute samples
 
-* [PubSub](samples/malamute/src/FtyCommonMessagebusMlmSample.cpp)
-* [WaitRequest](samples/malamute/src/FtyCommonMessagebusMlmSampleRep.cpp)
-* [SendRequest](samples/malamute/src/FtyCommonMessagebusMlmSampleReq.cpp)
+* [PubSub](samples/malamute/src/FtyCommonMessagebusMlmSamplePubSub.cpp)
+* [WaitRequest](samples/malamute/src/FtyCommonMessagebusMlmSampleReply.cpp)
+* [SendRequest](samples/malamute/src/FtyCommonMessagebusMlmSampleRequest.cpp)
 
 ## Change log
 
