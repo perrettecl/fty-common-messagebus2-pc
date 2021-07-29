@@ -4,30 +4,9 @@ project(${PROJECT_NAME}-mlm
         LANGUAGES CXX
 )
 
-# etn_target(exe ${PROJECT_NAME}-sample PRIVATE
-#   SOURCES
-#     src/*MlmSample.cpp
-#   INCLUDE_DIRS
-#     private_include
-#   USES_PRIVATE
-#     ${PROJECT_NAME_UNDERSCORE}
-#     ${SAMPLE_DTO_LIB_NAME}
-
-# )
-
-# etn_target(exe ${PROJECT_NAME}-sample2 PRIVATE
-#   SOURCES
-#     src/*MlmSample2.cpp
-#   INCLUDE_DIRS
-#     private_include
-#   USES_PRIVATE
-#     ${PROJECT_NAME_UNDERSCORE}
-#     ${SAMPLE_DTO_LIB_NAME}
-# )
-
-etn_target(exe ${PROJECT_NAME}-rep PRIVATE
+etn_target(exe ${PROJECT_NAME}-request PRIVATE
   SOURCES
-    src/*MlmSampleRep.cpp
+    src/*MlmSampleRequest.cpp
   INCLUDE_DIRS
     private_include
   USES_PRIVATE
@@ -35,19 +14,19 @@ etn_target(exe ${PROJECT_NAME}-rep PRIVATE
     ${SAMPLE_DTO_LIB_NAME}
 )
 
-# etn_target(exe ${PROJECT_NAME}-rep2 PRIVATE
-#   SOURCES
-#     src/*MlmSampleRep2.cpp
-#   INCLUDE_DIRS
-#     private_include
-#   USES_PRIVATE
-#     ${PROJECT_NAME_UNDERSCORE}
-#     ${SAMPLE_DTO_LIB_NAME}
-# )
-
-etn_target(exe ${PROJECT_NAME}-req PRIVATE
+etn_target(exe ${PROJECT_NAME}-reply PRIVATE
   SOURCES
-    src/*MlmSampleReq.cpp
+    src/*MlmSampleReply.cpp
+  INCLUDE_DIRS
+    private_include
+  USES_PRIVATE
+    ${PROJECT_NAME_UNDERSCORE}
+    ${SAMPLE_DTO_LIB_NAME}
+)
+
+etn_target(exe ${PROJECT_NAME}-RequestReply PRIVATE
+  SOURCES
+    src/*MlmSampleRequestReply.cpp
   INCLUDE_DIRS
     private_include
   USES_PRIVATE
