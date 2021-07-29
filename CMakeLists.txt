@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 cmake_policy(VERSION 3.13)
 
-project(fty-common-messagebus2-project
+project(fty-common-messagebus2
     VERSION 1.0.0
     DESCRIPTION "fty common messagebus2"
 )
@@ -30,36 +30,25 @@ option(                            BUILD_DOC                   "Build documentat
 
 set(PROJECT_NAME_UNDERSCORE fty_common_messagebus2)
 
-# Modules, interfaces, etc.
-add_subdirectory(${PROJECT_SOURCE_DIR}/utils)
-add_subdirectory(${PROJECT_SOURCE_DIR}/common)
-add_subdirectory(${PROJECT_SOURCE_DIR}/addons)
+# Utils, interfaces, addons, etc.
+add_subdirectory(utils)
+add_subdirectory(common)
+add_subdirectory(addons)
 
 # Library
-add_subdirectory(${PROJECT_SOURCE_DIR}/lib)
+add_subdirectory(lib)
+
 # Tools
 if(BUILD_MALAMUTE)
-  add_subdirectory(${PROJECT_SOURCE_DIR}/tools)
+  add_subdirectory(tools)
 endif()
 
-# Examples
+# Samples
 if(BUILD_SAMPLES)
   add_subdirectory(samples)
 endif()
 
-##############################################################################################################
-
-# # Create a target for the tests
-etn_test_target(${PROJECT_NAME_UNDERSCORE}
-  SOURCES
-    # common/test/src/*.cpp
-    test/main.cpp
-    test/dispatcher.cpp
-    test/pool_worker.cpp
-  USES
-    fty-messagebus-common
-    fty_common_messagebus_utils
-    ${PROJECT_NAME_UNDERSCORE}
-)
-
-##############################################################################################################
+# Tests
+if(BUILD_TESTING)
+  add_subdirectory(test)
+endif()
