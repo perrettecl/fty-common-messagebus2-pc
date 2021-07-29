@@ -94,7 +94,6 @@ int main(int /*argc*/, char** argv)
   log_info("%s - starting...", argv[0]);
 
   receiver.registerRequestListener("doAction.queue.query", queryListener);
-  //publisher.registerRequestListener("doAction.queue.response", responseListener);
   std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // REQUEST
@@ -102,13 +101,6 @@ int main(int /*argc*/, char** argv)
   auto query1 = FooBar("doAction", "wait");
   UserData userData;
   userData << query1;
-  // message.userData() << query1;
-  // message.metaData().clear();
-  // message.metaData().emplace(CORRELATION_ID, utils::generateUuid());
-  // message.metaData().emplace(SUBJECT, "doAction");
-  // message.metaData().emplace(FROM, "publisher");
-  // message.metaData().emplace(TO, "receiver");
-  // message.metaData().emplace(REPLY_TO, "doAction.queue.response");
   publisher.sendRequest("doAction.queue.query", userData, responseListener);
   std::this_thread::sleep_for(std::chrono::seconds(2));
 
@@ -117,13 +109,6 @@ int main(int /*argc*/, char** argv)
   auto query2 = FooBar("doAction", "wait");
   UserData userData2;
   userData2 << query2;
-  // message2.userData() << query2;
-  // message2.metaData().clear();
-  // message2.metaData().emplace(CORRELATION_ID, utils::generateUuid());
-  // message2.metaData().emplace(SUBJECT, "doAction");
-  // message2.metaData().emplace(FROM, "publisher");
-  // message2.metaData().emplace(TO, "receiver");
-  // message2.metaData().emplace(REPLY_TO, "doAction.queue.response");
   publisher.sendRequest("doAction.queue.query", userData2, responseListener);
   std::this_thread::sleep_for(std::chrono::seconds(15));
 

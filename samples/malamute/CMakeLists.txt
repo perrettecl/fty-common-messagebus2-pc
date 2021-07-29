@@ -4,6 +4,18 @@ project(${PROJECT_NAME}-mlm
         LANGUAGES CXX
 )
 
+
+# Pub/Sub
+etn_target(exe ${PROJECT_NAME}-pub-sub PRIVATE
+  SOURCES
+    src/*PubSub.cpp
+  USES_PRIVATE
+    ${PROJECT_NAME_UNDERSCORE}
+    ${SAMPLE_DTO_LIB_NAME}
+  FLAGS
+    "-fmax-errors=1"
+)
+
 etn_target(exe ${PROJECT_NAME}-request PRIVATE
   SOURCES
     src/*MlmSampleRequest.cpp
