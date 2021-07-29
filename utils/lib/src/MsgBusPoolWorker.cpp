@@ -29,7 +29,6 @@
 
 namespace fty::messagebus::utils
 {
-
   PoolWorker::PoolWorker(size_t workers)
     : m_terminated(false)
   {

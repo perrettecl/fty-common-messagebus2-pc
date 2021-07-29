@@ -5,6 +5,6 @@ etn_test_target(${PROJECT_NAME_UNDERSCORE}_test
     dispatcher.cpp
     pool_worker.cpp
   USES
-    fty-messagebus-utils
+    fty_common_messagebus_utils
     ${PROJECT_NAME_UNDERSCORE}
 )

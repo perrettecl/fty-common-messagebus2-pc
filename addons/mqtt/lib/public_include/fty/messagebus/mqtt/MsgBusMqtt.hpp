@@ -21,7 +21,6 @@
 
 #pragma once
 
-
 #include "fty/messagebus/mqtt/MsgBusMqttCallBack.hpp"
 
 namespace fty::messagebus::mqttv5
@@ -47,9 +46,9 @@ namespace fty::messagebus::mqttv5
   public:
     MessageBusMqtt() = delete;
 
-    MessageBusMqtt(const  std::string& clientName, const  std::string& endpoint)
-      :  m_clientName(clientName)
-      ,  m_endpoint(endpoint){};
+    MessageBusMqtt(const std::string& clientName, const std::string& endpoint)
+      : m_clientName(clientName)
+      , m_endpoint(endpoint){};
 
     ~MessageBusMqtt() override;
 

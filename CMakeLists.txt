@@ -58,10 +58,8 @@ etn_test_target(${PROJECT_NAME_UNDERSCORE}
     test/pool_worker.cpp
   USES
     fty-messagebus-common
-    fty-messagebus-utils
+    fty_common_messagebus_utils
     ${PROJECT_NAME_UNDERSCORE}
 )
 
 ##############################################################################################################
-
-set_target_properties(${PROJECT_NAME_UNDERSCORE} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})

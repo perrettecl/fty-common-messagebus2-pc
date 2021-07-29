@@ -1,5 +1,5 @@
 
-project(fty_messagebus2_amqp
+project(fty_common_messagebus2_amqp
   VERSION ${PROJECT_VERSION}
   DESCRIPTION "fty messagebus2 amqp library"
 )
@@ -17,11 +17,12 @@ etn_target(shared ${PROJECT_NAME} PUBLIC
     *.hpp
   SOURCES
     src/*.cpp
-  USES_PRIVATE
-    fty-messagebus-utils
   USES_PUBLIC
+    fty_common_messagebus_utils
     fty-messagebus-common
     fty_common_logging
   FLAGS
     "-fmax-errors=2"
 )
+
+set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})

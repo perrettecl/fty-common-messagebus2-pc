@@ -1,9 +1,9 @@
-project(fty-messagebus-utils
+project(fty_common_messagebus_utils
         VERSION ${PROJECT_VERSION}
         DESCRIPTION "fty messagebus utilitary static library"
 )
 
-etn_target(static ${PROJECT_NAME} PUBLIC
+etn_target(static ${PROJECT_NAME}
   PUBLIC_INCLUDE_DIR
     public_include
   PUBLIC_HEADERS

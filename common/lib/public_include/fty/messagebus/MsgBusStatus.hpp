@@ -34,7 +34,28 @@ namespace fty::messagebus
     COM_STATE_NO_CONTACT = 4,
     COM_STATE_CONNECT_FAILED = 5,
   };
-  std::string to_string(const ComState& state);
+
+  inline std::string to_string(const ComState& state)
+  {
+    switch (state)
+    {
+      case COM_STATE_UNKNOWN:
+        return "UNKNOWN";
+      case COM_STATE_NONE:
+        return "NONE";
+      case COM_STATE_OK:
+        return "OK";
+      case COM_STATE_LOST:
+        return "LOST";
+      case COM_STATE_NO_CONTACT:
+        return "NO CONTACT";
+      case COM_STATE_CONNECT_FAILED:
+        return "CONNECTION FAILED";
+      default:
+        break;
+    }
+    return "UNDEFINED";
+  };
 
   enum DeliveryState : uint8_t
   {
@@ -48,6 +69,33 @@ namespace fty::messagebus
     DELI_STATE_ABORTED = 7,
     DELI_STATE_UNAVAILABLE = 9,
   };
-  std::string to_string(const DeliveryState& state);
+
+  inline std::string to_string(const DeliveryState& state)
+  {
+    switch (state)
+    {
+      case DELI_STATE_UNKNOWN:
+        return "UNKNOWN";
+      case DELI_STATE_ACCEPTED:
+        return "ACCEPTED";
+      case DELI_STATE_REJECTED:
+        return "REJECTED";
+      case DELI_STATE_TIMEOUT:
+        return "TIMEOUT";
+      case DELI_STATE_NOT_SUPPORTED:
+        return "NOT SUPPORTED";
+      case DELI_STATE_PENDING:
+        return "PENDING";
+      case DELI_STATE_BUSY:
+        return "BUSY";
+      case DELI_STATE_ABORTED:
+        return "ABORTED";
+      case DELI_STATE_UNAVAILABLE:
+        return "SERVICE UNAVAILABLE";
+      default:
+        break;
+    }
+    return "UNDEFINED";
+  };
 
 } // namespace fty::messagebus
