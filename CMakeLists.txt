@@ -29,6 +29,7 @@ option(                            BUILD_TESTING               "Build tests"    
 option(                            BUILD_DOC                   "Build documentation"   OFF)
 
 set(PROJECT_NAME_UNDERSCORE fty_common_messagebus2)
+set(SAMPLE_DTO_LIB_NAME fty-common-messagebus2-sample-dto)
 
 # Utils, interfaces, addons, etc.
 add_subdirectory(utils)
@@ -46,9 +47,4 @@ endif()
 # Samples
 if(BUILD_SAMPLES)
   add_subdirectory(samples)
-endif()
-
-# Tests
-if(BUILD_TESTING)
-  add_subdirectory(test)
 endif()

@@ -18,6 +18,8 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
     =========================================================================
 */
+#define CATCH_CONFIG_MAIN
+#define CATCH_CONFIG_DISABLE_EXCEPTIONS
 
 #include <fty/messagebus/utils/MsgBusDispatcher.hpp>
 #include <catch2/catch.hpp>

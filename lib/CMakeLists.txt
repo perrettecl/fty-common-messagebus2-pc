@@ -46,3 +46,8 @@ if(BUILD_MQTT)
 endif()
 
 set_target_properties(${PROJECT_NAME_UNDERSCORE} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
+
+# Tests
+if(BUILD_TESTING)
+  add_subdirectory(test)
+endif()

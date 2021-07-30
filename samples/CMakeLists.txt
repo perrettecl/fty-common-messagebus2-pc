@@ -3,8 +3,6 @@ project(${PROJECT_NAME}-sample
         DESCRIPTION "fty messagebus sample"
         LANGUAGES CXX)
 
-
-set (SAMPLE_DTO_LIB_NAME fty-common-messagebus-evol-sample-dto)
 # Dto(s)
 add_subdirectory(dto)
 

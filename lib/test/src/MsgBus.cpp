@@ -23,12 +23,12 @@
 #define CATCH_CONFIG_DISABLE_EXCEPTIONS
 
 #include <fty/messagebus/MsgBusMqtt.hpp>
-//#include <fty/messagebus/test/FtyCommonFooBarDto.hpp>
+// #include <fty/messagebus/test/FtyCommonFooBarDto.hpp>
 
 #include <catch2/catch.hpp>
 #include <iostream>
 
-TEST_CASE("Empty test")
+TEST_CASE("Mqtt test")
 {
   std::cout << " * Common message bus testing: " << std::endl;
   auto reqRep = fty::messagebus::MsgBusMqtt();

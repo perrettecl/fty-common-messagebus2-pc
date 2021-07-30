@@ -3,4 +3,8 @@ project(fty-messagebus-utils-project
   DESCRIPTION "fty messagebus utils project"
 )
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/lib)
+add_subdirectory(lib)
+
+if(BUILD_TESTING)
+  add_subdirectory(test)
+endif()
