@@ -19,8 +19,7 @@ etn_target(shared ${PROJECT_NAME_UNDERSCORE}
 )
 
 if(BUILD_AMQP)
-  file(GLOB_RECURSE AMQP_SOURCES *Amqp.cpp)
-  target_sources(${PROJECT_NAME_UNDERSCORE} PRIVATE ${AMQP_SOURCES})
+  target_sources(${PROJECT_NAME_UNDERSCORE} PRIVATE src/MsgBusAmqp.cpp)
   target_link_libraries(${PROJECT_NAME_UNDERSCORE}
     PUBLIC
       fty_common_messagebus2_amqp
@@ -28,8 +27,7 @@ if(BUILD_AMQP)
 endif()
 
 if(BUILD_MALAMUTE)
-  file(GLOB_RECURSE MALAMUTE_SOURCES *Malamute.cpp)
-  target_sources(${PROJECT_NAME_UNDERSCORE} PRIVATE ${MALAMUTE_SOURCES})
+  target_sources(${PROJECT_NAME_UNDERSCORE} PRIVATE src/MsgBusMalamute.cpp)
   target_link_libraries(${PROJECT_NAME_UNDERSCORE}
     PUBLIC
       fty_common_messagebus2_malamute
@@ -37,8 +35,7 @@ if(BUILD_MALAMUTE)
 endif()
 
 if(BUILD_MQTT)
-  file(GLOB_RECURSE MQTT_SOURCES *Mqtt.cpp)
-  target_sources(${PROJECT_NAME_UNDERSCORE} PRIVATE ${MQTT_SOURCES})
+  target_sources(${PROJECT_NAME_UNDERSCORE} PRIVATE src/MsgBusMqtt.cpp)
   target_link_libraries(${PROJECT_NAME_UNDERSCORE}
     PUBLIC
       fty_common_messagebus2_mqtt
