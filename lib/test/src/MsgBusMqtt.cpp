@@ -21,6 +21,7 @@
 
 #define CATCH_CONFIG_MAIN
 #define CATCH_CONFIG_DISABLE_EXCEPTIONS
+// #define UNIT_TESTS
 
 #include <fty/messagebus/MsgBusMqtt.hpp>
 // #include <fty/messagebus/test/FtyCommonFooBarDto.hpp>
@@ -28,7 +29,26 @@
 #include <catch2/catch.hpp>
 #include <iostream>
 
-TEST_CASE("Mqtt test")
+// NOTE: This test case requires network access. It uses one of
+// the public available MQTT brokers
+// #if defined(TEST_EXTERNAL_SERVER)
+// static const std::string MQTT_SERVER_URI{"tcp://mqtt.eclipse.org:1883"};
+// #else
+// static const std::string MQTT_SERVER_URI{"tcp://localhost:1883"};
+// #endif
+
+//----------------------------------------------------------------------
+// Test client::connect()
+//----------------------------------------------------------------------
+
+// TEST_CASE("Mqtt", "[identify]")
+// {
+//   auto msgBus = fty::messagebus::MsgBusMqtt("TestCase", MQTT_SERVER_URI);
+//   std::size_t found = msgBus.identify().find("MQTT");
+//   REQUIRE(found != std::string::npos);
+// }
+
+TEST_CASE("SendRequest")
 {
   std::cout << " * Common message bus testing: " << std::endl;
   auto reqRep = fty::messagebus::MsgBusMqtt();
