@@ -199,7 +199,7 @@ namespace fty::messagebus::mqttv5
         }
       });
       delivState = m_client->subscribe(queue, QOS)->wait_for(TIMEOUT) ? DeliveryState::DELI_STATE_ACCEPTED : DeliveryState::DELI_STATE_REJECTED;
-      log_debug("Waiting to receive msg from: %s ()", queue.c_str(), to_string(delivState).c_str());
+      log_debug("Waiting to receive msg from: %s", queue.c_str(), to_string(delivState).c_str());
     }
     return delivState;
   }
@@ -213,7 +213,7 @@ namespace fty::messagebus::mqttv5
       auto props = getMqttPropertiesFromMetaData(message.metaData());
 
       auto replyTo = mqtt::get<std::string>(props, mqtt::property::RESPONSE_TOPIC);
-      log_debug("Sending request to: %s and wait to reply queue %s", requestQueue.c_str(), replyTo.c_str());
+      log_debug("Sending request payload: '%s' to: %s and wait message on reply queue %s", message.userData().c_str(), requestQueue.c_str(), replyTo.c_str());
 
       auto reqMsg = mqtt::message_ptr_builder()
                       .topic(requestQueue)
@@ -247,7 +247,7 @@ namespace fty::messagebus::mqttv5
       // Adding all meta data inside mqtt properties
       auto props = getMqttPropertiesFromMetaData(message.metaData());
 
-      log_debug("Sending reply to: %s", (mqtt::get<std::string>(props, mqtt::property::RESPONSE_TOPIC)).c_str());
+      log_debug("Sending reply payload: '%s' to: %s", message.userData().c_str(), (mqtt::get<std::string>(props, mqtt::property::RESPONSE_TOPIC)).c_str());
       auto replyMsg = mqtt::message_ptr_builder()
                         .topic(replyQueue)
                         .payload(message.userData())
