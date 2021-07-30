@@ -72,7 +72,7 @@ namespace
 
   TEST_CASE("Mqtt sync request", "[sendRequest]")
   {
-    auto msgBus = MsgBusMqtt("TestCase", MQTT_SERVER_URI);
+    auto msgBus = MsgBusMqtt("MqttSyncRequestTestCase", MQTT_SERVER_URI);
 
     DeliveryState state = s_msgBus.registerRequestListener(TEST_QUEUE, replyerListener);
     REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
@@ -84,9 +84,9 @@ namespace
 
   TEST_CASE("Mqtt async request", "[sendRequest]")
   {
-    auto msgBus = MsgBusMqtt("TestCase", MQTT_SERVER_URI);
+    auto msgBus = MsgBusMqtt("MqttAsyncRequestTestCase", MQTT_SERVER_URI);
 
-    DeliveryState state = s_msgBus.registerRequestListener(TEST_QUEUE, replyerListener);
+    DeliveryState state = msgBus.registerRequestListener(TEST_QUEUE, replyerListener);
     REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
 
     state = msgBus.sendRequest(TEST_QUEUE, QUERY, responseListener);
@@ -97,12 +97,12 @@ namespace
 
   TEST_CASE("Mqtt publish", "[publish]")
   {
-    auto msgBus = MsgBusMqtt("TestCase", MQTT_SERVER_URI);
+    auto msgBus = MsgBusMqtt("MqttPubSubTestCase", MQTT_SERVER_URI);
 
     DeliveryState state = msgBus.subscribe(TEST_TOPIC, responseListener);
     REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
 
-    state = s_msgBus.publish(TEST_TOPIC, RESPONSE);
+    state = msgBus.publish(TEST_TOPIC, RESPONSE);
     REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
     // Wait to process publish
     std::this_thread::sleep_for(std::chrono::seconds(MAX_TIMEOUT));
