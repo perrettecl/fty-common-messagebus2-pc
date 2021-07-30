@@ -19,40 +19,92 @@
     =========================================================================
 */
 
-#define CATCH_CONFIG_MAIN
-#define CATCH_CONFIG_DISABLE_EXCEPTIONS
-// #define UNIT_TESTS
+#define UNIT_TESTS
 
 #include <fty/messagebus/MsgBusMqtt.hpp>
-// #include <fty/messagebus/test/FtyCommonFooBarDto.hpp>
 
 #include <catch2/catch.hpp>
 #include <iostream>
 
 // NOTE: This test case requires network access. It uses one of
 // the public available MQTT brokers
-// #if defined(TEST_EXTERNAL_SERVER)
-// static const std::string MQTT_SERVER_URI{"tcp://mqtt.eclipse.org:1883"};
-// #else
-// static const std::string MQTT_SERVER_URI{"tcp://localhost:1883"};
-// #endif
+#if defined(TEST_EXTERNAL_SERVER)
+static const std::string MQTT_SERVER_URI{"tcp://mqtt.eclipse.org:1883"};
+#else
+static const std::string MQTT_SERVER_URI{"tcp://localhost:1883"};
+#endif
 
-//----------------------------------------------------------------------
-// Test client::connect()
-//----------------------------------------------------------------------
+static int MAX_TIMEOUT = 1;
+static constexpr auto TEST_QUEUE = "/queueTest";
+static constexpr auto TEST_TOPIC = "/topicTest";
+static const std::string QUERY = "query";
+static const std::string OK = ":OK";
+static const std::string RESPONSE = QUERY + OK;
 
-// TEST_CASE("Mqtt", "[identify]")
-// {
-//   auto msgBus = fty::messagebus::MsgBusMqtt("TestCase", MQTT_SERVER_URI);
-//   std::size_t found = msgBus.identify().find("MQTT");
-//   REQUIRE(found != std::string::npos);
-// }
-
-TEST_CASE("SendRequest")
+namespace
 {
-  std::cout << " * Common message bus testing: " << std::endl;
-  auto reqRep = fty::messagebus::MsgBusMqtt();
+  using namespace fty::messagebus;
+  using Message = fty::messagebus::mqttv5::MqttMessage;
 
-  /*Opt<Message>*/ auto replyMsg = reqRep.sendRequest("tests", "query.serialize()", 2);
-  REQUIRE(!replyMsg.has_value());
-}
+  static auto s_msgBus = MsgBusMqtt("TestCase", MQTT_SERVER_URI);
+
+  // Response listener
+  void replyerListener(const Message& message)
+  {
+    s_msgBus.sendRequestReply(message, message.userData() + OK);
+  }
+
+  // Replyer listener
+  void responseListener(Message message)
+  {
+    assert(message.userData() == RESPONSE);
+  }
+
+  //----------------------------------------------------------------------
+  // Test case
+  //----------------------------------------------------------------------
+
+  TEST_CASE("Mqtt identify implementation", "[identify]")
+  {
+    std::size_t found = s_msgBus.identify().find("MQTT");
+    REQUIRE(found != std::string::npos);
+  }
+
+  TEST_CASE("Mqtt sync request", "[sendRequest]")
+  {
+    auto msgBus = MsgBusMqtt("TestCase", MQTT_SERVER_URI);
+
+    DeliveryState state = s_msgBus.registerRequestListener(TEST_QUEUE, replyerListener);
+    REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
+
+    Opt<Message> replyMsg = msgBus.sendRequest(TEST_QUEUE, QUERY, MAX_TIMEOUT);
+    REQUIRE(replyMsg.has_value());
+    REQUIRE(replyMsg.value().userData() == RESPONSE);
+  }
+
+  TEST_CASE("Mqtt async request", "[sendRequest]")
+  {
+    auto msgBus = MsgBusMqtt("TestCase", MQTT_SERVER_URI);
+
+    DeliveryState state = s_msgBus.registerRequestListener(TEST_QUEUE, replyerListener);
+    REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
+
+    state = msgBus.sendRequest(TEST_QUEUE, QUERY, responseListener);
+    REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
+    // Wait to process the response
+    std::this_thread::sleep_for(std::chrono::seconds(MAX_TIMEOUT));
+  }
+
+  TEST_CASE("Mqtt publish", "[publish]")
+  {
+    auto msgBus = MsgBusMqtt("TestCase", MQTT_SERVER_URI);
+
+    DeliveryState state = msgBus.subscribe(TEST_TOPIC, responseListener);
+    REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
+
+    state = s_msgBus.publish(TEST_TOPIC, RESPONSE);
+    REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
+    // Wait to process publish
+    std::this_thread::sleep_for(std::chrono::seconds(MAX_TIMEOUT));
+  }
+} // namespace

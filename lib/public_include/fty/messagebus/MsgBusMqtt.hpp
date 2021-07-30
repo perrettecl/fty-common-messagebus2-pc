@@ -31,6 +31,13 @@ namespace fty::messagebus
   {
   public:
     MsgBusMqtt(const ClientName& clientName = utils::getClientId("MsgBusMqtt"), const Endpoint& endpoint = mqttv5::DEFAULT_MQTT_END_POINT);
+    ~MsgBusMqtt() = default;
+
+    MsgBusMqtt(MsgBusMqtt && other) = default;
+    MsgBusMqtt& operator=(MsgBusMqtt&& other) = delete;
+    MsgBusMqtt(const MsgBusMqtt& other) = default;
+    MsgBusMqtt& operator=(const MsgBusMqtt& other) = delete;
+
     std::string identify() const override;
 
     DeliveryState subscribe(const std::string& topic, MessageListener<mqttv5::MqttMessage> messageListener) override;

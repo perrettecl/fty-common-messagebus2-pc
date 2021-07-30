@@ -31,6 +31,7 @@ namespace fty::messagebus
   {
   public:
     MsgBusAmqp(const ClientName& clientName = utils::getClientId("MsgBusAmqp"), const Endpoint& endpoint = fty::messagebus::amqp::DEFAULT_AMQP_END_POINT);
+    ~MsgBusAmqp() = default;
 
     std::string identify() const override;
 

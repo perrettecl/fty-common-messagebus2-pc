@@ -31,6 +31,8 @@ namespace fty::messagebus
   {
   public:
     MsgBusMalamute(const ClientName& clientName = utils::getClientId("MsgBusMalamute"), const Endpoint& endpoint = fty::messagebus::mlm::DEFAULT_MLM_END_POINT);
+    ~MsgBusMalamute() = default;
+
     std::string identify() const override;
 
     DeliveryState subscribe(const std::string& topic, MessageListener<mlm::MlmMessage> messageListener) override;
