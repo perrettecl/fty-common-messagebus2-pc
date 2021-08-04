@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-@Library('etn-ipm2-jenkins') _
+@Library('etn-ipm2-jenkins@feature/add-feature-image-for-coverity') _
 
 import params.CmakePipelineParams
 CmakePipelineParams parameters = new CmakePipelineParams()
