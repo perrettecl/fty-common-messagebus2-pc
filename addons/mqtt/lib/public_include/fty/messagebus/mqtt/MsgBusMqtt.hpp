@@ -72,8 +72,9 @@ namespace fty::messagebus::mqttv5
     std::string m_clientName{};
     std::string m_endpoint{};
 
-    ClientPointer m_client;
-    SyncClientPointer m_syncClient;
+    // Asynchronous and synchronous mqtt client
+    AsynClientPointer m_asynClient;
+    SynClientPointer m_synClient;
 
     // Call back
     CallBack m_cb;

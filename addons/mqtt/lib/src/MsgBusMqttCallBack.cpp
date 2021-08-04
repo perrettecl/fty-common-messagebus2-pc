@@ -125,7 +125,7 @@ namespace fty::messagebus::mqttv5
   }
 
   // Callback called when a mqtt message arrives.
-  void CallBack::onMessageArrived(mqtt::const_message_ptr msg, ClientPointer clientPointer)
+  void CallBack::onMessageArrived(mqtt::const_message_ptr msg, AsynClientPointer clientPointer)
   {
     auto topic = msg->get_topic();
     log_trace("Message received from topic: '%s'", topic.c_str());

@@ -34,8 +34,8 @@
 namespace fty::messagebus::mqttv5
 {
 
-  using ClientPointer = std::shared_ptr<mqtt::async_client>;
-  using SyncClientPointer = std::shared_ptr<mqtt::client>;
+  using AsynClientPointer = std::shared_ptr<mqtt::async_client>;
+  using SynClientPointer = std::shared_ptr<mqtt::client>;
   using MessageListener = fty::messagebus::MessageListener<MqttMessage>;
   using SubScriptionListener = std::map<std::string, MessageListener>;
 
@@ -49,7 +49,7 @@ namespace fty::messagebus::mqttv5
     void connection_lost(const std::string& cause) override;
     void onConnected(const std::string& cause);
     bool onConnectionUpdated(const mqtt::connect_data& connData);
-    void onMessageArrived(mqtt::const_message_ptr msg, ClientPointer clientPointer = nullptr);
+    void onMessageArrived(mqtt::const_message_ptr msg, AsynClientPointer clientPointer = nullptr);
 
     auto getSubscriptions() -> SubScriptionListener;
     void setSubscriptions(const std::string& topic, MessageListener messageListener);
