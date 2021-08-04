@@ -73,11 +73,11 @@ namespace fty::messagebus::mqttv5
     std::string m_endpoint{};
 
     ClientPointer m_client;
+    SyncClientPointer m_syncClient;
 
     // Call back
-    CallBack cb;
+    CallBack m_cb;
 
     void sendServiceStatus(const std::string& message);
-    bool isServiceAvailable();
   };
 } // namespace fty::messagebus::mqttv5

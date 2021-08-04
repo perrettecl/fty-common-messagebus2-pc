@@ -21,13 +21,13 @@
 
 #pragma once
 
-
 #include <fty/messagebus/IMessageBus.hpp>
 #include <fty/messagebus/mqtt/MsgBusMqttMessage.hpp>
 #include <fty/messagebus/utils/MsgBusPoolWorker.hpp>
 
 #include <map>
 #include <mqtt/async_client.h>
+#include <mqtt/client.h>
 #include <string>
 #include <thread>
 
@@ -35,6 +35,7 @@ namespace fty::messagebus::mqttv5
 {
 
   using ClientPointer = std::shared_ptr<mqtt::async_client>;
+  using SyncClientPointer = std::shared_ptr<mqtt::client>;
   using MessageListener = fty::messagebus::MessageListener<MqttMessage>;
   using SubScriptionListener = std::map<std::string, MessageListener>;
 

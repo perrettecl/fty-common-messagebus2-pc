@@ -38,6 +38,20 @@
 #include <mqtt/message.h>
 #include <mqtt/properties.h>
 
+namespace
+{
+  template <typename ClientType>
+  bool isServiceAvailable(std::shared_ptr<ClientType> client)
+  {
+    bool serviceAvailable = client && client->is_connected();
+    if (!serviceAvailable)
+    {
+      log_error("Mqtt service is unvailable");
+    }
+    return serviceAvailable;
+  }
+}
+
 namespace fty::messagebus::mqttv5
 {
   using namespace fty::messagebus;
@@ -53,17 +67,19 @@ namespace fty::messagebus::mqttv5
   MessageBusMqtt::~MessageBusMqtt()
   {
     // Cleaning all async clients
-    if (isServiceAvailable())
+    if (isServiceAvailable(m_client))
     {
-      log_debug("Cleaning for: %s", m_clientName.c_str());
+      log_debug("Asynchronous client cleaning");
       sendServiceStatus(DISCONNECTED_MSG);
       m_client->disable_callbacks();
       m_client->stop_consuming();
       m_client->disconnect()->wait();
     }
-    else
+    if (isServiceAvailable(m_syncClient))
     {
-      log_error("Cleaning error for: %s", m_clientName.c_str());
+      log_debug("Synchronous client cleaning");
+      m_syncClient->stop_consuming();
+      m_syncClient->disconnect();
     }
   }
 
@@ -72,37 +88,45 @@ namespace fty::messagebus::mqttv5
     auto status = ComState::COM_STATE_NO_CONTACT;
     mqtt::create_options opts(MQTTVERSION_5);
 
-    m_client = std::make_shared<mqtt::async_client>(m_endpoint, utils::getClientId(m_clientName), opts);
+    m_client = std::make_shared<mqtt::async_client>(m_endpoint, utils::getClientId("async-" + m_clientName), opts);
+    m_syncClient = std::make_shared<mqtt::client>(m_endpoint, utils::getClientId("sync-" + m_clientName), opts);
 
     // Connection options
     auto connOpts = mqtt::connect_options_builder()
-                      .clean_session()
+                      .clean_session(false)
                       .mqtt_version(MQTTVERSION_5)
                       .keep_alive_interval(std::chrono::seconds(KEEP_ALIVE))
                       .automatic_reconnect(true)
-                      //.automatic_reconnect(std::chrono::seconds(2), std::chrono::seconds(30))
+                      //.automatic_reconnect(std::chrono::seconds(1), std::chrono::seconds(5))
                       .clean_start(true)
                       .will(mqtt::message{DISCOVERY_TOPIC + m_clientName + DISCOVERY_TOPIC_SUBJECT, {DISAPPEARED_MSG}, QOS, true})
                       .finalize();
-
     try
     {
       // Start consuming _before_ connecting, because we could get a flood
       // of stored messages as soon as the connection completes since
       // we're using a persistent (non-clean) session with the broker.
       m_client->start_consuming();
-      mqtt::token_ptr conntok = m_client->connect(connOpts);
-      conntok->wait();
-      // Callback
-      m_client->set_callback(cb);
+      m_client->connect(connOpts)->wait();
+
+      m_syncClient->start_consuming();
+      m_syncClient->connect(connOpts);
+
+      // Callback(s)
+      m_client->set_callback(m_cb);
+      m_syncClient->set_callback(m_cb);
       m_client->set_connected_handler([this](const std::string& cause) {
-        cb.onConnected(cause);
+        m_cb.onConnected(cause);
       });
+
       m_client->set_update_connection_handler([this](const mqtt::connect_data& connData) {
-        return cb.onConnectionUpdated(connData);
+        return m_cb.onConnectionUpdated(connData);
+      });
+      m_syncClient->set_update_connection_handler([this](const mqtt::connect_data& connData) {
+        return m_cb.onConnectionUpdated(connData);
       });
       status = ComState::COM_STATE_OK;
-      log_info("%s => connect status: %s", m_clientName.c_str(), m_client->is_connected() ? "true" : "false");
+      log_info("%s => connect status: sync client: %s, async client: %s", m_clientName.c_str(), m_client->is_connected() ? "true" : "false",  m_syncClient->is_connected() ? "true" : "false");
       sendServiceStatus(CONNECTED_MSG);
     }
     catch (const mqtt::exception& e)
@@ -118,20 +142,10 @@ namespace fty::messagebus::mqttv5
     return status;
   }
 
-  auto MessageBusMqtt::isServiceAvailable() -> bool
-  {
-    bool serviceAvailable = m_client && m_client->is_connected();
-    if (!serviceAvailable)
-    {
-      log_error("Mqtt service is unvailable");
-    }
-    return serviceAvailable;
-  }
-
   DeliveryState MessageBusMqtt::publish(const std::string& topic, const Message& message)
   {
     auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
-    if (isServiceAvailable())
+    if (isServiceAvailable(m_client))
     {
       log_debug("Publishing on topic: %s", topic.c_str());
       // Adding all meta data inside mqtt properties
@@ -154,13 +168,13 @@ namespace fty::messagebus::mqttv5
   DeliveryState MessageBusMqtt::subscribe(const std::string& topic, MessageListener messageListener)
   {
     auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
-    if (isServiceAvailable())
+    if (isServiceAvailable(m_client))
     {
       log_debug("Subscribing on topic: %s", topic.c_str());
-      cb.setSubscriptions(topic, messageListener);
+      m_cb.setSubscriptions(topic, messageListener);
       m_client->set_message_callback([this](mqtt::const_message_ptr msg) {
         // Wrapper from mqtt msg to Message
-        cb.onMessageArrived(msg);
+        m_cb.onMessageArrived(msg);
       });
       delivState = m_client->subscribe(topic, QOS)->wait_for(TIMEOUT) ? DeliveryState::DELI_STATE_ACCEPTED : DeliveryState::DELI_STATE_REJECTED;
       log_debug("Subscribed (%s)", to_string(delivState).c_str());
@@ -171,11 +185,11 @@ namespace fty::messagebus::mqttv5
   DeliveryState MessageBusMqtt::unsubscribe(const std::string& topic, MessageListener /*messageListener*/)
   {
     auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
-    if (isServiceAvailable())
+    if (isServiceAvailable(m_client))
     {
       log_trace("%s - unsubscribed for topic '%s'", m_clientName.c_str(), topic.c_str());
       delivState = m_client->unsubscribe(topic)->wait_for(TIMEOUT) ? DeliveryState::DELI_STATE_ACCEPTED : DeliveryState::DELI_STATE_REJECTED;
-      cb.eraseSubscriptions(topic);
+      m_cb.eraseSubscriptions(topic);
     }
     return delivState;
   }
@@ -183,15 +197,15 @@ namespace fty::messagebus::mqttv5
   DeliveryState MessageBusMqtt::receive(const std::string& queue, MessageListener messageListener)
   {
     auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
-    if (isServiceAvailable())
+    if (isServiceAvailable(m_client))
     {
-      cb.setSubscriptions(queue, messageListener);
+      m_cb.setSubscriptions(queue, messageListener);
       m_client->set_message_callback([this](mqtt::const_message_ptr msg) {
         const mqtt::properties& props = msg->get_properties();
         if (/*props.contains(mqtt::property::RESPONSE_TOPIC) ||*/ props.contains(mqtt::property::CORRELATION_DATA))
         {
           // Wrapper from mqtt msg to Message
-          cb.onMessageArrived(msg, m_client);
+          m_cb.onMessageArrived(msg, m_client);
         }
         else
         {
@@ -207,7 +221,7 @@ namespace fty::messagebus::mqttv5
   DeliveryState MessageBusMqtt::sendRequest(const std::string& requestQueue, const Message& message)
   {
     auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
-    if (isServiceAvailable())
+    if (isServiceAvailable(m_client))
     {
       // Adding all meta data inside mqtt properties
       auto props = getMqttPropertiesFromMetaData(message.metaData());
@@ -242,11 +256,12 @@ namespace fty::messagebus::mqttv5
   DeliveryState MessageBusMqtt::sendReply(const std::string& replyQueue, const Message& message)
   {
     auto delivState = DeliveryState::DELI_STATE_UNAVAILABLE;
-    if (isServiceAvailable())
+    if (isServiceAvailable(m_client))
     {
       // Adding all meta data inside mqtt properties
       auto props = getMqttPropertiesFromMetaData(message.metaData());
 
+      log_debug("Reply queue: '%s'", replyQueue.c_str());
       log_debug("Sending reply payload: '%s' to: %s", message.userData().c_str(), (mqtt::get<std::string>(props, mqtt::property::RESPONSE_TOPIC)).c_str());
       auto replyMsg = mqtt::message_ptr_builder()
                         .topic(replyQueue)
@@ -265,17 +280,19 @@ namespace fty::messagebus::mqttv5
   Opt<Message> MessageBusMqtt::request(const std::string& requestQueue, const Message& message, int receiveTimeOut)
   {
     auto replyMsg = Opt<Message>{};
-    if (isServiceAvailable())
+    if (isServiceAvailable(m_client) && isServiceAvailable(m_syncClient))
     {
       mqtt::const_message_ptr msg;
       auto replyQueue = getReplyQueue(message);
 
-      m_client->subscribe(replyQueue, QOS)->wait_for(TIMEOUT);
+      m_syncClient->subscribe(replyQueue, QOS);
       sendRequest(requestQueue, message);
-      auto messageArrived = m_client->try_consume_message_for(&msg, std::chrono::seconds(receiveTimeOut));
-      m_client->unsubscribe(replyQueue)->wait_for(TIMEOUT);
+
+      auto messageArrived = m_syncClient->try_consume_message_for(&msg, std::chrono::seconds(receiveTimeOut));
+      m_syncClient->unsubscribe(replyQueue);
       if (messageArrived)
       {
+        log_debug("Message arrived (%s)", msg->get_payload_str().c_str());
         replyMsg = Message{getMetaDataFromMqttProperties(msg->get_properties()), msg->get_payload_str()};
       }
     }
@@ -284,15 +301,18 @@ namespace fty::messagebus::mqttv5
 
   void MessageBusMqtt::sendServiceStatus(const std::string& message)
   {
-    auto topic = DISCOVERY_TOPIC + m_clientName + DISCOVERY_TOPIC_SUBJECT;
-    auto msg = mqtt::message_ptr_builder()
-                 .topic(topic)
-                 .payload(message)
-                 .qos(mqtt::ReasonCode::GRANTED_QOS_2)
-                 .retained(true)
-                 .finalize();
-    bool status = m_client->publish(msg)->wait_for(TIMEOUT);
-    log_info("Service status %s => %s [%d]", m_clientName.c_str(), message.c_str(), status);
+    if (isServiceAvailable(m_client))
+    {
+      auto topic = DISCOVERY_TOPIC + m_clientName + DISCOVERY_TOPIC_SUBJECT;
+      auto msg = mqtt::message_ptr_builder()
+                   .topic(topic)
+                   .payload(message)
+                   .qos(mqtt::ReasonCode::GRANTED_QOS_2)
+                   .retained(true)
+                   .finalize();
+      bool status = m_client->publish(msg)->wait_for(TIMEOUT);
+      log_info("Service status %s => %s [%d]", m_clientName.c_str(), message.c_str(), status);
+    }
   }
 
 } // namespace fty::messagebus::mqttv5

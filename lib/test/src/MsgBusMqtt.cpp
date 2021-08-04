@@ -38,8 +38,10 @@ static int MAX_TIMEOUT = 1;
 static constexpr auto TEST_QUEUE = "/queueTest";
 static constexpr auto TEST_TOPIC = "/topicTest";
 static const std::string QUERY = "query";
+static const std::string QUERY_2 = "query2";
 static const std::string OK = ":OK";
 static const std::string RESPONSE = QUERY + OK;
+static const std::string RESPONSE_2 = QUERY_2 + OK;
 
 namespace
 {
@@ -74,13 +76,19 @@ namespace
   {
     auto msgBus = MsgBusMqtt("MqttSyncRequestTestCase", MQTT_SERVER_URI);
 
-    DeliveryState state = s_msgBus.registerRequestListener(TEST_QUEUE, replyerListener);
+    DeliveryState state = msgBus.registerRequestListener(TEST_QUEUE, replyerListener);
     REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
 
+    // Send synchronous request
     Opt<Message> replyMsg = msgBus.sendRequest(TEST_QUEUE, QUERY, MAX_TIMEOUT);
     REQUIRE(replyMsg.has_value());
     REQUIRE(replyMsg.value().userData() == RESPONSE);
+
+    replyMsg = msgBus.sendRequest(TEST_QUEUE, QUERY_2, MAX_TIMEOUT);
+    REQUIRE(replyMsg.has_value());
+    REQUIRE(replyMsg.value().userData() == RESPONSE_2);
   }
+
 
   TEST_CASE("Mqtt async request", "[sendRequest]")
   {
@@ -95,7 +103,7 @@ namespace
     std::this_thread::sleep_for(std::chrono::seconds(MAX_TIMEOUT));
   }
 
-  TEST_CASE("Mqtt publish", "[publish]")
+  TEST_CASE("Mqtt publish subscribe", "[publish]")
   {
     auto msgBus = MsgBusMqtt("MqttPubSubTestCase", MQTT_SERVER_URI);
 
