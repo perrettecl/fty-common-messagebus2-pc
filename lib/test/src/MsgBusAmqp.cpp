@@ -35,7 +35,10 @@ namespace
 #endif
 
   using namespace fty::messagebus;
+  using namespace fty::messagebus::test;
   using Message = fty::messagebus::amqp::AmqpMessage;
+
+  // static auto s_msgBus = MsgBusAmqp("TestCase", AMQP_SERVER_URI);
 
   //----------------------------------------------------------------------
   // Test case
@@ -43,6 +46,8 @@ namespace
 
   TEST_CASE("Amqp identify implementation", "[identify]")
   {
+    // std::size_t found = s_msgBus.identify().find("Amqp");
+    // REQUIRE(found != std::string::npos);
     REQUIRE(true);
   }
 
