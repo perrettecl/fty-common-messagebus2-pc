@@ -89,7 +89,6 @@ namespace
     REQUIRE(replyMsg.value().userData() == RESPONSE_2);
   }
 
-
   TEST_CASE("Mqtt async request", "[sendRequest]")
   {
     auto msgBus = MsgBusMqtt("MqttAsyncRequestTestCase", MQTT_SERVER_URI);

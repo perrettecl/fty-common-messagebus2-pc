@@ -45,8 +45,6 @@ namespace
   auto answer = fty::messagebus::MsgBusMalamute("answer");
   auto requester = fty::messagebus::MsgBusMalamute("requester");
 
-
-
   void queryListener(const Message& message)
   {
     log_info("queryListener:");

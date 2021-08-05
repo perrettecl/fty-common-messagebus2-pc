@@ -30,10 +30,36 @@
 // the public available Malamute brokers
 static const std::string MALAMUTE_SERVER_URI{"ipc://@/malamute"};
 
+static int MAX_TIMEOUT = 1;
+static constexpr auto TEST_QUEUE = "testQueue";
+static constexpr auto TEST_TOPIC = "testTopic";
+static const std::string QUERY = "query";
+static const std::string QUERY_2 = "query2";
+static const std::string OK = ":OK";
+static const std::string RESPONSE = QUERY + OK;
+static const std::string RESPONSE_2 = QUERY_2 + OK;
+
 namespace
 {
   using namespace fty::messagebus;
+  using UserData = fty::messagebus::mlm::UserData;
   using Message = fty::messagebus::mlm::MlmMessage;
+
+  static auto s_msgBus = MsgBusMalamute("TestCase", MALAMUTE_SERVER_URI);
+
+  // Response listener
+  void replyerListener(const Message& message)
+  {
+    UserData userData;
+    userData.emplace_front(message.userData().front() + OK);
+    s_msgBus.sendRequestReply(message, userData);
+  }
+
+  // Replyer listener
+  void responseListener(Message message)
+  {
+    assert(message.userData().front() == RESPONSE);
+  }
 
   //----------------------------------------------------------------------
   // Test case
@@ -41,7 +67,59 @@ namespace
 
   TEST_CASE("Malamute identify implementation", "[identify]")
   {
-    REQUIRE(true);
+    std::size_t found = s_msgBus.identify().find("Malamute");
+    REQUIRE(found != std::string::npos);
+  }
+
+  TEST_CASE("Malamute sync request", "[sendRequest]")
+  {
+    auto msgBus = MsgBusMalamute("MalamuteSyncRequestTestCase", MALAMUTE_SERVER_URI);
+
+    DeliveryState state = s_msgBus.registerRequestListener(TEST_QUEUE, replyerListener);
+    REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
+
+    // Send synchronous request
+    UserData userData;
+    userData.emplace_front(QUERY);
+    Opt<Message> replyMsg = msgBus.sendRequest(s_msgBus.clientName(), TEST_QUEUE, userData, MAX_TIMEOUT);
+    REQUIRE(replyMsg.has_value());
+    REQUIRE(replyMsg.value().userData().front() == RESPONSE);
+
+    userData.clear();
+    userData.emplace_front(QUERY_2);
+    replyMsg = msgBus.sendRequest(s_msgBus.clientName(), TEST_QUEUE, userData, MAX_TIMEOUT);
+    REQUIRE(replyMsg.has_value());
+    REQUIRE(replyMsg.value().userData().front() == RESPONSE_2);
+  }
+
+  TEST_CASE("Malamute async request", "[sendRequest]")
+  {
+    auto msgBus = MsgBusMalamute("MalamuteASyncRequestTestCase", MALAMUTE_SERVER_URI);
+
+    DeliveryState state = s_msgBus.registerRequestListener(TEST_QUEUE, replyerListener);
+    REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
+
+    UserData userData;
+    userData.emplace_front(QUERY);
+    state = msgBus.sendRequest(s_msgBus.clientName(), TEST_QUEUE, userData, responseListener);
+    REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
+    // Wait to process the response
+    std::this_thread::sleep_for(std::chrono::seconds(MAX_TIMEOUT));
+  }
+
+  TEST_CASE("Malamute publish subscribe", "[publish]")
+  {
+    auto msgBus = MsgBusMalamute("MalamutePubSubTestCase", MALAMUTE_SERVER_URI);
+
+    DeliveryState state = s_msgBus.subscribe(TEST_TOPIC, responseListener);
+    REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
+
+    UserData userData;
+    userData.emplace_front(RESPONSE);
+    state = msgBus.publish(TEST_TOPIC, userData);
+    REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
+    // Wait to process publish
+    std::this_thread::sleep_for(std::chrono::seconds(MAX_TIMEOUT));
   }
 
 } // namespace
