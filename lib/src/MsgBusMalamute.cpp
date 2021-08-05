@@ -40,18 +40,8 @@ namespace fty::messagebus
   static constexpr auto MALAMUTE_IMPL = "Message bus above Malamute implementation";
 
   MsgBusMalamute::MsgBusMalamute(const ClientName& clientName, const Endpoint& endpoint)
-    : MsgBusWrapper(clientName, endpoint)
+    : MsgBusWrapper(clientName, endpoint, MALAMUTE_IMPL)
   {
-  }
-
-  std::string MsgBusMalamute::identify() const
-  {
-    return MALAMUTE_IMPL;
-  }
-
-  std::string MsgBusMalamute::getClientName() const
-  {
-    return m_clientName;
   }
 
   DeliveryState MsgBusMalamute::subscribe(const std::string& topic, MessageListener<MlmMessage> messageListener)
@@ -70,16 +60,14 @@ namespace fty::messagebus
     message.userData() = msg;
     message.metaData().clear();
     message.metaData().emplace(SUBJECT, PUBLISH_USER_PROPERTY);
-    message.metaData().emplace(FROM, m_clientName);
+    message.metaData().emplace(FROM, clientName());
 
     return m_msgBus->publish(PREFIX_TOPIC + topic, message);
   }
 
-  DeliveryState MsgBusMalamute::sendRequest(const std::string& requestQueue, const UserData& request, MessageListener<MlmMessage> messageListener)
+  DeliveryState MsgBusMalamute::sendRequest(const std::string&, const UserData&, MessageListener<MlmMessage>)
   {
-    auto message = buildMessage("", requestQueue, request);
-    m_msgBus->receive(message.metaData().find(REPLY_TO)->second, messageListener);
-    return m_msgBus->sendRequest(PREFIX_REQUEST_QUEUE + requestQueue, message);
+    throw MessageBusException("Do not use it for malamute implementation, use sendRequest with destName, etc.");
   }
 
   DeliveryState MsgBusMalamute::sendRequest(const std::string& destName, const std::string& requestQueue, const UserData& request, MessageListener<MlmMessage> messageListener)
@@ -89,9 +77,9 @@ namespace fty::messagebus
     return m_msgBus->sendRequest(PREFIX_REQUEST_QUEUE + requestQueue, message);
   }
 
-  Opt<MlmMessage> MsgBusMalamute::sendRequest(const std::string& requestQueue, const UserData& msg, int timeOut)
+  Opt<MlmMessage> MsgBusMalamute::sendRequest(const std::string&, const UserData&, int)
   {
-    return m_msgBus->request(PREFIX_REQUEST_QUEUE + requestQueue, buildMessage("", requestQueue, msg), timeOut);
+    throw MessageBusException("Do not use it for malamute implementation, use sendRequest with destName, etc.");
   }
 
   Opt<MlmMessage> MsgBusMalamute::sendRequest(const std::string& destName, const std::string& requestQueue, const UserData& msg, int timeOut)
@@ -110,17 +98,11 @@ namespace fty::messagebus
     responseMsg.userData() = response;
     responseMsg.metaData().emplace(STATUS, STATUS_OK);
     responseMsg.metaData().emplace(SUBJECT, ANSWER_USER_PROPERTY);
-    responseMsg.metaData().emplace(FROM, m_clientName);
+    responseMsg.metaData().emplace(FROM, clientName());
     responseMsg.metaData().emplace(TO, inputRequest.metaData().find(FROM)->second);
     responseMsg.metaData().emplace(CORRELATION_ID, inputRequest.metaData().find(CORRELATION_ID)->second);
 
     return m_msgBus->sendReply(inputRequest.metaData().find(REPLY_TO)->second, responseMsg);
-  }
-
-  MlmMessage MsgBusMalamute::buildMessage(const std::string&, const UserData&)
-  {
-    MlmMessage message;
-    return message;
   }
 
   MlmMessage MsgBusMalamute::buildMessage(const std::string& destName, const std::string& queue, const UserData& msg)
@@ -132,7 +114,7 @@ namespace fty::messagebus
     message.userData() = msg;
     message.metaData().clear();
     message.metaData().emplace(SUBJECT, QUERY_USER_PROPERTY);
-    message.metaData().emplace(FROM, m_clientName);
+    message.metaData().emplace(FROM, clientName());
     message.metaData().emplace(TO, destName);
     message.metaData().emplace(REPLY_TO, replyTo);
     message.metaData().emplace(CORRELATION_ID, correlationId);

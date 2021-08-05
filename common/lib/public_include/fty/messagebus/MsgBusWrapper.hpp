@@ -35,6 +35,7 @@ namespace fty::messagebus
 {
   using ClientName = std::string;
   using Endpoint = std::string;
+  using Identify = std::string;
 
   template <typename MessageBusType,
             typename MessageType,
@@ -43,9 +44,10 @@ namespace fty::messagebus
   {
   public:
     MsgBusWrapper() = default;
-    MsgBusWrapper(const ClientName& clientName, const Endpoint& endpoint)
+    MsgBusWrapper(const ClientName& clientName, const Endpoint& endpoint, const Identify& identify)
       : m_clientName(clientName)
       , m_endpoint(endpoint)
+      , m_identify(identify)
       , m_msgBus{fty::messagebus::MessageBusFactory<MessageBusType>::createMsgBus(clientName, endpoint)}
     {
       auto state = m_msgBus->connect();
@@ -57,8 +59,20 @@ namespace fty::messagebus
 
     virtual ~MsgBusWrapper() = default;
 
-    // Which implementation
-    virtual std::string identify() const = 0;
+    ClientName clientName() const
+    {
+      return m_clientName;
+    };
+
+    Endpoint endPoint() const
+    {
+      return m_endpoint;
+    };
+
+    Identify identify() const
+    {
+      return m_identify;
+    };
 
     // Publish/Subcribe  pattern
     virtual DeliveryState subscribe(const std::string& topic, MessageListener<MessageType> messageListener) = 0;
@@ -71,12 +85,13 @@ namespace fty::messagebus
     virtual DeliveryState registerRequestListener(const std::string& requestQueue, MessageListener<MessageType> messageListener) = 0;
     virtual DeliveryState sendRequestReply(const MessageType& inputRequest, const UserDataType& response) = 0;
 
-  protected:
+  private:
     std::string m_clientName{};
     std::string m_endpoint{};
-    std::unique_ptr<MessageBusType> m_msgBus;
+    std::string m_identify{};
 
-    virtual MessageType buildMessage(const std::string& queue, const UserDataType& msg) = 0;
+  protected:
+    std::unique_ptr<MessageBusType> m_msgBus;
   };
 
 } // namespace fty::messagebus

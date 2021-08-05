@@ -38,8 +38,6 @@ namespace fty::messagebus
     MsgBusMqtt(const MsgBusMqtt& other) = default;
     MsgBusMqtt& operator=(const MsgBusMqtt& other) = delete;
 
-    std::string identify() const override;
-
     DeliveryState subscribe(const std::string& topic, MessageListener<mqttv5::MqttMessage> messageListener) override;
     DeliveryState unsubscribe(const std::string& topic) override;
     DeliveryState publish(const std::string& topic, const mqttv5::UserData& msg) override;
@@ -49,8 +47,8 @@ namespace fty::messagebus
     DeliveryState registerRequestListener(const std::string& requestQueue, MessageListener<mqttv5::MqttMessage> messageListener) override;
     DeliveryState sendRequestReply(const mqttv5::MqttMessage& inputRequest, const mqttv5::UserData& response) override;
 
-  protected:
+  private:
 
-    mqttv5::MqttMessage buildMessage(const std::string& queue, const mqttv5::UserData& msg) override;
+    mqttv5::MqttMessage buildMessage(const std::string& queue, const mqttv5::UserData& msg);
   };
 } // namespace fty::messagebus

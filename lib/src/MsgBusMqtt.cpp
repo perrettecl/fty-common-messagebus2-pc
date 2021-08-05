@@ -40,13 +40,8 @@ namespace fty::messagebus
   static constexpr auto MQTT_IMPL = "Message bus above MQTT implementation";
 
   MsgBusMqtt::MsgBusMqtt(const ClientName& clientName, const Endpoint& endpoint)
-    : MsgBusWrapper(clientName, endpoint)
+    : MsgBusWrapper(clientName, endpoint, MQTT_IMPL)
   {
-  }
-
-  std::string MsgBusMqtt::identify() const
-  {
-    return MQTT_IMPL;
   }
 
   DeliveryState MsgBusMqtt::subscribe(const std::string& topic, MessageListener<MqttMessage> messageListener)
@@ -65,7 +60,7 @@ namespace fty::messagebus
     message.userData() = msg;
     message.metaData().clear();
     message.metaData().emplace(SUBJECT, PUBLISH_USER_PROPERTY);
-    message.metaData().emplace(FROM, m_clientName);
+    message.metaData().emplace(FROM, clientName());
 
     return m_msgBus->publish(PREFIX_TOPIC + topic, message);
   }
@@ -93,7 +88,7 @@ namespace fty::messagebus
     responseMsg.userData() = response;
     responseMsg.metaData().emplace(STATUS, STATUS_OK);
     responseMsg.metaData().emplace(SUBJECT, ANSWER_USER_PROPERTY);
-    responseMsg.metaData().emplace(FROM, m_clientName);
+    responseMsg.metaData().emplace(FROM, clientName());
     responseMsg.metaData().emplace(REPLY_TO, inputRequest.metaData().find(REPLY_TO)->second);
     responseMsg.metaData().emplace(CORRELATION_ID, inputRequest.metaData().find(CORRELATION_ID)->second);
 
@@ -109,7 +104,7 @@ namespace fty::messagebus
     message.userData() = msg;
     message.metaData().clear();
     message.metaData().emplace(SUBJECT, QUERY_USER_PROPERTY);
-    message.metaData().emplace(FROM, m_clientName);
+    message.metaData().emplace(FROM, clientName());
     message.metaData().emplace(REPLY_TO, replyTo);
     message.metaData().emplace(CORRELATION_ID, correlationId);
 

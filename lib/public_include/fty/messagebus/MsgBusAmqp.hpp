@@ -33,8 +33,6 @@ namespace fty::messagebus
     MsgBusAmqp(const ClientName& clientName = utils::getClientId("MsgBusAmqp"), const Endpoint& endpoint = fty::messagebus::amqp::DEFAULT_AMQP_END_POINT);
     ~MsgBusAmqp() = default;
 
-    std::string identify() const override;
-
     DeliveryState subscribe(const std::string& topic, MessageListener<amqp::AmqpMessage> messageListener) override;
     DeliveryState unsubscribe(const std::string& topic) override;
     DeliveryState publish(const std::string& topic, const amqp::UserData& msg) override;
@@ -44,8 +42,8 @@ namespace fty::messagebus
     DeliveryState registerRequestListener(const std::string& requestQueue, MessageListener<amqp::AmqpMessage> messageListener) override;
     DeliveryState sendRequestReply(const amqp::AmqpMessage& inputRequest, const amqp::UserData& response) override;
 
-  protected:
+  private:
 
-    amqp::AmqpMessage buildMessage(const std::string& queue, const amqp::UserData& msg) override;
+    amqp::AmqpMessage buildMessage(const std::string& queue, const amqp::UserData& msg);
   };
 } // namespace fty::messagebus

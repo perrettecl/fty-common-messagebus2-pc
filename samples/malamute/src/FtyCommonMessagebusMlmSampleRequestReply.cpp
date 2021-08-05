@@ -67,7 +67,7 @@ namespace
       userData << fooBarr;
       if (fooBar.bar == "wait")
       {
-        std::this_thread::sleep_for(std::chrono::seconds(2));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
       }
       answer.sendRequestReply(message, userData);
     }
@@ -104,7 +104,7 @@ int main(int /*argc*/, char** argv)
   auto query1 = FooBar("doAction", "wait");
   UserData userData;
   userData << query1;
-  requester.sendRequest(answer.getClientName(), fty::messagebus::mlm::test::QUEUE_NAME, userData, responseListener);
+  requester.sendRequest(answer.clientName(), fty::messagebus::mlm::test::QUEUE_NAME, userData, responseListener);
   std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // REQUEST 2
@@ -112,8 +112,8 @@ int main(int /*argc*/, char** argv)
   auto query2 = FooBar("doAction again", "wait");
   UserData userData2;
   userData2 << query2;
-  requester.sendRequest(answer.getClientName(), fty::messagebus::mlm::test::QUEUE_NAME, userData2, responseListener);
-  std::this_thread::sleep_for(std::chrono::seconds(2));
+  requester.sendRequest(answer.clientName(), fty::messagebus::mlm::test::QUEUE_NAME, userData2, responseListener);
+  std::this_thread::sleep_for(std::chrono::seconds(5));
 
   log_info("%s - end", argv[0]);
 

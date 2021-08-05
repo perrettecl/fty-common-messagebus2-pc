@@ -33,9 +33,6 @@ namespace fty::messagebus
     MsgBusMalamute(const ClientName& clientName = utils::getClientId("MsgBusMalamute"), const Endpoint& endpoint = fty::messagebus::mlm::DEFAULT_MLM_END_POINT);
     ~MsgBusMalamute() = default;
 
-    std::string identify() const override;
-    std::string getClientName() const ;
-
     DeliveryState subscribe(const std::string& topic, MessageListener<mlm::MlmMessage> messageListener) override;
     DeliveryState unsubscribe(const std::string& topic) override;
     DeliveryState publish(const std::string& topic, const mlm::UserData& msg) override;
@@ -47,9 +44,8 @@ namespace fty::messagebus
     DeliveryState registerRequestListener(const std::string& requestQueue, MessageListener<mlm::MlmMessage> messageListener) override;
     DeliveryState sendRequestReply(const mlm::MlmMessage& inputRequest, const mlm::UserData& response) override;
 
-  protected:
+  private:
 
-    mlm::MlmMessage buildMessage(const std::string& queue, const mlm::UserData& msg) override;
     mlm::MlmMessage buildMessage(const std::string& destName, const std::string& queue, const mlm::UserData& msg);
   };
 } // namespace fty::messagebus
