@@ -21,31 +21,26 @@
 
 #define UNIT_TESTS
 
+#include "fty/messagebus/test/MsgBusTestCommon.hpp"
 #include <fty/messagebus/MsgBusMqtt.hpp>
 
 #include <catch2/catch.hpp>
-#include <iostream>
-
-// NOTE: This test case requires network access. It uses one of
-// the public available MQTT brokers
-#if defined(TEST_EXTERNAL_SERVER)
-static const std::string MQTT_SERVER_URI{"tcp://mqtt.eclipse.org:1883"};
-#else
-static const std::string MQTT_SERVER_URI{"tcp://localhost:1883"};
-#endif
-
-static int MAX_TIMEOUT = 1;
-static constexpr auto TEST_QUEUE = "/queueTest";
-static constexpr auto TEST_TOPIC = "/topicTest";
-static const std::string QUERY = "query";
-static const std::string QUERY_2 = "query2";
-static const std::string OK = ":OK";
-static const std::string RESPONSE = QUERY + OK;
-static const std::string RESPONSE_2 = QUERY_2 + OK;
 
 namespace
 {
+  // NOTE: This test case requires network access. It uses one of
+  // the public available MQTT brokers
+#if defined(EXTERNAL_SERVER_FOR_TEST)
+  static constexpr auto MQTT_SERVER_URI{"tcp://mqtt.eclipse.org:1883"};
+#else
+  static constexpr auto MQTT_SERVER_URI{"tcp://localhost:1883"};
+#endif
+
+  static constexpr auto TEST_QUEUE = "/queueTest";
+  static constexpr auto TEST_TOPIC = "/topicTest";
+
   using namespace fty::messagebus;
+  using namespace fty::messagebus::test;
   using Message = fty::messagebus::mqttv5::MqttMessage;
 
   static auto s_msgBus = MsgBusMqtt("TestCase", MQTT_SERVER_URI);

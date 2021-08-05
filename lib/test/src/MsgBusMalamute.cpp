@@ -21,27 +21,21 @@
 
 #define UNIT_TESTS
 
+#include "fty/messagebus/test/MsgBusTestCommon.hpp"
 #include <fty/messagebus/MsgBusMalamute.hpp>
 
 #include <catch2/catch.hpp>
 #include <iostream>
 
-// NOTE: This test case requires network access. It uses one of
-// the public available Malamute brokers
-static const std::string MALAMUTE_SERVER_URI{"ipc://@/malamute"};
-
-static int MAX_TIMEOUT = 1;
-static constexpr auto TEST_QUEUE = "testQueue";
-static constexpr auto TEST_TOPIC = "testTopic";
-static const std::string QUERY = "query";
-static const std::string QUERY_2 = "query2";
-static const std::string OK = ":OK";
-static const std::string RESPONSE = QUERY + OK;
-static const std::string RESPONSE_2 = QUERY_2 + OK;
-
 namespace
 {
+  static const std::string MALAMUTE_SERVER_URI{"ipc://@/malamute"};
+
+  static constexpr auto TEST_QUEUE = "testQueue";
+  static constexpr auto TEST_TOPIC = "testTopic";
+
   using namespace fty::messagebus;
+  using namespace fty::messagebus::test;
   using UserData = fty::messagebus::mlm::UserData;
   using Message = fty::messagebus::mlm::MlmMessage;
 

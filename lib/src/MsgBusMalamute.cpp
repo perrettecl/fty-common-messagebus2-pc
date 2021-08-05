@@ -19,7 +19,7 @@
     =========================================================================
 */
 
-#include "fty/messagebus/MsgBusMalamute.hpp"
+#include <fty/messagebus/MsgBusMalamute.hpp>
 
 namespace
 {

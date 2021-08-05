@@ -1,5 +1,5 @@
 /*  =========================================================================
-    MsgBusAmqp.cpp - description
+    MsgBusTestCommon.hpp - class description
 
     Copyright (C) 2014 - 2021 Eaton
 
@@ -19,31 +19,17 @@
     =========================================================================
 */
 
-#define UNIT_TESTS
+#pragma once
 
-#include "fty/messagebus/test/MsgBusTestCommon.hpp"
-#include <fty/messagebus/MsgBusAmqp.hpp>
+#include <string>
 
-#include <catch2/catch.hpp>
-
-namespace
+namespace fty::messagebus::test
 {
-#if defined(EXTERNAL_SERVER_FOR_TEST)
-  static constexpr auto AMQP_SERVER_URI{"??????"};
-#else
-  static constexpr auto AMQP_SERVER_URI{"??????"};
-#endif
+  static int MAX_TIMEOUT = 1;
+  static const std::string QUERY = "query";
+  static const std::string QUERY_2 = "query2";
+  static const std::string OK = ":OK";
+  static const std::string RESPONSE = QUERY + OK;
+  static const std::string RESPONSE_2 = QUERY_2 + OK;
 
-  using namespace fty::messagebus;
-  using Message = fty::messagebus::amqp::AmqpMessage;
-
-  //----------------------------------------------------------------------
-  // Test case
-  //----------------------------------------------------------------------
-
-  TEST_CASE("Amqp identify implementation", "[identify]")
-  {
-    REQUIRE(true);
-  }
-
-} // namespace
+} // namespace fty::messagebus::test

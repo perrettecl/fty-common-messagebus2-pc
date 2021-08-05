@@ -121,7 +121,7 @@ namespace fty::messagebus::mqttv5
   void CallBack::eraseSubscriptions(const std::string& topic)
   {
     auto eraseNbr = m_subscriptions.erase(topic);
-    log_trace("Subscriptions erased: %s %s", topic.c_str(), eraseNbr ? "true" : "false");
+    log_trace("Subscriptions deleted: %s %s", topic.c_str(), eraseNbr ? "true" : "false");
   }
 
   // Callback called when a mqtt message arrives.
