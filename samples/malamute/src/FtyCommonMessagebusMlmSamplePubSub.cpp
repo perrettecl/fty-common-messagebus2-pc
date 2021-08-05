@@ -41,6 +41,8 @@ namespace
   using Message = fty::messagebus::mlm::MlmMessage;
 
   static bool _continue = true;
+  static int _messageArrived = 1;
+  static int _total = 1;
 
   static void signalHandler(int signal)
   {
@@ -50,7 +52,7 @@ namespace
 
   void messageListener(Message message)
   {
-    log_info("messageListener");
+    log_info("Message '%d' arrived on messageListener after a publish", _messageArrived);
     for (const auto& pair : message.metaData())
     {
       log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
@@ -60,32 +62,48 @@ namespace
     message.userData() >> fooBar;
     log_info("  * foo    : '%s'", fooBar.foo.c_str());
     log_info("  * bar    : '%s'", fooBar.bar.c_str());
+    _messageArrived++;
 
-    _continue = false;
+    if (_messageArrived >= _total)
+    {
+      _continue = false;
+    }
   }
 } // namespace
 
-int main(int /*argc*/, char** argv)
+int main(int argc, char** argv)
 {
   log_info("%s - starting...", argv[0]);
+
+  if (argc > 1)
+  {
+    log_info("%s", argv[1]);
+    _total = atoi(argv[1]);
+  }
 
   // Install a signal handler
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  auto pubSub = fty::messagebus::MsgBusMalamute();
-  pubSub.subscribe(SAMPLE_TOPIC, messageListener);
+  auto sub = fty::messagebus::MsgBusMalamute();
+  auto pub = fty::messagebus::MsgBusMalamute();
 
-  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  sub.subscribe(SAMPLE_TOPIC, messageListener);
+
+  std::this_thread::sleep_for(std::chrono::milliseconds(2));
 
   auto fooBar = FooBar("event", "hello");
   UserData userData;
   userData << fooBar;
-  pubSub.publish(SAMPLE_TOPIC, userData);
+
+  for (int counter = 1; counter <= _total; counter++)
+  {
+    pub.publish(SAMPLE_TOPIC, userData);
+  }
 
   while (_continue)
   {
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
 
   log_info("%s - end", argv[0]);
