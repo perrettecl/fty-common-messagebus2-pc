@@ -46,5 +46,5 @@ set_target_properties(${PROJECT_NAME_UNDERSCORE} PROPERTIES SOVERSION ${PROJECT_
 
 # Tests
 if(BUILD_TESTING)
-  add_subdirectory(test)
+  # add_subdirectory(test)
 endif()
