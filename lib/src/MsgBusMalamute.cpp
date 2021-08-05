@@ -24,12 +24,12 @@
 namespace
 {
   // Topic
-  static const std::string PREFIX_TOPIC = "/etn/t";
+  static const std::string PREFIX_TOPIC = "t.";
 
   // Queues
-  static const std::string PREFIX_QUEUE = "/etn/q/";
-  static const std::string PREFIX_REQUEST_QUEUE = PREFIX_QUEUE + "request";
-  static const std::string PREFIX_REPLY_QUEUE = PREFIX_QUEUE + "reply";
+  static const std::string PREFIX_QUEUE = "q.";
+  static const std::string PREFIX_REQUEST_QUEUE = PREFIX_QUEUE + "req.";
+  static const std::string PREFIX_REPLY_QUEUE = PREFIX_QUEUE + "rep.";
 } // namespace
 
 namespace fty::messagebus
@@ -47,6 +47,11 @@ namespace fty::messagebus
   std::string MsgBusMalamute::identify() const
   {
     return MALAMUTE_IMPL;
+  }
+
+  std::string MsgBusMalamute::getClientName() const
+  {
+    return m_clientName;
   }
 
   DeliveryState MsgBusMalamute::subscribe(const std::string& topic, MessageListener<MlmMessage> messageListener)
@@ -72,14 +77,26 @@ namespace fty::messagebus
 
   DeliveryState MsgBusMalamute::sendRequest(const std::string& requestQueue, const UserData& request, MessageListener<MlmMessage> messageListener)
   {
-    auto message = buildMessage(requestQueue, request);
+    auto message = buildMessage("", requestQueue, request);
+    m_msgBus->receive(message.metaData().find(REPLY_TO)->second, messageListener);
+    return m_msgBus->sendRequest(PREFIX_REQUEST_QUEUE + requestQueue, message);
+  }
+
+  DeliveryState MsgBusMalamute::sendRequest(const std::string& destName, const std::string& requestQueue, const UserData& request, MessageListener<MlmMessage> messageListener)
+  {
+    auto message = buildMessage(destName, requestQueue, request);
     m_msgBus->receive(message.metaData().find(REPLY_TO)->second, messageListener);
     return m_msgBus->sendRequest(PREFIX_REQUEST_QUEUE + requestQueue, message);
   }
 
   Opt<MlmMessage> MsgBusMalamute::sendRequest(const std::string& requestQueue, const UserData& msg, int timeOut)
   {
-    return m_msgBus->request(PREFIX_REQUEST_QUEUE + requestQueue, buildMessage(requestQueue, msg), timeOut);
+    return m_msgBus->request(PREFIX_REQUEST_QUEUE + requestQueue, buildMessage("", requestQueue, msg), timeOut);
+  }
+
+  Opt<MlmMessage> MsgBusMalamute::sendRequest(const std::string& destName, const std::string& requestQueue, const UserData& msg, int timeOut)
+  {
+    return m_msgBus->request(PREFIX_REQUEST_QUEUE + requestQueue, buildMessage(destName, requestQueue, msg), timeOut);
   }
 
   DeliveryState MsgBusMalamute::registerRequestListener(const std::string& requestQueue, MessageListener<MlmMessage> messageListener)
@@ -94,22 +111,29 @@ namespace fty::messagebus
     responseMsg.metaData().emplace(STATUS, STATUS_OK);
     responseMsg.metaData().emplace(SUBJECT, ANSWER_USER_PROPERTY);
     responseMsg.metaData().emplace(FROM, m_clientName);
-    responseMsg.metaData().emplace(REPLY_TO, inputRequest.metaData().find(REPLY_TO)->second);
+    responseMsg.metaData().emplace(TO, inputRequest.metaData().find(FROM)->second);
     responseMsg.metaData().emplace(CORRELATION_ID, inputRequest.metaData().find(CORRELATION_ID)->second);
 
     return m_msgBus->sendReply(inputRequest.metaData().find(REPLY_TO)->second, responseMsg);
   }
 
-  MlmMessage MsgBusMalamute::buildMessage(const std::string& queue, const UserData& msg)
+  MlmMessage MsgBusMalamute::buildMessage(const std::string&, const UserData&)
+  {
+    MlmMessage message;
+    return message;
+  }
+
+  MlmMessage MsgBusMalamute::buildMessage(const std::string& destName, const std::string& queue, const UserData& msg)
   {
     auto correlationId = utils::generateUuid();
-    auto replyTo = PREFIX_REPLY_QUEUE + queue + '/' + correlationId;
+    auto replyTo = PREFIX_REPLY_QUEUE + queue;
 
     MlmMessage message;
     message.userData() = msg;
     message.metaData().clear();
     message.metaData().emplace(SUBJECT, QUERY_USER_PROPERTY);
     message.metaData().emplace(FROM, m_clientName);
+    message.metaData().emplace(TO, destName);
     message.metaData().emplace(REPLY_TO, replyTo);
     message.metaData().emplace(CORRELATION_ID, correlationId);
 

@@ -21,12 +21,14 @@
 
 #pragma once
 
-
 #include <string>
 
 namespace fty::messagebus::mlm::test
 {
-  // Default mqtt end point
-  static auto constexpr DEFAULT_MLM_END_POINT{"ipc://@/malamute"};
+  // Client name shared by all sample
+  static auto constexpr SHARED_CLIENT_NAME = "sampleReqRep";
+
+  // Queue name shared by multies samples
+  static auto constexpr QUEUE_NAME = "doAction";
 
 } // namespace fty::messagebus::mlm::test

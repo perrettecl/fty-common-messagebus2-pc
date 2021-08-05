@@ -19,6 +19,7 @@
     =========================================================================
 */
 
+#include "fty/messagebus/mlm/test/FtyCommonMlmTestDef.hpp"
 #include <fty/messagebus/MsgBusMalamute.hpp>
 #include <fty/messagebus/test/FtyCommonFooBarDto.hpp>
 #include <fty/messagebus/test/FtyCommonTestDef.hpp>
@@ -33,7 +34,7 @@ namespace
   using namespace fty::messagebus::test;
   using Message = fty::messagebus::mlm::MlmMessage;
 
-  auto receiver = fty::messagebus::MsgBusMalamute();
+  auto receiver = fty::messagebus::MsgBusMalamute(fty::messagebus::mlm::test::SHARED_CLIENT_NAME);
   static bool _continue = true;
 
   static void signalHandler(int signal)
@@ -76,7 +77,7 @@ int main(int /*argc*/, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  receiver.registerRequestListener("doAction.queue.query", queryListener);
+  receiver.registerRequestListener(fty::messagebus::mlm::test::QUEUE_NAME, queryListener);
 
   while (_continue)
   {

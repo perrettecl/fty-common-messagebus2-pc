@@ -89,9 +89,9 @@ namespace fty::messagebus::mlm
   }
 
   MessageBusMalamute::MessageBusMalamute(const std::string& clientName, const std::string& endpoint)
+    : m_clientName(clientName)
+    , m_endpoint(endpoint)
   {
-    m_clientName = clientName;
-    m_endpoint = endpoint;
     m_publishTopic = "";
     m_syncUuid = "";
 
@@ -107,6 +107,7 @@ namespace fty::messagebus::mlm
 
   MessageBusMalamute::~MessageBusMalamute()
   {
+    log_trace("%s - destructor", m_clientName.c_str());
     zactor_destroy(&m_actor);
     mlm_client_destroy(&m_client);
   }
@@ -197,17 +198,17 @@ namespace fty::messagebus::mlm
     auto iterator = message.metaData().find(CORRELATION_ID);
     if (iterator == message.metaData().end() || iterator->second == "")
     {
-      log_warning("%s - request should have a correlation id", m_clientName.c_str());
+      log_warning("%s - request should have a 'CORRELATION_ID' field", m_clientName.c_str());
     }
     iterator = message.metaData().find(REPLY_TO);
     if (iterator == message.metaData().end() || iterator->second == "")
     {
-      log_warning("%s - request should have a reply to field", m_clientName.c_str());
+      log_warning("%s - request should have a 'REPLY_TO' field", m_clientName.c_str());
     }
     iterator = message.metaData().find(TO);
     if (iterator == message.metaData().end() || iterator->second == "")
     {
-      log_warning("%s - request should have a to field", m_clientName.c_str());
+      log_warning("%s - request should have a 'TO' field", m_clientName.c_str());
     }
     else
     {
@@ -245,7 +246,7 @@ namespace fty::messagebus::mlm
     iterator = message.metaData().find(TO);
     if (iterator == message.metaData().end() || iterator->second == "")
     {
-      log_warning("%s - request should have a to field", m_clientName.c_str());
+      log_warning("%s - request should have a 'TO' field", m_clientName.c_str());
     }
     zmsg_t* msg = _toZmsg(message);
 
@@ -258,13 +259,15 @@ namespace fty::messagebus::mlm
   {
     auto delivState = DeliveryState::DELI_STATE_ACCEPTED;
     auto iterator = m_subscriptions.find(queue);
-    if (iterator != m_subscriptions.end())
+    if (iterator == m_subscriptions.end())
     {
-      delivState = DeliveryState::DELI_STATE_REJECTED;
-      throw MessageBusException("Already have queue map to listener");
+      m_subscriptions.emplace(queue, messageListener);
+      log_trace("%s - subscriptions emplaced for queue '%s'", m_clientName.c_str(), queue.c_str());
     }
-    m_subscriptions.emplace(queue, messageListener);
-    log_trace("%s - receive from queue '%s'", m_clientName.c_str(), queue.c_str());
+    else
+    {
+      log_warning("%s - subscriptions already emplaced for queue '%s'", m_clientName.c_str(), queue.c_str());
+    }
     return delivState;
   }
 
@@ -281,7 +284,7 @@ namespace fty::messagebus::mlm
     iterator = message.metaData().find(TO);
     if (iterator == message.metaData().end() || iterator->second == "")
     {
-      throw MessageBusException("Request must have a to field.");
+      throw MessageBusException("Request must have a 'TO' field.");
     }
 
     MlmMessage msg(message);
@@ -293,6 +296,7 @@ namespace fty::messagebus::mlm
     zmsg_t* msgMlm = _toZmsg(msg);
 
     //Todo: Check error code after sendto
+    log_trace("%s - sending to queue '%s'", m_clientName.c_str(), requestQueue.c_str());
     mlm_client_sendto(m_client, iterator->second.c_str(), requestQueue.c_str(), nullptr, 200, &msgMlm);
 
     if (m_cv.wait_for(lock, std::chrono::seconds(receiveTimeOut)) != std::cv_status::timeout)

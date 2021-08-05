@@ -34,18 +34,22 @@ namespace fty::messagebus
     ~MsgBusMalamute() = default;
 
     std::string identify() const override;
+    std::string getClientName() const ;
 
     DeliveryState subscribe(const std::string& topic, MessageListener<mlm::MlmMessage> messageListener) override;
     DeliveryState unsubscribe(const std::string& topic) override;
     DeliveryState publish(const std::string& topic, const mlm::UserData& msg) override;
 
     DeliveryState sendRequest(const std::string& requestQueue, const mlm::UserData& msg, MessageListener<mlm::MlmMessage> messageListener) override;
+    DeliveryState sendRequest(const std::string& destName, const std::string& requestQueue, const mlm::UserData& msg, MessageListener<mlm::MlmMessage> messageListener);
     Opt<mlm::MlmMessage> sendRequest(const std::string& requestQueue, const mlm::UserData& msg, int timeOut) override;
+    Opt<mlm::MlmMessage> sendRequest(const std::string& destName, const std::string& requestQueue, const mlm::UserData& msg, int timeOut);
     DeliveryState registerRequestListener(const std::string& requestQueue, MessageListener<mlm::MlmMessage> messageListener) override;
     DeliveryState sendRequestReply(const mlm::MlmMessage& inputRequest, const mlm::UserData& response) override;
 
   protected:
 
-    mlm::MlmMessage buildMessage(const std::string& queue, const mlm::UserData& msg) override ;
+    mlm::MlmMessage buildMessage(const std::string& queue, const mlm::UserData& msg) override;
+    mlm::MlmMessage buildMessage(const std::string& destName, const std::string& queue, const mlm::UserData& msg);
   };
 } // namespace fty::messagebus

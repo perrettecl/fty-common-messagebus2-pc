@@ -26,6 +26,7 @@
 @end
 */
 
+#include "fty/messagebus/mlm/test/FtyCommonMlmTestDef.hpp"
 #include <fty/messagebus/MsgBusMalamute.hpp>
 #include <fty/messagebus/test/FtyCommonFooBarDto.hpp>
 #include <fty/messagebus/test/FtyCommonTestDef.hpp>
@@ -41,8 +42,10 @@ namespace
   using namespace fty::messagebus::test;
   using Message = fty::messagebus::mlm::MlmMessage;
 
-  auto receiver = fty::messagebus::MsgBusMalamute();
-  auto publisher = fty::messagebus::MsgBusMalamute();
+  auto answer = fty::messagebus::MsgBusMalamute("answer");
+  auto requester = fty::messagebus::MsgBusMalamute("requester");
+
+
 
   void queryListener(const Message& message)
   {
@@ -64,9 +67,9 @@ namespace
       userData << fooBarr;
       if (fooBar.bar == "wait")
       {
-        std::this_thread::sleep_for(std::chrono::seconds(10));
+        std::this_thread::sleep_for(std::chrono::seconds(2));
       }
-      publisher.sendRequestReply(message, userData);
+      answer.sendRequestReply(message, userData);
     }
     else
     {
@@ -93,7 +96,7 @@ int main(int /*argc*/, char** argv)
 {
   log_info("%s - starting...", argv[0]);
 
-  receiver.registerRequestListener("doAction.queue.query", queryListener);
+  answer.registerRequestListener(fty::messagebus::mlm::test::QUEUE_NAME, queryListener);
   std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // REQUEST
@@ -101,16 +104,16 @@ int main(int /*argc*/, char** argv)
   auto query1 = FooBar("doAction", "wait");
   UserData userData;
   userData << query1;
-  publisher.sendRequest("doAction.queue.query", userData, responseListener);
+  requester.sendRequest(answer.getClientName(), fty::messagebus::mlm::test::QUEUE_NAME, userData, responseListener);
   std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // REQUEST 2
   Message message2;
-  auto query2 = FooBar("doAction", "wait");
+  auto query2 = FooBar("doAction again", "wait");
   UserData userData2;
   userData2 << query2;
-  publisher.sendRequest("doAction.queue.query", userData2, responseListener);
-  std::this_thread::sleep_for(std::chrono::seconds(15));
+  requester.sendRequest(answer.getClientName(), fty::messagebus::mlm::test::QUEUE_NAME, userData2, responseListener);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
 
   log_info("%s - end", argv[0]);
 

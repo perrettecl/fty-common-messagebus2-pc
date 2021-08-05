@@ -19,6 +19,7 @@
     =========================================================================
 */
 
+#include "fty/messagebus/mlm/test/FtyCommonMlmTestDef.hpp"
 #include <fty/messagebus/MsgBusMalamute.hpp>
 #include <fty/messagebus/test/FtyCommonFooBarDto.hpp>
 #include <fty/messagebus/test/FtyCommonTestDef.hpp>
@@ -33,7 +34,7 @@ namespace
   using namespace fty::messagebus::test;
   using Message = fty::messagebus::mlm::MlmMessage;
 
-  auto requester = fty::messagebus::MsgBusMalamute();
+  auto requester = fty::messagebus::MsgBusMalamute("requester");
   static bool _continue = true;
 
   static void signalHandler(int signal)
@@ -57,8 +58,6 @@ int main(int argc, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  std::string clientName = utils::getClientId("requester");
-
   int count = 0;
   int rcv = 0;
   int loose = 0;
@@ -80,7 +79,7 @@ int main(int argc, char** argv)
     userData << query;
     try
     {
-      auto resp = requester.sendRequest("doAction.queue.query", userData, 5);
+      auto resp = requester.sendRequest(fty::messagebus::mlm::test::SHARED_CLIENT_NAME, fty::messagebus::mlm::test::QUEUE_NAME, userData, 5);
       if (resp.has_value())
       {
         log_info("Response:");
@@ -98,6 +97,7 @@ int main(int argc, char** argv)
       else
       {
         log_info("Timeout reached");
+        loose++;
       }
     }
     catch (MessageBusException& ex)

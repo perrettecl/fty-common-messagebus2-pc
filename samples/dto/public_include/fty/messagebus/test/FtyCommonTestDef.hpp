@@ -26,7 +26,7 @@
 namespace fty::messagebus::test
 {
   // Topic
-  static auto constexpr SAMPLE_TOPIC{"/metric/sample"};
+  static auto constexpr SAMPLE_TOPIC{"discovery"};
 
   // Queues
   static auto constexpr SAMPLE_QUEUE{"/maths/operator"};

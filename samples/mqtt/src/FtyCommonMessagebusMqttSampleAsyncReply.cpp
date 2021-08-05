@@ -39,7 +39,6 @@ namespace
   using namespace fty::messagebus::test;
   using Message = fty::messagebus::mqttv5::MqttMessage;
 
-  auto replyer = fty::messagebus::MsgBusMqtt();
   auto reqRep = fty::messagebus::MsgBusMqtt();
   static bool _continue = true;
 

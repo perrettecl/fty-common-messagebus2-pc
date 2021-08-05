@@ -93,7 +93,7 @@ const std::map<std::string, progAction> actions = {
 };
 
 const std::map<std::string, std::function<std::unique_ptr<MessageBus>()>> busTypes = {
-  {"malamute", []() -> std::unique_ptr<MessageBus> { return MessageBusFactory<MessageBusMalamute>::createMsgBus(endpoint, clientName); }},
+  {"malamute", []() -> std::unique_ptr<MessageBus> { return MessageBusFactory<MessageBusMalamute>::createMsgBus(clientName, endpoint); }},
 };
 
 void dumpMessage(const MlmMessage& msg)
