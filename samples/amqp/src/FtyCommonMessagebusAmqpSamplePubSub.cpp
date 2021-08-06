@@ -27,7 +27,7 @@
 */
 
 #include <fty/messagebus/MsgBusAmqp.hpp>
-#include <fty/messagebus/test/FtyCommonMathDto.hpp>
+#include <fty/messagebus/test/FtyCommonFooBarDto.hpp>
 #include <fty/messagebus/test/FtyCommonTestDef.hpp>
 
 #include <csignal>
@@ -37,11 +37,30 @@
 
 namespace
 {
+  using namespace fty::messagebus::test;
+  using Message = fty::messagebus::amqp::AmqpMessage;
+
   static bool _continue = true;
 
   static void signalHandler(int signal)
   {
     std::cout << "Signal " << signal << " received\n";
+    _continue = false;
+  }
+
+  void messageListener(Message message)
+  {
+    log_info("messageListener");
+    auto metadata = message.metaData();
+    for (const auto& pair : message.metaData())
+    {
+      log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
+    }
+
+    auto fooBar = FooBar(message.userData());
+    log_info("  * foo    : '%s'", fooBar.foo.c_str());
+    log_info("  * bar    : '%s'", fooBar.bar.c_str());
+
     _continue = false;
   }
 
@@ -54,6 +73,12 @@ int main(int /*argc*/, char** argv)
   // Install a signal handler
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
+
+  auto pubSub = fty::messagebus::MsgBusAmqp();
+  pubSub.subscribe(SAMPLE_TOPIC, messageListener);
+
+  std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  pubSub.publish(SAMPLE_TOPIC, FooBar("event", "hello").serialize());
 
   while (_continue)
   {

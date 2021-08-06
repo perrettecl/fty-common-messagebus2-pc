@@ -37,12 +37,25 @@
 
 namespace
 {
+  using namespace fty::messagebus;
+  using namespace fty::messagebus::test;
+  using Message = fty::messagebus::amqp::AmqpMessage;
+
   static bool _continue = true;
   static auto constexpr SYNC_REQUEST_TIMEOUT = 5;
 
   static void signalHandler(int signal)
   {
     std::cout << "Signal " << signal << " received\n";
+    _continue = false;
+  }
+
+  void responseMessageListener(const Message& message)
+  {
+    log_info("Response arrived");
+    auto mathresult = MathResult(message.userData());
+    log_info("  * status: '%s', result: %d, error: '%s'", mathresult.status.c_str(), mathresult.result, mathresult.error.c_str());
+
     _continue = false;
   }
 
@@ -64,15 +77,22 @@ int main(int argc, char** argv)
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
+  auto reqRep = MsgBusAmqp();
+
+  auto query = MathOperation(argv[3], std::stoi(argv[4]), std::stoi(argv[5]));
+
   if (strcmp(argv[2], "async") == 0)
   {
+    reqRep.sendRequest(requestQueue, query.serialize(), responseMessageListener);
   }
   else
   {
     _continue = false;
 
-    if (true)
+    Opt<Message> replyMsg = reqRep.sendRequest(requestQueue, query.serialize(), SYNC_REQUEST_TIMEOUT);
+    if (replyMsg.has_value())
     {
+      responseMessageListener(replyMsg.value());
     }
     else
     {

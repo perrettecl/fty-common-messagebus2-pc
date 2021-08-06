@@ -26,10 +26,9 @@
 @end
 */
 
-#include <fty/messagebus/test/FtyCommonTestDef.hpp>
-
 #include <fty/messagebus/MsgBusMqtt.hpp>
 #include <fty/messagebus/test/FtyCommonFooBarDto.hpp>
+#include <fty/messagebus/test/FtyCommonTestDef.hpp>
 
 #include <csignal>
 #include <fty_log.h>
@@ -76,7 +75,7 @@ int main(int /*argc*/, char** argv)
   auto pubSub = fty::messagebus::MsgBusMqtt();
   pubSub.subscribe(SAMPLE_TOPIC, messageListener);
 
-  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  std::this_thread::sleep_for(std::chrono::milliseconds(1));
   pubSub.publish(SAMPLE_TOPIC, FooBar("event", "hello").serialize());
 
   while (_continue)

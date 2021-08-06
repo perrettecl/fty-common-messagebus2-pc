@@ -37,13 +37,46 @@
 
 namespace
 {
+  using namespace fty::messagebus::test;
+  using Message = fty::messagebus::amqp::AmqpMessage;
 
+  auto reqRep = fty::messagebus::MsgBusAmqp();
   static bool _continue = true;
 
   static void signalHandler(int signal)
   {
     std::cout << "Signal " << signal << " received\n";
     _continue = false;
+  }
+
+  void replyerMessageListener(const Message& message)
+  {
+    log_info("Replyer messageListener");
+
+    for (const auto& pair : message.metaData())
+    {
+      log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
+    }
+
+    auto mathQuery = MathOperation(message.userData());
+    auto mathResultResult = MathResult();
+
+    if (mathQuery.operation == "add")
+    {
+      mathResultResult.result = mathQuery.param_1 + mathQuery.param_2;
+    }
+    else if (mathQuery.operation == "mult")
+    {
+      mathResultResult.result = mathQuery.param_1 * mathQuery.param_2;
+    }
+    else
+    {
+      mathResultResult.status = MathResult::STATUS_KO;
+      mathResultResult.error = "Unsuported operation";
+    }
+
+    reqRep.sendRequestReply(message, mathResultResult.serialize());
+    //_continue = false;
   }
 
 } // namespace
@@ -55,6 +88,8 @@ int main(int /*argc*/, char** argv)
   // Install a signal handler
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
+
+  reqRep.registerRequestListener(SAMPLE_QUEUE, replyerMessageListener);
 
   while (_continue)
   {
