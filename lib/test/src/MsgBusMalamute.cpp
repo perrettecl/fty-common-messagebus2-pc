@@ -34,6 +34,8 @@ namespace
   static constexpr auto TEST_QUEUE = "testQueue";
   static constexpr auto TEST_TOPIC = "testTopic";
 
+  using Catch::Matchers::Contains;
+
   using namespace fty::messagebus;
   using namespace fty::messagebus::test;
   using UserData = fty::messagebus::mlm::UserData;
@@ -101,6 +103,13 @@ namespace
     REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
     // Wait to process the response
     std::this_thread::sleep_for(std::chrono::seconds(MAX_TIMEOUT));
+  }
+
+  TEST_CASE("Malamute async request with no malamute destination name set", "[sendRequest]")
+  {
+    auto msgBus = MsgBusMalamute("MalamuteSyncRequestMustThrow", MALAMUTE_SERVER_URI);
+
+    REQUIRE_THROWS_WITH(msgBus.sendRequest(TEST_QUEUE, {}, responseListener), Contains( "destination name is not set" ) && Contains( "the request can not be send" ) );
   }
 
   TEST_CASE("Malamute publish subscribe", "[publish]")
