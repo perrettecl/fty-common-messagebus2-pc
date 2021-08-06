@@ -49,15 +49,8 @@ namespace fty::messagebus
     DeliveryState registerRequestListener(const std::string& requestQueue, MessageListener<mlm::MlmMessage> messageListener) override;
     DeliveryState sendRequestReply(const mlm::MlmMessage& inputRequest, const mlm::UserData& response) override;
 
-    ClientName destClientName() const
-    {
-      return m_destClientName;
-    };
-
-    void destClientName(const ClientName& destClientName)
-    {
-      m_destClientName = destClientName;
-    };
+    ClientName destClientName() const;
+    void destClientName(const ClientName& destClientName);
 
   private:
 

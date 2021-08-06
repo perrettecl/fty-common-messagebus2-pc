@@ -97,15 +97,15 @@ namespace fty::messagebus
     return m_msgBus->sendReply(inputRequest.metaData().find(REPLY_TO)->second, responseMsg);
   }
 
-  // std::string MsgBusMalamute::destClientName()
-  // {
-  //   return "m_destClientName";
-  // }
+  ClientName MsgBusMalamute::destClientName() const
+  {
+    return m_destClientName;
+  }
 
-  // ClientName MsgBusMalamute::destClientName(const ClientName& destClientName)
-  // {
-  //   m_destClientName = destClientName;
-  // }
+  void MsgBusMalamute::destClientName(const ClientName& destClientName)
+  {
+    m_destClientName = destClientName;
+  }
 
   void MsgBusMalamute::assertDestClientName()
   {
