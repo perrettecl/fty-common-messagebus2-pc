@@ -29,7 +29,7 @@
 
 namespace
 {
-  static const std::string MALAMUTE_SERVER_URI{"ipc://@/malamute"};
+  static constexpr auto MALAMUTE_SERVER_URI{"ipc://@/malamute"};
 
   static constexpr auto TEST_QUEUE = "testQueue";
   static constexpr auto TEST_TOPIC = "testTopic";
@@ -69,8 +69,7 @@ namespace
 
   TEST_CASE("Malamute sync request", "[sendRequest]")
   {
-    auto msgBus = MsgBusMalamute("MalamuteSyncRequestTestCase", MALAMUTE_SERVER_URI);
-    msgBus.destClientName(s_msgBus.clientName());
+    auto msgBus = MsgBusMalamute("MalamuteSyncRequestTestCase", MALAMUTE_SERVER_URI, s_msgBus.clientName());
 
     DeliveryState state = s_msgBus.registerRequestListener(TEST_QUEUE, replyerListener);
     REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
@@ -91,8 +90,7 @@ namespace
 
   TEST_CASE("Malamute async request", "[sendRequest]")
   {
-    auto msgBus = MsgBusMalamute("MalamuteASyncRequestTestCase", MALAMUTE_SERVER_URI);
-    msgBus.destClientName(s_msgBus.clientName());
+    auto msgBus = MsgBusMalamute("MalamuteASyncRequestTestCase", MALAMUTE_SERVER_URI, s_msgBus.clientName());
 
     DeliveryState state = s_msgBus.registerRequestListener(TEST_QUEUE, replyerListener);
     REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);

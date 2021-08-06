@@ -30,7 +30,7 @@ namespace fty::messagebus
   class MsgBusMalamute : public MsgBusWrapper<mlm::MessageBusMalamute, mlm::MlmMessage, mlm::UserData>
   {
   public:
-    MsgBusMalamute(const ClientName& clientName = utils::getClientId("MsgBusMalamute"), const Endpoint& endpoint = fty::messagebus::mlm::DEFAULT_MLM_END_POINT);
+    MsgBusMalamute(const ClientName& clientName = utils::getClientId("MsgBusMalamute"), const Endpoint& endpoint = fty::messagebus::mlm::DEFAULT_MLM_END_POINT, const ClientName& destClientName = {});
     ~MsgBusMalamute() = default;
 
     MsgBusMalamute(MsgBusMalamute&& other) = default;
