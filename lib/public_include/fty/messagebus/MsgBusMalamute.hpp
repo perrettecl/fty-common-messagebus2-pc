@@ -33,7 +33,7 @@ namespace fty::messagebus
     MsgBusMalamute(const ClientName& clientName = utils::getClientId("MsgBusMalamute"), const Endpoint& endpoint = fty::messagebus::mlm::DEFAULT_MLM_END_POINT);
     ~MsgBusMalamute() = default;
 
-    MsgBusMalamute(MsgBusMalamute && other) = default;
+    MsgBusMalamute(MsgBusMalamute&& other) = default;
     MsgBusMalamute& operator=(MsgBusMalamute&& other) = delete;
     MsgBusMalamute(const MsgBusMalamute& other) = default;
     MsgBusMalamute& operator=(const MsgBusMalamute& other) = delete;
@@ -43,9 +43,7 @@ namespace fty::messagebus
     DeliveryState publish(const std::string& topic, const mlm::UserData& msg) override;
 
     DeliveryState sendRequest(const std::string& requestQueue, const mlm::UserData& msg, MessageListener<mlm::MlmMessage> messageListener) override;
-    DeliveryState sendRequest(const std::string& destName, const std::string& requestQueue, const mlm::UserData& msg, MessageListener<mlm::MlmMessage> messageListener);
     Opt<mlm::MlmMessage> sendRequest(const std::string& requestQueue, const mlm::UserData& msg, int timeOut) override;
-    Opt<mlm::MlmMessage> sendRequest(const std::string& destName, const std::string& requestQueue, const mlm::UserData& msg, int timeOut);
     DeliveryState registerRequestListener(const std::string& requestQueue, MessageListener<mlm::MlmMessage> messageListener) override;
     DeliveryState sendRequestReply(const mlm::MlmMessage& inputRequest, const mlm::UserData& response) override;
 
@@ -53,11 +51,8 @@ namespace fty::messagebus
     void destClientName(const ClientName& destClientName);
 
   private:
-
     ClientName m_destClientName{};
     void assertDestClientName();
-
-  protected:
     mlm::MlmMessage buildMessage(const std::string& queue, const mlm::UserData& msg) override;
   };
 } // namespace fty::messagebus

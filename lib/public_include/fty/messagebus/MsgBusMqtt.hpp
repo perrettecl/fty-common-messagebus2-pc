@@ -47,8 +47,7 @@ namespace fty::messagebus
     DeliveryState registerRequestListener(const std::string& requestQueue, MessageListener<mqttv5::MqttMessage> messageListener) override;
     DeliveryState sendRequestReply(const mqttv5::MqttMessage& inputRequest, const mqttv5::UserData& response) override;
 
-  protected:
-
+  private:
     mqttv5::MqttMessage buildMessage(const std::string& queue, const mqttv5::UserData& msg) override;
   };
 } // namespace fty::messagebus
