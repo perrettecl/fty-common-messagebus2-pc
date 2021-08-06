@@ -34,7 +34,7 @@ namespace
   using namespace fty::messagebus::test;
   using Message = fty::messagebus::mlm::MlmMessage;
 
-  auto requester = fty::messagebus::MsgBusMalamute("requester");
+  auto requester = fty::messagebus::MsgBusMalamute();
   static bool _continue = true;
 
   static void signalHandler(int signal)
@@ -79,7 +79,9 @@ int main(int argc, char** argv)
     userData << query;
     try
     {
-      auto resp = requester.sendRequest(fty::messagebus::mlm::test::SHARED_CLIENT_NAME, fty::messagebus::mlm::test::QUEUE_NAME, userData, 5);
+      // Set the destination client name (specific to malamute!)
+      requester.destClientName(fty::messagebus::mlm::test::SHARED_CLIENT_NAME);
+      auto resp = requester.sendRequest(fty::messagebus::mlm::test::QUEUE_NAME, userData, 5);
       if (resp.has_value())
       {
         log_info("Response:");

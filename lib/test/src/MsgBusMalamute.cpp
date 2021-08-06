@@ -68,6 +68,7 @@ namespace
   TEST_CASE("Malamute sync request", "[sendRequest]")
   {
     auto msgBus = MsgBusMalamute("MalamuteSyncRequestTestCase", MALAMUTE_SERVER_URI);
+    msgBus.destClientName(s_msgBus.clientName());
 
     DeliveryState state = s_msgBus.registerRequestListener(TEST_QUEUE, replyerListener);
     REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
@@ -75,13 +76,13 @@ namespace
     // Send synchronous request
     UserData userData;
     userData.emplace_front(QUERY);
-    Opt<Message> replyMsg = msgBus.sendRequest(s_msgBus.clientName(), TEST_QUEUE, userData, MAX_TIMEOUT);
+    Opt<Message> replyMsg = msgBus.sendRequest(TEST_QUEUE, userData, MAX_TIMEOUT);
     REQUIRE(replyMsg.has_value());
     REQUIRE(replyMsg.value().userData().front() == RESPONSE);
 
     userData.clear();
     userData.emplace_front(QUERY_2);
-    replyMsg = msgBus.sendRequest(s_msgBus.clientName(), TEST_QUEUE, userData, MAX_TIMEOUT);
+    replyMsg = msgBus.sendRequest(TEST_QUEUE, userData, MAX_TIMEOUT);
     REQUIRE(replyMsg.has_value());
     REQUIRE(replyMsg.value().userData().front() == RESPONSE_2);
   }
@@ -89,13 +90,14 @@ namespace
   TEST_CASE("Malamute async request", "[sendRequest]")
   {
     auto msgBus = MsgBusMalamute("MalamuteASyncRequestTestCase", MALAMUTE_SERVER_URI);
+    msgBus.destClientName(s_msgBus.clientName());
 
     DeliveryState state = s_msgBus.registerRequestListener(TEST_QUEUE, replyerListener);
     REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
 
     UserData userData;
     userData.emplace_front(QUERY);
-    state = msgBus.sendRequest(s_msgBus.clientName(), TEST_QUEUE, userData, responseListener);
+    state = msgBus.sendRequest(TEST_QUEUE, userData, responseListener);
     REQUIRE(state == DeliveryState::DELI_STATE_ACCEPTED);
     // Wait to process the response
     std::this_thread::sleep_for(std::chrono::seconds(MAX_TIMEOUT));

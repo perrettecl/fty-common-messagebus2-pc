@@ -97,20 +97,23 @@ int main(int /*argc*/, char** argv)
   answer.registerRequestListener(fty::messagebus::mlm::test::QUEUE_NAME, queryListener);
   std::this_thread::sleep_for(std::chrono::seconds(2));
 
+  // Set the destination client name (specific to malamute!)
+  requester.destClientName(answer.clientName());
+
   // REQUEST
   Message message;
   auto query1 = FooBar("doAction", "wait");
   UserData userData;
   userData << query1;
-  requester.sendRequest(answer.clientName(), fty::messagebus::mlm::test::QUEUE_NAME, userData, responseListener);
+  requester.sendRequest(fty::messagebus::mlm::test::QUEUE_NAME, userData, responseListener);
   std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // REQUEST 2
   Message message2;
   auto query2 = FooBar("doAction again", "wait");
-  UserData userData2;
-  userData2 << query2;
-  requester.sendRequest(answer.clientName(), fty::messagebus::mlm::test::QUEUE_NAME, userData2, responseListener);
+  userData.clear();
+  userData << query2;
+  requester.sendRequest(fty::messagebus::mlm::test::QUEUE_NAME, userData, responseListener);
   std::this_thread::sleep_for(std::chrono::seconds(5));
 
   log_info("%s - end", argv[0]);

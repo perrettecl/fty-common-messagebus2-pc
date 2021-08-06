@@ -65,26 +65,18 @@ namespace fty::messagebus
     return m_msgBus->publish(PREFIX_TOPIC + topic, message);
   }
 
-  DeliveryState MsgBusMalamute::sendRequest(const std::string&, const UserData&, MessageListener<MlmMessage>)
+  DeliveryState MsgBusMalamute::sendRequest(const std::string& requestQueue, const UserData& request, MessageListener<MlmMessage> messageListener)
   {
-    throw MessageBusException("Do not use it for malamute implementation, use sendRequest with destName, etc.");
-  }
-
-  DeliveryState MsgBusMalamute::sendRequest(const std::string& destName, const std::string& requestQueue, const UserData& request, MessageListener<MlmMessage> messageListener)
-  {
-    auto message = buildMessage(destName, requestQueue, request);
+    assertDestClientName();
+    auto message = buildMessage(requestQueue, request);
     m_msgBus->receive(message.metaData().find(REPLY_TO)->second, messageListener);
     return m_msgBus->sendRequest(PREFIX_REQUEST_QUEUE + requestQueue, message);
   }
 
-  Opt<MlmMessage> MsgBusMalamute::sendRequest(const std::string&, const UserData&, int)
+  Opt<MlmMessage> MsgBusMalamute::sendRequest(const std::string& requestQueue, const UserData& msg, int timeOut)
   {
-    throw MessageBusException("Do not use it for malamute implementation, use sendRequest with destName, etc.");
-  }
-
-  Opt<MlmMessage> MsgBusMalamute::sendRequest(const std::string& destName, const std::string& requestQueue, const UserData& msg, int timeOut)
-  {
-    return m_msgBus->request(PREFIX_REQUEST_QUEUE + requestQueue, buildMessage(destName, requestQueue, msg), timeOut);
+    assertDestClientName();
+    return m_msgBus->request(PREFIX_REQUEST_QUEUE + requestQueue, buildMessage(requestQueue, msg), timeOut);
   }
 
   DeliveryState MsgBusMalamute::registerRequestListener(const std::string& requestQueue, MessageListener<MlmMessage> messageListener)
@@ -105,7 +97,25 @@ namespace fty::messagebus
     return m_msgBus->sendReply(inputRequest.metaData().find(REPLY_TO)->second, responseMsg);
   }
 
-  MlmMessage MsgBusMalamute::buildMessage(const std::string& destName, const std::string& queue, const UserData& msg)
+  // std::string MsgBusMalamute::destClientName()
+  // {
+  //   return "m_destClientName";
+  // }
+
+  // ClientName MsgBusMalamute::destClientName(const ClientName& destClientName)
+  // {
+  //   m_destClientName = destClientName;
+  // }
+
+  void MsgBusMalamute::assertDestClientName()
+  {
+    if (destClientName().empty())
+    {
+      throw MessageBusException("The Malamute destination name is not set, the request can not be send!");
+    }
+  }
+
+  MlmMessage MsgBusMalamute::buildMessage(const std::string& queue, const UserData& msg)
   {
     auto correlationId = utils::generateUuid();
     auto replyTo = PREFIX_REPLY_QUEUE + queue;
@@ -115,10 +125,11 @@ namespace fty::messagebus
     message.metaData().clear();
     message.metaData().emplace(SUBJECT, QUERY_USER_PROPERTY);
     message.metaData().emplace(FROM, clientName());
-    message.metaData().emplace(TO, destName);
+    message.metaData().emplace(TO, destClientName());
     message.metaData().emplace(REPLY_TO, replyTo);
     message.metaData().emplace(CORRELATION_ID, correlationId);
 
     return message;
   }
+
 } // namespace fty::messagebus

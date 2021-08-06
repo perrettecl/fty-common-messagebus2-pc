@@ -86,12 +86,14 @@ namespace fty::messagebus
     virtual DeliveryState sendRequestReply(const MessageType& inputRequest, const UserDataType& response) = 0;
 
   private:
-    std::string m_clientName{};
-    std::string m_endpoint{};
-    std::string m_identify{};
+    ClientName m_clientName{};
+    Endpoint m_endpoint{};
+    Identify m_identify{};
+
 
   protected:
     std::unique_ptr<MessageBusType> m_msgBus;
+    virtual MessageType buildMessage(const std::string& queue, const UserDataType& msg) = 0;
   };
 
 } // namespace fty::messagebus
