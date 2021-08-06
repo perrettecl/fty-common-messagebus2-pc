@@ -21,59 +21,96 @@
 
 #include <fty/messagebus/MsgBusAmqp.hpp>
 
+// TODO copy/paste from MsgBusMqtt.cpp, if in the real implementation, it's the same factorize it with Mqtt
+
 namespace fty::messagebus
 {
-
   using AmqpMessage = fty::messagebus::amqp::AmqpMessage;
   using UserData = fty::messagebus::amqp::UserData;
 
   static constexpr auto AMQP_IMPL = "Message bus above Amqp implementation";
+
+  // Topic
+  static const std::string PREFIX_TOPIC = "etn.t";
+
+  // Queues
+  static const std::string PREFIX_QUEUE = "etn.t.";
+  static const std::string PREFIX_REQUEST_QUEUE = PREFIX_QUEUE + "request";
+  static const std::string PREFIX_REPLY_QUEUE = PREFIX_QUEUE + "reply";
+}
+
+namespace fty::messagebus
+{
 
   MsgBusAmqp::MsgBusAmqp(const ClientName& clientName, const Endpoint& endpoint)
     : MsgBusWrapper(clientName, endpoint, AMQP_IMPL)
   {
   }
 
-  DeliveryState MsgBusAmqp::subscribe(const std::string& /*topic*/, MessageListener<AmqpMessage> /*messageListener*/)
+  DeliveryState MsgBusAmqp::subscribe(const std::string& topic, MessageListener<AmqpMessage> messageListener)
   {
-    return DeliveryState::DELI_STATE_UNAVAILABLE;
+    return m_msgBus->subscribe(PREFIX_TOPIC + topic, messageListener);
   }
 
-  DeliveryState MsgBusAmqp::unsubscribe(const std::string& /*topic*/)
+  DeliveryState MsgBusAmqp::unsubscribe(const std::string& topic)
   {
-    return DeliveryState::DELI_STATE_UNAVAILABLE;
+    return m_msgBus->unsubscribe(PREFIX_TOPIC + topic, nullptr);
   }
 
-  DeliveryState MsgBusAmqp::publish(const std::string& /*topic*/, const UserData& /*msg*/)
-  {
-    return DeliveryState::DELI_STATE_UNAVAILABLE;
-  }
-
-  DeliveryState MsgBusAmqp::sendRequest(const std::string& /*requestQueue*/, const UserData& /*msg*/, MessageListener<AmqpMessage> /*messageListener*/)
-  {
-    return DeliveryState::DELI_STATE_UNAVAILABLE;
-  }
-
-  Opt<AmqpMessage> MsgBusAmqp::sendRequest(const std::string& /*requestQueue*/, const UserData& /*msg*/, int /*timeOut*/)
-  {
-    Opt<AmqpMessage> val{};
-    return val;
-  }
-
-  DeliveryState MsgBusAmqp::registerRequestListener(const std::string& /*requestQueue*/, MessageListener<AmqpMessage> /*messageListener*/)
-  {
-    return DeliveryState::DELI_STATE_UNAVAILABLE;
-  }
-
-  DeliveryState MsgBusAmqp::sendRequestReply(const AmqpMessage& /*inputRequest*/, const UserData& /*response*/)
-  {
-    return DeliveryState::DELI_STATE_UNAVAILABLE;
-  }
-
-  AmqpMessage MsgBusAmqp::buildMessage(const std::string& /*queue*/, const UserData& msg)
+  DeliveryState MsgBusAmqp::publish(const std::string& topic, const UserData& msg)
   {
     AmqpMessage message;
     message.userData() = msg;
+    message.metaData().clear();
+    message.metaData().emplace(SUBJECT, PUBLISH_USER_PROPERTY);
+    message.metaData().emplace(FROM, clientName());
+
+    return m_msgBus->publish(PREFIX_TOPIC + topic, message);
+  }
+
+  DeliveryState MsgBusAmqp::sendRequest(const std::string& requestQueue, const UserData& request, MessageListener<AmqpMessage> messageListener)
+  {
+    auto message = buildMessage(requestQueue, request);
+    m_msgBus->receive(message.metaData().find(REPLY_TO)->second, messageListener);
+    return m_msgBus->sendRequest(PREFIX_REQUEST_QUEUE + requestQueue, message);
+  }
+
+  Opt<AmqpMessage> MsgBusAmqp::sendRequest(const std::string& requestQueue, const UserData& request, int timeOut)
+  {
+    return m_msgBus->request(PREFIX_REQUEST_QUEUE + requestQueue, buildMessage(requestQueue, request), timeOut);
+  }
+
+  DeliveryState MsgBusAmqp::registerRequestListener(const std::string& requestQueue, MessageListener<AmqpMessage> messageListener)
+  {
+    return m_msgBus->receive(PREFIX_REQUEST_QUEUE + requestQueue, messageListener);
+  }
+
+  DeliveryState MsgBusAmqp::sendRequestReply(const AmqpMessage& inputRequest, const UserData& response)
+  {
+    AmqpMessage responseMsg;
+    responseMsg.userData() = response;
+    responseMsg.metaData().emplace(STATUS, STATUS_OK);
+    responseMsg.metaData().emplace(SUBJECT, ANSWER_USER_PROPERTY);
+    responseMsg.metaData().emplace(FROM, clientName());
+    responseMsg.metaData().emplace(REPLY_TO, inputRequest.metaData().find(REPLY_TO)->second);
+    responseMsg.metaData().emplace(CORRELATION_ID, inputRequest.metaData().find(CORRELATION_ID)->second);
+
+    return m_msgBus->sendReply(inputRequest.metaData().find(REPLY_TO)->second, responseMsg);
+  }
+
+  AmqpMessage MsgBusAmqp::buildMessage(const std::string& queue, const UserData& msg)
+  {
+    auto correlationId = utils::generateUuid();
+    auto replyTo = PREFIX_REPLY_QUEUE + queue + '.' + correlationId;
+
+    AmqpMessage message;
+    message.userData() = msg;
+    message.metaData().clear();
+    message.metaData().emplace(SUBJECT, QUERY_USER_PROPERTY);
+    message.metaData().emplace(FROM, clientName());
+    message.metaData().emplace(REPLY_TO, replyTo);
+    message.metaData().emplace(CORRELATION_ID, correlationId);
+
     return message;
   }
 } // namespace fty::messagebus

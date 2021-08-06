@@ -26,6 +26,8 @@ namespace
   using MqttMessage = fty::messagebus::mqttv5::MqttMessage;
   using UserData = fty::messagebus::mqttv5::UserData;
 
+  static constexpr auto MQTT_IMPL = "Message bus above MQTT implementation";
+
   // Topic
   static const std::string PREFIX_TOPIC = "/etn/t";
 
@@ -37,8 +39,6 @@ namespace
 
 namespace fty::messagebus
 {
-  static constexpr auto MQTT_IMPL = "Message bus above MQTT implementation";
-
   MsgBusMqtt::MsgBusMqtt(const ClientName& clientName, const Endpoint& endpoint)
     : MsgBusWrapper(clientName, endpoint, MQTT_IMPL)
   {
@@ -65,7 +65,7 @@ namespace fty::messagebus
     return m_msgBus->publish(PREFIX_TOPIC + topic, message);
   }
 
-  DeliveryState MsgBusMqtt::sendRequest(const std::string& requestQueue, const std::string& request, MessageListener<MqttMessage> messageListener)
+  DeliveryState MsgBusMqtt::sendRequest(const std::string& requestQueue, const UserData& request, MessageListener<MqttMessage> messageListener)
   {
     auto message = buildMessage(requestQueue, request);
     m_msgBus->receive(message.metaData().find(REPLY_TO)->second, messageListener);

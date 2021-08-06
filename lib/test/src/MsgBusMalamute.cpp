@@ -30,6 +30,7 @@
 namespace
 {
   static constexpr auto MALAMUTE_SERVER_URI{"ipc://@/malamute"};
+  //static constexpr auto MALAMUTE_SERVER_URI{"inproc://fty_common_messagebus2-test"};
 
   static constexpr auto TEST_QUEUE = "testQueue";
   static constexpr auto TEST_TOPIC = "testTopic";

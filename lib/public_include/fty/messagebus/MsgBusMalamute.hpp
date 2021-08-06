@@ -42,8 +42,8 @@ namespace fty::messagebus
     DeliveryState unsubscribe(const std::string& topic) override;
     DeliveryState publish(const std::string& topic, const mlm::UserData& msg) override;
 
-    DeliveryState sendRequest(const std::string& requestQueue, const mlm::UserData& msg, MessageListener<mlm::MlmMessage> messageListener) override;
-    Opt<mlm::MlmMessage> sendRequest(const std::string& requestQueue, const mlm::UserData& msg, int timeOut) override;
+    DeliveryState sendRequest(const std::string& requestQueue, const mlm::UserData& request, MessageListener<mlm::MlmMessage> messageListener) override;
+    Opt<mlm::MlmMessage> sendRequest(const std::string& requestQueue, const mlm::UserData& request, int timeOut) override;
     DeliveryState registerRequestListener(const std::string& requestQueue, MessageListener<mlm::MlmMessage> messageListener) override;
     DeliveryState sendRequestReply(const mlm::MlmMessage& inputRequest, const mlm::UserData& response) override;
 

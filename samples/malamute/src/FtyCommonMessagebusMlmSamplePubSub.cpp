@@ -26,10 +26,9 @@
 @end
 */
 
-#include <fty/messagebus/test/FtyCommonTestDef.hpp>
-
 #include <fty/messagebus/MsgBusMalamute.hpp>
 #include <fty/messagebus/test/FtyCommonFooBarDto.hpp>
+#include <fty/messagebus/test/FtyCommonTestDef.hpp>
 
 #include <csignal>
 #include <fty_log.h>

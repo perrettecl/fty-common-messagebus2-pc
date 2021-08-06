@@ -42,8 +42,8 @@ namespace fty::messagebus
     DeliveryState unsubscribe(const std::string& topic) override;
     DeliveryState publish(const std::string& topic, const amqp::UserData& msg) override;
 
-    DeliveryState sendRequest(const std::string& requestQueue, const amqp::UserData& msg, MessageListener<amqp::AmqpMessage> messageListener) override;
-    Opt<amqp::AmqpMessage> sendRequest(const std::string& requestQueue, const amqp::UserData& msg, int timeOut) override;
+    DeliveryState sendRequest(const std::string& requestQueue, const amqp::UserData& request, MessageListener<amqp::AmqpMessage> messageListener) override;
+    Opt<amqp::AmqpMessage> sendRequest(const std::string& requestQueue, const amqp::UserData& request, int timeOut) override;
     DeliveryState registerRequestListener(const std::string& requestQueue, MessageListener<amqp::AmqpMessage> messageListener) override;
     DeliveryState sendRequestReply(const amqp::AmqpMessage& inputRequest, const amqp::UserData& response) override;
 

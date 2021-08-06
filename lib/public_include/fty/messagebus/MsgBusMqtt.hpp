@@ -42,8 +42,8 @@ namespace fty::messagebus
     DeliveryState unsubscribe(const std::string& topic) override;
     DeliveryState publish(const std::string& topic, const mqttv5::UserData& msg) override;
 
-    DeliveryState sendRequest(const std::string& requestQueue, const mqttv5::UserData& msg, MessageListener<mqttv5::MqttMessage> messageListener) override;
-    Opt<mqttv5::MqttMessage> sendRequest(const std::string& requestQueue, const mqttv5::UserData& msg, int timeOut) override;
+    DeliveryState sendRequest(const std::string& requestQueue, const mqttv5::UserData& request, MessageListener<mqttv5::MqttMessage> messageListener) override;
+    Opt<mqttv5::MqttMessage> sendRequest(const std::string& requestQueue, const mqttv5::UserData& request, int timeOut) override;
     DeliveryState registerRequestListener(const std::string& requestQueue, MessageListener<mqttv5::MqttMessage> messageListener) override;
     DeliveryState sendRequestReply(const mqttv5::MqttMessage& inputRequest, const mqttv5::UserData& response) override;
 

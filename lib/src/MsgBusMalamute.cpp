@@ -23,6 +23,11 @@
 
 namespace
 {
+  using MlmMessage = fty::messagebus::mlm::MlmMessage;
+  using UserData = fty::messagebus::mlm::UserData;
+
+  static constexpr auto MALAMUTE_IMPL = "Message bus above Malamute implementation";
+
   // Topic
   static const std::string PREFIX_TOPIC = "t.";
 
@@ -34,11 +39,6 @@ namespace
 
 namespace fty::messagebus
 {
-  using MlmMessage = fty::messagebus::mlm::MlmMessage;
-  using UserData = fty::messagebus::mlm::UserData;
-
-  static constexpr auto MALAMUTE_IMPL = "Message bus above Malamute implementation";
-
   MsgBusMalamute::MsgBusMalamute(const ClientName& clientName, const Endpoint& endpoint, const ClientName& destClientName)
     : MsgBusWrapper(clientName, endpoint, MALAMUTE_IMPL)
     , m_destClientName(destClientName)
@@ -74,10 +74,10 @@ namespace fty::messagebus
     return m_msgBus->sendRequest(PREFIX_REQUEST_QUEUE + requestQueue, message);
   }
 
-  Opt<MlmMessage> MsgBusMalamute::sendRequest(const std::string& requestQueue, const UserData& msg, int timeOut)
+  Opt<MlmMessage> MsgBusMalamute::sendRequest(const std::string& requestQueue, const UserData& request, int timeOut)
   {
     assertDestClientName();
-    return m_msgBus->request(PREFIX_REQUEST_QUEUE + requestQueue, buildMessage(requestQueue, msg), timeOut);
+    return m_msgBus->request(PREFIX_REQUEST_QUEUE + requestQueue, buildMessage(requestQueue, request), timeOut);
   }
 
   DeliveryState MsgBusMalamute::registerRequestListener(const std::string& requestQueue, MessageListener<MlmMessage> messageListener)
