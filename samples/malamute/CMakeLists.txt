@@ -10,7 +10,7 @@ etn_target(exe ${PROJECT_NAME}-pub-sub PRIVATE
   SOURCES
     src/*PubSub.cpp
   USES_PRIVATE
-    ${PROJECT_NAME_UNDERSCORE}
+    fty-common-messagebus2
     ${SAMPLE_DTO_LIB_NAME}
   FLAGS
     "-fmax-errors=1"
@@ -22,7 +22,7 @@ etn_target(exe ${PROJECT_NAME}-request PRIVATE
   INCLUDE_DIRS
     private_include
   USES_PRIVATE
-    ${PROJECT_NAME_UNDERSCORE}
+    fty-common-messagebus2
     ${SAMPLE_DTO_LIB_NAME}
 )
 
@@ -32,7 +32,7 @@ etn_target(exe ${PROJECT_NAME}-reply PRIVATE
   INCLUDE_DIRS
     private_include
   USES_PRIVATE
-    ${PROJECT_NAME_UNDERSCORE}
+    fty-common-messagebus2
     ${SAMPLE_DTO_LIB_NAME}
 )
 
@@ -42,6 +42,6 @@ etn_target(exe ${PROJECT_NAME}-RequestReply PRIVATE
   INCLUDE_DIRS
     private_include
   USES_PRIVATE
-    ${PROJECT_NAME_UNDERSCORE}
+    fty-common-messagebus2
     ${SAMPLE_DTO_LIB_NAME}
 )

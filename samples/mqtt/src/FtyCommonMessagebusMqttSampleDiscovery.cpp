@@ -26,7 +26,7 @@
 @end
 */
 
-#include <fty/messagebus/MsgBusMqtt.hpp>
+#include <fty/messagebus/MessageBusMqtt.hpp>
 
 #include <csignal>
 #include <fty_log.h>
@@ -45,19 +45,19 @@ namespace
 
 int main(int /*argc*/, char** argv)
 {
-  log_info("%s - starting...", argv[0]);
+  logInfo("{} - starting...", argv[0]);
 
   // Install a signal handler
   std::signal(SIGINT, signalHandler);
   std::signal(SIGTERM, signalHandler);
 
-  auto msgBus = fty::messagebus::MsgBusMqtt();
+  auto msgBus = fty::messagebus::MessageBusMqtt();
 
   while (_continue)
   {
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
 
-  log_info("%s - end", argv[0]);
+  logInfo("{} - end", argv[0]);
   return EXIT_SUCCESS;
 }

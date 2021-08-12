@@ -26,16 +26,17 @@
 @end
 */
 
-#include "fty/messagebus/test/FtyCommonFooBarDto.hpp"
+#include "fty/sample/dto/FtyCommonFooBarDto.hpp"
 
 #include <nlohmann/json.hpp>
 #include <ostream>
 
+
 using json = nlohmann::json;
 
-namespace fty::messagebus::test
+namespace fty::sample::dto
 {
-  auto FooBar::serialize() -> const std::string
+  const std::string FooBar::serialize() const
   {
     json op;
     op["foo"] = foo;
@@ -53,16 +54,11 @@ namespace fty::messagebus::test
 
   void operator<<(UserData& data, const FooBar& object)
   {
-    data.push_back(object.foo);
-    data.push_back(object.bar);
+    data = object.serialize();
   }
 
   void operator>>(UserData& data, FooBar& object)
   {
-    auto foo = data.front();
-    data.pop_front();
-    auto bar = data.front();
-    data.pop_front();
-    object = FooBar(foo, bar);
+    object = FooBar(data);
   }
 } // namespace fty::messagebus::test

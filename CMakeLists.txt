@@ -8,9 +8,9 @@ project(fty-common-messagebus2
 
 ##############################################################################################################
 find_package(fty-cmake PATHS ${CMAKE_BINARY_DIR}/fty-cmake REQUIRED)
-find_package(Threads REQUIRED)
 ##############################################################################################################
 
+## TO BE MOVED IN FTY-CMAKE
 macro(relative_option parent_option new_option_name text)
   if (${parent_option})
     option(${new_option_name} ${text} ON)
@@ -29,23 +29,20 @@ option(                            BUILD_TESTING               "Build tests"    
 option(                            BUILD_DOC                   "Build documentation"              OFF)
 option(                            EXTERNAL_SERVER_FOR_TEST    "Using external server for test"   OFF)
 
-set(PROJECT_NAME_UNDERSCORE fty_common_messagebus2)
-set(SAMPLE_DTO_LIB_NAME fty-common-messagebus2-sample-dto)
-
-# Utils, interfaces, addons, etc.
-add_subdirectory(utils)
-add_subdirectory(common)
-add_subdirectory(addons)
-
 # Library
-add_subdirectory(lib)
+add_subdirectory(common)
 
-# Tools
+# Addons
+if(BUILD_MQTT)
+  add_subdirectory(mqtt)
+endif()
+
 if(BUILD_MALAMUTE)
-  add_subdirectory(tools)
+  #add_subdirectory(malamute)
 endif()
 
 # Samples
 if(BUILD_SAMPLES)
+  set(SAMPLE_DTO_LIB_NAME fty-common-messagebus2-sample-dto)
   add_subdirectory(samples)
 endif()

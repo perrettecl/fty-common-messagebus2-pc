@@ -50,16 +50,16 @@ namespace
 
   void messageListener(Message message)
   {
-    log_info("messageListener");
+    logInfo("messageListener");
     auto metadata = message.metaData();
     for (const auto& pair : message.metaData())
     {
-      log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
+      logInfo("  ** '{}' : '{}'", pair.first.c_str(), pair.second.c_str());
     }
 
     auto fooBar = FooBar(message.userData());
-    log_info("  * foo    : '%s'", fooBar.foo.c_str());
-    log_info("  * bar    : '%s'", fooBar.bar.c_str());
+    logInfo("  * foo    : '{}'", fooBar.foo.c_str());
+    logInfo("  * bar    : '{}'", fooBar.bar.c_str());
 
     _continue = false;
   }
@@ -68,7 +68,7 @@ namespace
 
 int main(int /*argc*/, char** argv)
 {
-  log_info("%s - starting...", argv[0]);
+  logInfo("{} - starting...", argv[0]);
 
   // Install a signal handler
   std::signal(SIGINT, signalHandler);
@@ -85,6 +85,6 @@ int main(int /*argc*/, char** argv)
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
 
-  log_info("%s - end", argv[0]);
+  logInfo("{} - end", argv[0]);
   return EXIT_SUCCESS;
 }

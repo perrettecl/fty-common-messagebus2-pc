@@ -51,16 +51,16 @@ namespace
 
   void messageListener(Message message)
   {
-    log_info("Message '%d' arrived on messageListener after a publish", _messageArrived);
+    logInfo("Message '%d' arrived on messageListener after a publish", _messageArrived);
     for (const auto& pair : message.metaData())
     {
-      log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
+      logInfo("  ** '{}' : '{}'", pair.first.c_str(), pair.second.c_str());
     }
 
     FooBar fooBar;
     message.userData() >> fooBar;
-    log_info("  * foo    : '%s'", fooBar.foo.c_str());
-    log_info("  * bar    : '%s'", fooBar.bar.c_str());
+    logInfo("  * foo    : '{}'", fooBar.foo.c_str());
+    logInfo("  * bar    : '{}'", fooBar.bar.c_str());
     _messageArrived++;
 
     if (_messageArrived >= _total)
@@ -72,11 +72,11 @@ namespace
 
 int main(int argc, char** argv)
 {
-  log_info("%s - starting...", argv[0]);
+  logInfo("{} - starting...", argv[0]);
 
   if (argc > 1)
   {
-    log_info("%s", argv[1]);
+    logInfo("{}", argv[1]);
     _total = atoi(argv[1]);
   }
 
@@ -105,6 +105,6 @@ int main(int argc, char** argv)
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
 
-  log_info("%s - end", argv[0]);
+  logInfo("{} - end", argv[0]);
   return EXIT_SUCCESS;
 }

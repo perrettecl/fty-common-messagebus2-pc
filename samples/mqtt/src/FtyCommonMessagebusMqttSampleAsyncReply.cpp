@@ -26,9 +26,10 @@
 @end
 */
 
-#include <fty/messagebus/MsgBusMqtt.hpp>
+#include <fty/messagebus/MessageBusMqtt.hpp>
 #include <fty/messagebus/test/FtyCommonMathDto.hpp>
 #include <fty/messagebus/test/FtyCommonTestDef.hpp>
+#include <fty/messagebus/Message.h>
 
 #include <csignal>
 #include <fty_log.h>
@@ -36,10 +37,10 @@
 
 namespace
 {
-  using namespace fty::messagebus::test;
-  using Message = fty::messagebus::mqttv5::MqttMessage;
+  using namespace fty::sample::dto;
 
-  auto reqRep = fty::messagebus::MsgBusMqtt();
+
+  auto reqRep = fty::messagebus::MessageBusMqtt();
   static bool _continue = true;
 
   static void signalHandler(int signal)
@@ -50,11 +51,11 @@ namespace
 
   void replyerMessageListener(const Message& message)
   {
-    log_info("Replyer messageListener");
+    logInfo("Replyer messageListener");
 
     for (const auto& pair : message.metaData())
     {
-      log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
+      logInfo("  ** '{}' : '{}'", pair.first.c_str(), pair.second.c_str());
     }
 
     auto mathQuery = MathOperation(message.userData());
@@ -82,7 +83,7 @@ namespace
 
 int main(int /*argc*/, char** argv)
 {
-  log_info("%s - starting...", argv[0]);
+  logInfo("{} - starting...", argv[0]);
 
   // Install a signal handler
   std::signal(SIGINT, signalHandler);
@@ -94,6 +95,6 @@ int main(int /*argc*/, char** argv)
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
 
-  log_info("%s - end", argv[0]);
+  logInfo("{} - end", argv[0]);
   return EXIT_SUCCESS;
 }

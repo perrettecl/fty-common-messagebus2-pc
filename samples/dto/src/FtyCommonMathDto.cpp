@@ -26,12 +26,12 @@
 @end
 */
 
-#include "fty/messagebus/test/FtyCommonMathDto.hpp"
+#include "fty/sample/dto/FtyCommonMathDto.hpp"
 
 #include <nlohmann/json.hpp>
 #include <ostream>
 
-namespace fty::messagebus::test
+namespace fty::sample::dto
 {
   using json = nlohmann::json;
 

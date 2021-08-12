@@ -15,6 +15,6 @@ etn_target(shared ${PROJECT_NAME} PRIVATE
   SOURCES
     src/*.cpp
   USES_PUBLIC
-    ${PROJECT_NAME_UNDERSCORE}
+    fty-common-messagebus2
     nlohmann_json::nlohmann_json
 )

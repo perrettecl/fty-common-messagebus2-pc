@@ -12,7 +12,7 @@ etn_target(exe ${PROJECT_NAME}-pub-sub PRIVATE
   SOURCES
     src/*PubSub.cpp
   USES_PRIVATE
-    ${PROJECT_NAME_UNDERSCORE}
+    fty-common-messagebus2
     ${SAMPLE_DTO_LIB_NAME}
   FLAGS
     "-fmax-errors=1"
@@ -23,7 +23,7 @@ etn_target(exe ${PROJECT_NAME}-async-reply PRIVATE
   SOURCES
     src/*SampleAsyncReply.cpp
   USES_PUBLIC
-    ${PROJECT_NAME_UNDERSCORE}
+    fty-common-messagebus2
     ${SAMPLE_DTO_LIB_NAME}
   FLAGS
     "-fmax-errors=1"
@@ -34,7 +34,7 @@ etn_target(exe ${PROJECT_NAME}-send-request PRIVATE
   SOURCES
     src/*SampleSendRequest.cpp
   USES_PUBLIC
-    ${PROJECT_NAME_UNDERSCORE}
+    fty-common-messagebus2
     ${SAMPLE_DTO_LIB_NAME}
   FLAGS
     "-fmax-errors=1"

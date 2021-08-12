@@ -52,9 +52,9 @@ namespace
 
   void responseMessageListener(const Message& message)
   {
-    log_info("Response arrived");
+    logInfo("Response arrived");
     auto mathresult = MathResult(message.userData());
-    log_info("  * status: '%s', result: %d, error: '%s'", mathresult.status.c_str(), mathresult.result, mathresult.error.c_str());
+    logInfo("  * status: '{}', result: %d, error: '{}'", mathresult.status.c_str(), mathresult.result, mathresult.error.c_str());
 
     _continue = false;
   }
@@ -69,7 +69,7 @@ int main(int argc, char** argv)
     return EXIT_FAILURE;
   }
 
-  log_info("%s - starting...", argv[0]);
+  logInfo("{} - starting...", argv[0]);
 
   auto requestQueue = std::string{argv[1]};
 
@@ -89,14 +89,14 @@ int main(int argc, char** argv)
   {
     _continue = false;
 
-    Opt<Message> replyMsg = reqRep.sendRequest(requestQueue, query.serialize(), SYNC_REQUEST_TIMEOUT);
+    std::optional<Message> replyMsg = reqRep.sendRequest(requestQueue, query.serialize(), SYNC_REQUEST_TIMEOUT);
     if (replyMsg.has_value())
     {
       responseMessageListener(replyMsg.value());
     }
     else
     {
-      log_error("Time out reached: (%ds)", SYNC_REQUEST_TIMEOUT);
+      logError("Time out reached: (%ds)", SYNC_REQUEST_TIMEOUT);
     }
   }
 
@@ -105,6 +105,6 @@ int main(int argc, char** argv)
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
 
-  log_info("%s - end", argv[0]);
+  logInfo("{} - end", argv[0]);
   return EXIT_SUCCESS;
 }

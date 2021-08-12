@@ -1,16 +1,21 @@
-project(fty-messagebus-common-project
-  VERSION ${PROJECT_VERSION}
-  DESCRIPTION "fty messagebus common project"
+project(fty-common-messagebus2
+        VERSION ${PROJECT_VERSION}
+        DESCRIPTION "fty messagebus 2 common interface"
 )
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/lib)
-# add_subdirectory(test)
+##############################################################################################################
+find_package(fty-cmake PATHS ${CMAKE_BINARY_DIR}/fty-cmake REQUIRED)
+##############################################################################################################
 
-# if(BUILD_TESTING)
-#   etn_test_target(${PROJECT_NAME_UNDERSCORE}
-#     SOURCES
-#       test/src/*.cpp
-#     USES
-#       fty-messagebus-common
-#   )
-# endif()
+etn_target(shared fty-common-messagebus2
+  SOURCES
+    src/*.cpp
+  PUBLIC_INCLUDE_DIR
+    public_include
+  PUBLIC_HEADERS
+    *.h
+  USES_PRIVATE
+    uuid
+)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})

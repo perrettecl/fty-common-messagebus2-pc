@@ -48,10 +48,10 @@ namespace
 int main(int argc, char** argv)
 {
   int total = 100;
-  log_info("%s - starting...", argv[0]);
+  logInfo("{} - starting...", argv[0]);
   if (argc > 1)
   {
-    log_info("%s", argv[1]);
+    logInfo("{}", argv[1]);
     total = atoi(argv[1]);
   }
 
@@ -70,7 +70,7 @@ int main(int argc, char** argv)
     time(&rawtime);
     timeinfo = localtime(&rawtime);
 
-    strftime(buffer, sizeof(buffer), "%d-%m-%Y %H:%M:%S", timeinfo);
+    strftime(buffer, sizeof(buffer), "%d-%m-%Y %H:%M:{}", timeinfo);
     std::string str(buffer);
 
     // SYNC REQUEST
@@ -84,40 +84,40 @@ int main(int argc, char** argv)
       auto resp = requester.sendRequest(fty::messagebus::mlm::test::QUEUE_NAME, userData, 5);
       if (resp.has_value())
       {
-        log_info("Response:");
+        logInfo("Response:");
         for (const auto& pair : resp.value().metaData())
         {
-          log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
+          logInfo("  ** '{}' : '{}'", pair.first.c_str(), pair.second.c_str());
         }
         auto data = resp.value().userData();
         FooBar fooBar;
         data >> fooBar;
-        log_info("  * foo    : '%s'", fooBar.foo.c_str());
-        log_info("  * bar    : '%s'", fooBar.bar.c_str());
+        logInfo("  * foo    : '{}'", fooBar.foo.c_str());
+        logInfo("  * bar    : '{}'", fooBar.bar.c_str());
         rcv++;
       }
       else
       {
-        log_info("Timeout reached");
+        logInfo("Timeout reached");
         loose++;
       }
     }
     catch (MessageBusException& ex)
     {
-      log_error("%s", ex.what());
+      logError("{}", ex.what());
       loose++;
     }
     count++;
 
   } while (_continue == true && (count < total));
 
-  log_info("**************************************************");
-  log_info(" total  : %d", count);
-  log_info(" receive: %d", rcv);
-  log_info(" loose  : %d", loose);
-  log_info("**************************************************");
+  logInfo("**************************************************");
+  logInfo(" total  : %d", count);
+  logInfo(" receive: %d", rcv);
+  logInfo(" loose  : %d", loose);
+  logInfo("**************************************************");
 
-  log_info("%s - end", argv[0]);
+  logInfo("{} - end", argv[0]);
 
   return EXIT_SUCCESS;
 }

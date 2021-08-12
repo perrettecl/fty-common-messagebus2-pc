@@ -47,16 +47,16 @@ namespace
 
   void queryListener(const Message& message)
   {
-    log_info("queryListener:");
+    logInfo("queryListener:");
     for (const auto& pair : message.metaData())
     {
-      log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
+      logInfo("  ** '{}' : '{}'", pair.first.c_str(), pair.second.c_str());
     }
     auto data = message.userData();
     FooBar fooBar;
     data >> fooBar;
-    log_info("  * foo    : '%s'", fooBar.foo.c_str());
-    log_info("  * bar    : '%s'", fooBar.bar.c_str());
+    logInfo("  * foo    : '{}'", fooBar.foo.c_str());
+    logInfo("  * bar    : '{}'", fooBar.bar.c_str());
 
     if (message.metaData().size() != 0)
     {
@@ -71,28 +71,28 @@ namespace
     }
     else
     {
-      log_info("Old format, skip query...");
+      logInfo("Old format, skip query...");
     }
   }
 
   void responseListener(const Message& message)
   {
-    log_info("responseListener:");
+    logInfo("responseListener:");
     for (const auto& pair : message.metaData())
     {
-      log_info("  ** '%s' : '%s'", pair.first.c_str(), pair.second.c_str());
+      logInfo("  ** '{}' : '{}'", pair.first.c_str(), pair.second.c_str());
     }
     UserData data = message.userData();
     FooBar fooBar;
     data >> fooBar;
-    log_info("  * foo    : '%s'", fooBar.foo.c_str());
-    log_info("  * bar    : '%s'", fooBar.bar.c_str());
+    logInfo("  * foo    : '{}'", fooBar.foo.c_str());
+    logInfo("  * bar    : '{}'", fooBar.bar.c_str());
   }
 } // namespace
 
 int main(int /*argc*/, char** argv)
 {
-  log_info("%s - starting...", argv[0]);
+  logInfo("{} - starting...", argv[0]);
 
   answer.registerRequestListener(fty::messagebus::mlm::test::QUEUE_NAME, queryListener);
   std::this_thread::sleep_for(std::chrono::seconds(2));
@@ -116,7 +116,7 @@ int main(int /*argc*/, char** argv)
   requester.sendRequest(fty::messagebus::mlm::test::QUEUE_NAME, userData, responseListener);
   std::this_thread::sleep_for(std::chrono::seconds(5));
 
-  log_info("%s - end", argv[0]);
+  logInfo("{} - end", argv[0]);
 
   return EXIT_SUCCESS;
 }
