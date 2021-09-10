@@ -30,11 +30,9 @@ etn_target(shared ${PROJECT_NAME} PUBLIC
 
 set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
 
-# Tests
-if(BUILD_TESTING)
-  # Test target
-  etn_test_target(${PROJECT_NAME}
-  SOURCES
-    tests/*.cpp
-  )
-endif()
+## Tests
+#etn_test_target(${PROJECT_NAME}
+#SOURCES
+#  tests/*.cpp
+#)
+
